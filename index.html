@@ -142,17 +142,66 @@ td.prov{font-weight:600;font-size:13px}
     <button class="btn btn-p" onclick="renderOverview()">แสดงผล</button>
   </div>
 
-  <!-- Summary cards -->
-  <div class="cards" id="ov-cards">
-    <div class="card c8"><div class="card-lbl">รวม 8 จังหวัด</div><div class="card-val" id="ov-c8">—</div><div class="card-sub">จุดความร้อน</div></div>
-    <div class="card c9"><div class="card-lbl">รวม 9 จังหวัด</div><div class="card-val" id="ov-c9">—</div><div class="card-sub">จุดความร้อน</div></div>
-    <div class="card fire"><div class="card-lbl">ในป่า (9 จว.)</div><div class="card-val" id="ov-forest">—</div><div class="card-sub">จุดความร้อน</div></div>
-    <div class="card forest"><div class="card-lbl">นอกป่า (9 จว.)</div><div class="card-val" id="ov-non">—</div><div class="card-sub">จุดความร้อน</div></div>
+  <!-- Summary cards — แถว 8 จังหวัด -->
+  <div style="margin-bottom:8px">
+    <div style="font-size:11px;font-weight:600;color:#7B3FA0;letter-spacing:.04em;margin-bottom:6px;padding-left:2px">8 จังหวัด (ไม่รวมตาก)</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <div class="card" style="border-left:4px solid #7B3FA0">
+        <div class="card-lbl">รวม 8 จังหวัด</div>
+        <div class="card-val" id="ov-c8" style="color:#7B3FA0">—</div>
+        <div class="card-sub">จุดความร้อน</div>
+      </div>
+      <div class="card" style="border-left:4px solid #7B3FA0">
+        <div class="card-lbl">ในป่า 8 จังหวัด</div>
+        <div class="card-val" id="ov-f8" style="color:#7B3FA0">—</div>
+        <div class="card-sub">จุดความร้อน</div>
+      </div>
+      <div class="card" style="border-left:4px solid #7B3FA0">
+        <div class="card-lbl">นอกป่า 8 จังหวัด</div>
+        <div class="card-val" id="ov-n8" style="color:#7B3FA0">—</div>
+        <div class="card-sub">จุดความร้อน</div>
+      </div>
+    </div>
   </div>
 
-  <!-- ENSO strip -->
-  <div style="margin-bottom:12px">
-    <div style="font-size:12px;font-weight:600;color:var(--dim);margin-bottom:8px;letter-spacing:.04em">ENSO รายปี 2012–2026</div>
+  <!-- Summary cards — แถว 9 จังหวัด -->
+  <div style="margin-bottom:16px">
+    <div style="font-size:11px;font-weight:600;color:#1A5C8A;letter-spacing:.04em;margin-bottom:6px;padding-left:2px">9 จังหวัด (รวมตาก)</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <div class="card" style="border-left:4px solid #1A5C8A">
+        <div class="card-lbl">รวม 9 จังหวัด</div>
+        <div class="card-val" id="ov-c9" style="color:#1A5C8A">—</div>
+        <div class="card-sub">จุดความร้อน</div>
+      </div>
+      <div class="card" style="border-left:4px solid #1A5C8A">
+        <div class="card-lbl">ในป่า 9 จังหวัด</div>
+        <div class="card-val" id="ov-forest" style="color:#1A5C8A">—</div>
+        <div class="card-sub">จุดความร้อน</div>
+      </div>
+      <div class="card" style="border-left:4px solid #1A5C8A">
+        <div class="card-lbl">นอกป่า 9 จังหวัด</div>
+        <div class="card-val" id="ov-non" style="color:#1A5C8A">—</div>
+        <div class="card-sub">จุดความร้อน</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENSO strip + period selector -->
+  <div style="margin-bottom:14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap">
+      <div style="font-size:12px;font-weight:600;color:var(--dim);letter-spacing:.04em">ENSO รายปี 2012–2026</div>
+      <span class="lsm">จำแนกตาม</span>
+      <select id="ov-enso-strip-period" onchange="buildEnsoStrip()" style="height:28px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px">
+        <option value="smoke">Smoke Haze (JFM–AMJ)</option>
+        <option value="non_smoke">Non-Smoke Haze (JJA–SON)</option>
+        <option value="annual">Annual (JJA–MJJ)</option>
+      </select>
+      <div style="display:flex;gap:8px;font-size:11px;margin-left:auto">
+        <span style="background:rgba(184,50,50,.15);color:var(--en);padding:2px 8px;border-radius:3px;border:1px solid rgba(184,50,50,.3)">EN = El Niño</span>
+        <span style="background:rgba(26,79,138,.15);color:var(--ln);padding:2px 8px;border-radius:3px;border:1px solid rgba(26,79,138,.3)">LN = La Niña</span>
+        <span style="background:var(--surface2);color:var(--dim);padding:2px 8px;border-radius:3px;border:1px solid var(--border)">N = Neutral</span>
+      </div>
+    </div>
     <div class="estrip" id="enso-strip"></div>
   </div>
 
@@ -438,43 +487,63 @@ td.prov{font-weight:600;font-size:13px}
 
 <!-- ========== COMPARE ========== -->
 <div class="page" id="page-compare">
-  <!-- Baseline summary cards -->
+
+  <!-- Baseline selector + summary cards -->
   <div class="tw" style="margin-bottom:14px">
     <div class="th2">
-      <div class="tt">ค่า Baseline ตามเกณฑ์ที่เลือก</div>
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-        <span class="lsm">Scale</span>
-        <select id="cp-scale" onchange="renderCPBaseline()" style="height:28px;font-size:12px">
-          <option value="all">ทุกปี</option>
+      <div class="tt">ขั้นที่ 1 — เลือก Baseline ที่จะใช้เทียบ</div>
+    </div>
+    <div style="padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid var(--border)">
+      <span class="lsm">Baseline Scale</span>
+      <select id="cp-scale" style="height:32px;font-size:13px">
+        <optgroup label="ช่วงปี">
+          <option value="all">ทุกปี (2012–2026)</option>
           <option value="11yr">11 ปี (2015–2025)</option>
           <option value="5yr">5 ปี (2021–2025)</option>
-          <option value="en_all">El Niño</option>
-          <option value="ln_all">La Niña</option>
+        </optgroup>
+        <optgroup label="El Niño">
+          <option value="en_all">El Niño ทั้งหมด</option>
+          <option value="en_weak">El Niño — Weak</option>
+          <option value="en_mod">El Niño — Moderate</option>
+          <option value="en_str">El Niño — Strong/Very Strong</option>
+        </optgroup>
+        <optgroup label="La Niña">
+          <option value="ln_all">La Niña ทั้งหมด</option>
+          <option value="ln_weak">La Niña — Weak</option>
+          <option value="ln_mod">La Niña — Moderate</option>
+          <option value="ln_str">La Niña — Strong</option>
+        </optgroup>
+        <optgroup label="Neutral">
           <option value="neutral">Neutral</option>
-        </select>
-        <span class="lsm">ช่วง</span>
-        <select id="cp-period" onchange="renderCPBaseline()" style="height:28px;font-size:12px">
-          <option value="smoke">Smoke Haze</option>
-          <option value="non_smoke">Non-Smoke</option>
-          <option value="annual">Annual</option>
-        </select>
-        <span class="lsm">Sensor</span>
-        <select id="cp-sensor" onchange="renderCPBaseline()" style="height:28px;font-size:12px">
-          <option value="all">MODIS+VIIRs</option><option value="MODIS">MODIS</option><option value="VIIRS">VIIRs</option>
-        </select>
-      </div>
+        </optgroup>
+      </select>
+      <span class="lsm">ช่วงเวลา ENSO</span>
+      <select id="cp-period" style="height:32px;font-size:13px">
+        <option value="smoke">Smoke Haze (JFM–AMJ)</option>
+        <option value="non_smoke">Non-Smoke Haze (JJA–SON)</option>
+        <option value="annual">Annual</option>
+      </select>
+      <span class="lsm">Sensor</span>
+      <select id="cp-sensor" style="height:32px;font-size:13px">
+        <option value="all">MODIS+VIIRs</option>
+        <option value="MODIS">MODIS</option>
+        <option value="VIIRS">VIIRs</option>
+      </select>
+      <button class="btn btn-p" onclick="renderCPBaseline()">คำนวณ Baseline</button>
+      <span id="cp-bl-info" style="font-size:11px;color:var(--dim)"></span>
     </div>
-    <div class="cards" style="padding:12px 14px;margin-bottom:0" id="cp-bl-cards">
-      <div class="card c8"><div class="card-lbl">8 จังหวัด — Baseline Mean</div><div class="card-val" id="cp-bl8">—</div></div>
-      <div class="card c9"><div class="card-lbl">9 จังหวัด — Baseline Mean</div><div class="card-val" id="cp-bl9">—</div></div>
-      <div class="card fire"><div class="card-lbl">ในป่า — Baseline Mean</div><div class="card-val" id="cp-blf">—</div></div>
-      <div class="card forest"><div class="card-lbl">นอกป่า — Baseline Mean</div><div class="card-val" id="cp-bln">—</div></div>
+    <div class="cards" style="padding:12px 14px;margin-bottom:0">
+      <div class="card c8"><div class="card-lbl">8 จังหวัด — Mean</div><div class="card-val" id="cp-bl8">—</div><div class="card-sub" id="cp-bl8-yr"></div></div>
+      <div class="card c9"><div class="card-lbl">9 จังหวัด — Mean</div><div class="card-val" id="cp-bl9">—</div><div class="card-sub" id="cp-bl9-yr"></div></div>
+      <div class="card fire"><div class="card-lbl">ในป่า — Mean</div><div class="card-val" id="cp-blf">—</div></div>
+      <div class="card forest"><div class="card-lbl">นอกป่า — Mean</div><div class="card-val" id="cp-bln">—</div></div>
     </div>
   </div>
 
   <!-- Compare controls -->
   <div class="ctrl">
-    <span class="lsm">ปีที่เปรียบเทียบ</span>
+    <div style="background:rgba(37,99,168,.1);border:1px solid rgba(37,99,168,.3);border-radius:4px;padding:4px 10px;font-size:12px;color:var(--accent)">ขั้นที่ 2 — เลือกปีที่จะเปรียบเทียบ</div>
+    <span class="lsm">ปี</span>
     <select id="cp-year"></select>
     <span class="lsm">พื้นที่</span>
     <select id="cp-forest">
@@ -745,12 +814,17 @@ function init(){
 // ============================================================
 function buildEnsoStrip(){
   const strip=document.getElementById('enso-strip');
+  if(!strip) return;
   strip.innerHTML='';
+  // ดึง period จาก dropdown ที่เลือก
+  const periodSel=document.getElementById('ov-enso-strip-period');
+  const period=periodSel?periodSel.value:'smoke';
   DB.enso.forEach(row=>{
-    const ec=eClass(row.annual_category);
+    const enso=getEnso(+row.year, period);
+    const ec=eClass(enso.cat);
     const d=document.createElement('div');
     d.className='eyr';
-    d.title=`${row.year}: ${row.annual_type||'Neutral'}`;
+    d.title=`${row.year}: ${enso.type} (${period})`;
     d.innerHTML=`<div class="ebar ${ec}">${ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N'}</div><div class="eyr-lbl">${row.year}</div>`;
     strip.appendChild(d);
   });
@@ -823,24 +897,29 @@ function renderOverview(){
   const months=[];
   for(let m=ms;m<=me;m++) months.push(m);
 
-  // Cards
-  const agg8=aggF(fd(DB.monthly,{year,sensor,months})); // กรองเฉพาะ 8 จังหวัด
-  const sum8=PROV_8.reduce((s,p)=>{
-    const d=fd(DB.monthly,{year,sensor,months,province:p});
-    return s+sumCount(d);
-  },0);
-  const sum9=PROV_9.reduce((s,p)=>{
-    const d=fd(DB.monthly,{year,sensor,months,province:p});
-    return s+sumCount(d);
-  },0);
-  const all9=fd(DB.monthly,{year,sensor,months});
-  const agg9=aggF(all9);
-  const inForest9=agg9.forest_reserve+agg9.forest_conservation;
+  // Cards — คำนวณแยก 8 และ 9 จังหวัด
+  const agg8total={r:0,p:0,n:0};
+  PROV_8.forEach(pv=>{
+    const a=aggF(fd(DB.monthly,{year,sensor,months,province:pv}));
+    agg8total.r+=a.forest_reserve; agg8total.p+=a.forest_conservation; agg8total.n+=a.non_forest;
+  });
+  const sum8=agg8total.r+agg8total.p+agg8total.n;
+  const inF8=agg8total.r+agg8total.p;
+
+  const agg9total={r:0,p:0,n:0};
+  PROV_9.forEach(pv=>{
+    const a=aggF(fd(DB.monthly,{year,sensor,months,province:pv}));
+    agg9total.r+=a.forest_reserve; agg9total.p+=a.forest_conservation; agg9total.n+=a.non_forest;
+  });
+  const sum9=agg9total.r+agg9total.p+agg9total.n;
+  const inF9=agg9total.r+agg9total.p;
 
   document.getElementById('ov-c8').textContent=fmt(sum8);
+  document.getElementById('ov-f8').textContent=fmt(inF8);
+  document.getElementById('ov-n8').textContent=fmt(agg8total.n);
   document.getElementById('ov-c9').textContent=fmt(sum9);
-  document.getElementById('ov-forest').textContent=fmt(inForest9);
-  document.getElementById('ov-non').textContent=fmt(agg9.non_forest);
+  document.getElementById('ov-forest').textContent=fmt(inF9);
+  document.getElementById('ov-non').textContent=fmt(agg9total.n);
 
   // Update ENSO badge
   const enso=getEnso(year,'smoke');
@@ -1142,13 +1221,18 @@ function renderCPBaseline(){
   const years=getYearsForScale(scale,period);
   CP_BL_CACHE={};
 
+  if(!years.length){
+    document.getElementById('cp-bl-info').textContent='ไม่พบปีที่ตรงเกณฑ์';
+    return;
+  }
+
   PROV_9.forEach(prov=>{
     CP_BL_CACHE[prov]={
-      all:calcBaseline(years,sensor,months,prov,'all'),
-      in:calcBaseline(years,sensor,months,prov,'in_forest'),
-      r:calcBaseline(years,sensor,months,prov,'forest_reserve'),
-      p:calcBaseline(years,sensor,months,prov,'forest_conservation'),
-      n:calcBaseline(years,sensor,months,prov,'non_forest'),
+      all: calcBaseline(years,sensor,months,prov,'all'),
+      in:  calcBaseline(years,sensor,months,prov,'in_forest'),
+      r:   calcBaseline(years,sensor,months,prov,'forest_reserve'),
+      p:   calcBaseline(years,sensor,months,prov,'forest_conservation'),
+      n:   calcBaseline(years,sensor,months,prov,'non_forest'),
     };
   });
 
@@ -1161,6 +1245,15 @@ function renderCPBaseline(){
   document.getElementById('cp-bl9').textContent=fmt(bl9);
   document.getElementById('cp-blf').textContent=fmt(blf);
   document.getElementById('cp-bln').textContent=fmt(bln);
+
+  // แสดงปีที่ใช้ใต้ card
+  const yrLabel=years.sort((a,b)=>a-b).join(', ');
+  const info=`ปีที่ใช้ (${years.length} ปี): ${yrLabel}`;
+  document.getElementById('cp-bl-info').textContent=info;
+  const s8=document.getElementById('cp-bl8-yr');
+  const s9=document.getElementById('cp-bl9-yr');
+  if(s8) s8.textContent=`${years.length} ปี`;
+  if(s9) s9.textContent=`${years.length} ปี`;
 }
 
 function renderCompare(){
@@ -1175,7 +1268,10 @@ function renderCompare(){
   const scale=document.getElementById('cp-scale').value;
 
   const fkey=forest==='all'?'all':forest==='in_forest'?'in':forest==='forest_reserve'?'r':forest==='forest_conservation'?'p':'n';
-  document.getElementById('cp-title').textContent=`ปี ${year} vs Baseline (${scale}, ${period})`;
+  const scaleLabels={'all':'ทุกปี','11yr':'11 ปี','5yr':'5 ปี','en_all':'El Niño','en_weak':'El Niño Weak','en_mod':'El Niño Moderate','en_str':'El Niño Strong','ln_all':'La Niña','ln_weak':'La Niña Weak','ln_mod':'La Niña Moderate','ln_str':'La Niña Strong','neutral':'Neutral'};
+  const periodLabels={'smoke':'Smoke Haze','non_smoke':'Non-Smoke Haze','annual':'Annual'};
+  const forestLabels={'all':'รวม','in_forest':'ในป่า','forest_reserve':'ป่าสงวนฯ','forest_conservation':'ป่าอนุรักษ์','non_forest':'นอกป่า'};
+  document.getElementById('cp-title').textContent=`ปี ${year} vs Baseline [${scaleLabels[scale]||scale}] [${periodLabels[period]||period}] — ${forestLabels[forest]||forest}`;
 
   const body=document.getElementById('cp-body');
   body.innerHTML='';
