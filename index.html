@@ -420,13 +420,19 @@ td.prov{font-weight:600;font-size:13px}
     <select id="rk-sensor">
       <option value="all">MODIS+VIIRs</option><option value="MODIS">MODIS</option><option value="VIIRS">VIIRs</option>
     </select>
+    <span class="lsm">ช่องที่ 2 แสดง</span>
+    <select id="rk-forest2" onchange="renderRanking()">
+      <option value="in_forest">พื้นที่ป่า (รวม)</option>
+      <option value="forest_reserve">ป่าสงวนฯ</option>
+      <option value="forest_conservation">ป่าอนุรักษ์</option>
+    </select>
     <button class="btn btn-p" onclick="renderRanking()">แสดงผล</button>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
     <div class="tw"><div class="th2"><div class="tt">Ranking — รวมทั้งหมด</div></div>
       <div id="rk-total" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px"></div></div>
-    <div class="tw"><div class="th2"><div class="tt">Ranking — ในป่าสงวนฯ</div></div>
-      <div id="rk-reserve" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px"></div></div>
+    <div class="tw"><div class="th2"><div class="tt" id="rk-f2-title">Ranking — ในป่า (รวม)</div></div>
+      <div id="rk-forest" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px"></div></div>
   </div>
 </div>
 
@@ -483,7 +489,15 @@ td.prov{font-weight:600;font-size:13px}
   </div>
 
   <div class="tw">
-    <div class="th2"><div class="tt" id="cp-title">เปรียบเทียบกับ Baseline</div></div>
+    <div class="th2">
+      <div class="tt" id="cp-title">เปรียบเทียบกับ Baseline</div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:12px;flex-wrap:wrap">
+        <span>เทียบ ±SD:</span>
+        <span style="background:rgba(184,50,50,.12);color:var(--en);padding:2px 8px;border-radius:3px;border:1px solid rgba(184,50,50,.3)">🔴 สูงกว่า Mean+SD</span>
+        <span style="background:rgba(26,107,60,.12);color:var(--forest);padding:2px 8px;border-radius:3px;border:1px solid rgba(26,107,60,.3)">🟢 ต่ำกว่า Mean−SD</span>
+        <span style="background:rgba(243,156,18,.12);color:#7A5A00;padding:2px 8px;border-radius:3px;border:1px solid rgba(243,156,18,.3)">🟡 อยู่ในช่วง ±SD</span>
+      </div>
+    </div>
     <div class="ts2">
       <table id="cp-table">
         <thead><tr>
@@ -538,6 +552,15 @@ async function tryCSV(url) {
 
 async function loadAll() {
   setBadge('กำลังโหลด…','#6B6459','#F0EDE8');
+  // ลองโหลด enso_config หลายชื่อ (บน GitHub อาจชื่อ enso_config-1.csv)
+  async function loadEnso(){
+    for(const name of ['enso_config.csv','enso_config-1.csv','enso-config.csv','enso.csv']){
+      const r=await tryCSV(`${BASE}/${name}`);
+      if(r.length) return r;
+    }
+    return [];
+  }
+
   const [mD,vD,mM,vM,mY,vY,enso] = await Promise.all([
     tryCSV(`${BASE}/MODIS/hotspot_forest_daily.csv`),
     tryCSV(`${BASE}/VIIRs/hotspot_forest_daily.csv`),
@@ -545,7 +568,7 @@ async function loadAll() {
     tryCSV(`${BASE}/VIIRs/hotspot_forest_monthly.csv`),
     tryCSV(`${BASE}/MODIS/hotspot_forest_yearly.csv`),
     tryCSV(`${BASE}/VIIRs/hotspot_forest_yearly.csv`),
-    tryCSV(`${BASE}/enso_config.csv`),
+    loadEnso(),
   ]);
   DB.daily=[...mD,...vD]; DB.monthly=[...mM,...vM];
   DB.yearly=[...mY,...vY]; DB.enso=enso; DB.loaded=true;
@@ -603,48 +626,72 @@ function sumCount(data){ return data.reduce((s,d)=>s+(d.count||0),0); }
 function fmt(n){ return(n===null||n===undefined||isNaN(n))?'—':Math.round(n).toLocaleString('th-TH'); }
 function fmtP(n){ if(!isFinite(n)) return '—'; return (n>=0?'+':'')+n.toFixed(1)+'%'; }
 
-function getEnso(yr,period='smoke'){
-  const r=DB.enso.find(e=>e.year===yr);
-  if(!r) return {cat:'Neutral',type:'Neutral'};
-  return {cat:r[`${period}_category`]||r.annual_category||'Neutral',
-          type:r[`${period}_type`]||r.annual_type||'Neutral'};
-}
-function eClass(cat){
-  if(!cat) return 'neutral';
-  const c=cat.toLowerCase();
-  return c.includes('el nino')?'el-nino':c.includes('la nina')?'la-nina':'neutral';
-}
-function eStyle(cat){
-  const ec=eClass(cat);
-  return ec==='el-nino'?`background:rgba(184,50,50,.1);color:var(--en);border:1px solid rgba(184,50,50,.25)`
-        :ec==='la-nina'?`background:rgba(26,79,138,.1);color:var(--ln);border:1px solid rgba(26,79,138,.25)`
-        :`background:var(--surface2);color:var(--dim);border:1px solid var(--border)`;
+function getEnso(yr, period='smoke') {
+  // yr อาจเป็น number หรือ string — แปลงให้ตรงกัน
+  const r = DB.enso.find(e => +e.year === +yr);
+  if (!r) return { cat:'Neutral', type:'Neutral' };
+  // period map: 'smoke' → smoke_category, 'non_smoke' → non_smoke_category, 'annual' → annual_category
+  const catKey  = `${period}_category`;
+  const typeKey = `${period}_type`;
+  return {
+    cat:  r[catKey]  || r.annual_category || 'Neutral',
+    type: r[typeKey] || r.annual_type     || 'Neutral',
+  };
 }
 
-function getYearsForScale(scale,period='smoke'){
-  const allYrs=[...new Set(DB.monthly.map(d=>d.year))].filter(y=>y&&!isNaN(y)).sort((a,b)=>a-b);
-  if(scale==='all') return allYrs;
-  if(scale==='11yr') return allYrs.filter(y=>y>=2015&&y<=2025);
-  if(scale==='5yr')  return allYrs.filter(y=>y>=2021&&y<=2025);
-  if(scale==='neutral') return DB.enso.filter(e=>(e[`${period}_category`]||e.annual_category)==='Neutral').map(e=>e.year);
-  // en_all, en_weak, en_mod, en_str, ln_all, ln_weak, ln_mod, ln_str
-  const isEN=scale.startsWith('en'), catMatch=isEN?'El Nino':'La Nina';
-  const sub=scale.split('_')[1]; // all,weak,mod,str
-  return DB.enso.filter(e=>{
-    const cat=(e[`${period}_category`]||e.annual_category||'').toLowerCase();
-    const typ=(e[`${period}_type`]||e.annual_type||'').toLowerCase();
-    if(!cat.includes(catMatch.toLowerCase().replace(' ',''))) return false;
-    if(sub==='all') return true;
-    if(sub==='weak')   return typ.startsWith('weak');
-    if(sub==='mod')    return typ.startsWith('moderate');
-    if(sub==='str')    return typ.startsWith('strong')||typ.startsWith('very');
+function eClass(cat) {
+  if (!cat) return 'neutral';
+  const c = cat.toString().toLowerCase().replace(/\s+/g,'');
+  if (c.includes('elnino'))  return 'el-nino';
+  if (c.includes('lanina'))  return 'la-nina';
+  return 'neutral';
+}
+
+function eStyle(cat) {
+  const ec = eClass(cat);
+  return ec==='el-nino' ? `background:rgba(184,50,50,.1);color:var(--en);border:1px solid rgba(184,50,50,.25)`
+       : ec==='la-nina' ? `background:rgba(26,79,138,.1);color:var(--ln);border:1px solid rgba(26,79,138,.25)`
+       : `background:var(--surface2);color:var(--dim);border:1px solid var(--border)`;
+}
+
+function getYearsForScale(scale, period='smoke') {
+  const allYrs = [...new Set(DB.monthly.map(d=>d.year))].filter(y=>y&&!isNaN(y)).sort((a,b)=>a-b);
+  if (scale==='all')  return allYrs;
+  if (scale==='11yr') return allYrs.filter(y=>y>=2015&&y<=2025);
+  if (scale==='5yr')  return allYrs.filter(y=>y>=2021&&y<=2025);
+
+  // ENSO scale: neutral, en_all, en_weak, en_mod, en_str, ln_all, ln_weak, ln_mod, ln_str
+  return DB.enso.filter(e => {
+    const cat  = (e[`${period}_category`] || e.annual_category || '').toString().trim();
+    const typ  = (e[`${period}_type`]     || e.annual_type     || '').toString().trim().toLowerCase();
+
+    if (scale === 'neutral') return cat === 'Neutral';
+
+    const isEN = scale.startsWith('en');
+    const targetCat = isEN ? 'El Nino' : 'La Nina';
+    if (cat !== targetCat) return false;
+
+    const sub = scale.split('_')[1]; // all, weak, mod, str
+    if (sub === 'all')  return true;
+    if (sub === 'weak') return typ.startsWith('weak');
+    if (sub === 'mod')  return typ.startsWith('moderate');
+    if (sub === 'str')  return typ.startsWith('strong') || typ.startsWith('very strong');
     return true;
-  }).map(e=>e.year);
+  }).map(e => +e.year);
 }
 
 function setBadge(t,c,bg){
   const b=document.getElementById('enso-badge');
   b.textContent=t;b.style.color=c;b.style.background=bg;b.style.borderColor=c+'44';
+}
+
+function calcFromVals(vals){
+  if(!vals||!vals.length||!vals.some(v=>v>0)) return null;
+  const sorted=[...vals].sort((a,b)=>a-b);
+  const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+  const median=sorted.length%2===0?(sorted[sorted.length/2-1]+sorted[sorted.length/2])/2:sorted[Math.floor(sorted.length/2)];
+  const sd=Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
+  return {mean,median,sd,min:sorted[0],max:sorted[sorted.length-1],n:vals.length,vals,sorted};
 }
 
 function calcBaseline(years,sensor,months,province,forest){
@@ -844,25 +891,37 @@ function renderOvTable(){
 
 function renderOvMonthly(year,sensor,months){
   const body=document.getElementById('ov-mo-body');
-  document.getElementById('ov-mo-title').textContent=`สรุปรายเดือน — ปี ${year} (ในป่า vs นอกป่า)`;
+  document.getElementById('ov-mo-title').textContent=`สรุปรายเดือน — ปี ${year} (รายจังหวัด)`;
+
+  // สร้าง header ใหม่ให้มีจังหวัด
+  const thead=document.querySelector('#ov-mo-table thead');
+  thead.innerHTML=`<tr>
+    <th>เดือน</th>
+    ${PROV_9.map(p=>`<th style="text-align:right">${p}</th>`).join('')}
+    <th style="text-align:right">รวม 8 จว.</th>
+    <th style="text-align:right">รวม 9 จว.</th>
+    <th style="text-align:right">ในป่า</th>
+    <th style="text-align:right">นอกป่า</th>
+  </tr>`;
+
   body.innerHTML='';
   months.forEach(m=>{
+    const provCounts=PROV_9.map(p=>sumCount(fd(DB.monthly,{year,sensor,months:[m],province:p})));
+    const t8=provCounts.slice(0,8).reduce((a,b)=>a+b,0);
+    const t9=provCounts.reduce((a,b)=>a+b,0);
     const mdata=fd(DB.monthly,{year,sensor,months:[m]});
     const agg=aggF(mdata);
     const inF=agg.forest_reserve+agg.forest_conservation;
-    const total=inF+agg.non_forest;
-    const pct=total>0?(inF/total*100).toFixed(1):'0.0';
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${MONTHS_TH[m]}</td>
-      <td class="num">${fmt(inF)}</td>
-      <td class="num">${fmt(agg.non_forest)}</td>
-      <td class="num"><b>${fmt(total)}</b></td>
-      <td class="num">${pct}%</td>
-      <td class="num"><span class="fb-r">${fmt(agg.forest_reserve)}</span></td>
-      <td class="num"><span class="fb-p">${fmt(agg.forest_conservation)}</span></td>`;
+    tr.innerHTML=`<td><b>${MONTHS_TH[m]}</b></td>
+      ${provCounts.map(c=>`<td class="num">${fmt(c)}</td>`).join('')}
+      <td class="num"><b>${fmt(t8)}</b></td>
+      <td class="num"><b>${fmt(t9)}</b></td>
+      <td class="num"><span class="fb-r">${fmt(inF)}</span></td>
+      <td class="num"><span class="fb-n">${fmt(agg.non_forest)}</span></td>`;
     body.appendChild(tr);
   });
-  if(!body.children.length) body.innerHTML='<tr><td colspan="7" class="state-msg">ไม่พบข้อมูล</td></tr>';
+  if(!body.children.length) body.innerHTML='<tr><td colspan="13" class="state-msg">ไม่พบข้อมูล</td></tr>';
 }
 
 // ============================================================
@@ -882,24 +941,58 @@ function renderBaseline(){
   }
   document.getElementById('bl-years-used').textContent=`ปีที่ใช้: ${validYears.join(', ')} (${validYears.length} ปี)`;
 
-  const provinces=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
   BL_DATA={};
   const body=document.getElementById('bl-body');
   body.innerHTML='';
 
-  provinces.forEach(prov=>{
+  // แสดงรายจังหวัด 9 จังหวัดตามลำดับ
+  PROV_9.forEach(prov=>{
     const bl=calcBaseline(validYears,sensor,months,prov,forest);
     if(!bl||!bl.vals.some(v=>v>0)) return;
     BL_DATA[prov]=bl;
     const tr=document.createElement('tr');
     tr.innerHTML=`<td class="prov">${prov}</td>
       <td class="num">${fmt(bl.mean)}</td><td class="num">${fmt(bl.median)}</td>
-      <td class="num">${fmt(bl.sd)}</td><td class="num" style="color:var(--dim)">${fmt(bl.mean-bl.sd)}</td>
+      <td class="num">${fmt(bl.sd)}</td>
+      <td class="num" style="color:var(--dim)">${fmt(bl.mean-bl.sd)}</td>
       <td class="num" style="color:var(--dim)">${fmt(bl.mean+bl.sd)}</td>
       <td class="num">${fmt(bl.min)}</td><td class="num">${fmt(bl.max)}</td>
       <td class="num">${bl.n}</td>`;
     body.appendChild(tr);
   });
+
+  // แถวรวม 8 จังหวัด
+  const bl8vals=validYears.map(yr=>PROV_8.reduce((s,p)=>s+sumCount(fd(DB.monthly,{year:yr,sensor,months,province:p,forest})),0));
+  const bl8=calcFromVals(bl8vals);
+  if(bl8){
+    const tr=document.createElement('tr');
+    tr.style.background='rgba(123,63,160,.06)';tr.style.fontWeight='600';
+    tr.innerHTML=`<td class="prov" style="color:#7B3FA0">รวม 8 จังหวัด</td>
+      <td class="num">${fmt(bl8.mean)}</td><td class="num">${fmt(bl8.median)}</td>
+      <td class="num">${fmt(bl8.sd)}</td>
+      <td class="num" style="color:var(--dim)">${fmt(bl8.mean-bl8.sd)}</td>
+      <td class="num" style="color:var(--dim)">${fmt(bl8.mean+bl8.sd)}</td>
+      <td class="num">${fmt(bl8.min)}</td><td class="num">${fmt(bl8.max)}</td>
+      <td class="num">${bl8.n}</td>`;
+    body.appendChild(tr);
+  }
+
+  // แถวรวม 9 จังหวัด
+  const bl9vals=validYears.map(yr=>PROV_9.reduce((s,p)=>s+sumCount(fd(DB.monthly,{year:yr,sensor,months,province:p,forest})),0));
+  const bl9=calcFromVals(bl9vals);
+  if(bl9){
+    const tr=document.createElement('tr');
+    tr.style.background='rgba(26,92,138,.06)';tr.style.fontWeight='600';
+    tr.innerHTML=`<td class="prov" style="color:#1A5C8A">รวม 9 จังหวัด</td>
+      <td class="num">${fmt(bl9.mean)}</td><td class="num">${fmt(bl9.median)}</td>
+      <td class="num">${fmt(bl9.sd)}</td>
+      <td class="num" style="color:var(--dim)">${fmt(bl9.mean-bl9.sd)}</td>
+      <td class="num" style="color:var(--dim)">${fmt(bl9.mean+bl9.sd)}</td>
+      <td class="num">${fmt(bl9.min)}</td><td class="num">${fmt(bl9.max)}</td>
+      <td class="num">${bl9.n}</td>`;
+    body.appendChild(tr);
+  }
+
   if(!body.children.length) body.innerHTML='<tr><td colspan="9" class="state-msg">ไม่พบข้อมูลสำหรับเงื่อนไขที่เลือก</td></tr>';
 }
 
@@ -995,15 +1088,28 @@ function renderRanking(){
   const year=+document.getElementById('rk-year').value;
   const month=+document.getElementById('rk-month').value;
   const sensor=document.getElementById('rk-sensor').value;
+  const forest2=document.getElementById('rk-forest2').value;
   const months=month===0?null:[month];
   const provinces=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
+
+  // อัปเดต title ช่องที่ 2
+  const f2Labels={'in_forest':'ในป่า (รวม)','forest_reserve':'ป่าสงวนฯ','forest_conservation':'ป่าอนุรักษ์'};
+  document.getElementById('rk-f2-title').textContent=`Ranking — ${f2Labels[forest2]||'ในป่า'}`;
+
   const pData=provinces.map(prov=>{
     const d=fd(DB.monthly,{year,sensor,months,province:prov});
     const a=aggF(d);
-    return {prov,total:a.forest_reserve+a.forest_conservation+a.non_forest,reserve:a.forest_reserve};
+    const total=a.forest_reserve+a.forest_conservation+a.non_forest;
+    let f2val;
+    if(forest2==='in_forest') f2val=a.forest_reserve+a.forest_conservation;
+    else if(forest2==='forest_reserve') f2val=a.forest_reserve;
+    else f2val=a.forest_conservation;
+    return {prov, total, f2val};
   });
+
   const maxT=Math.max(...pData.map(d=>d.total),1);
-  const maxR=Math.max(...pData.map(d=>d.reserve),1);
+  const maxF=Math.max(...pData.map(d=>d.f2val),1);
+
   function buildList(elId,key,maxV,color){
     const el=document.getElementById(elId);
     el.innerHTML='';
@@ -1014,12 +1120,12 @@ function renderRanking(){
         <div style="flex:1;background:var(--surface2);border-radius:3px;height:24px;overflow:hidden;border:1px solid var(--border)">
           <div style="background:${color};height:100%;width:max(${pct}%,60px);display:flex;align-items:center;padding:0 8px;font-size:12px;font-weight:600">${d.prov}</div>
         </div>
-        <span style="font-family:var(--mono);font-size:12px;color:var(--dim);min-width:55px;text-align:right">${fmt(d[key])}</span>
+        <span style="font-family:var(--mono);font-size:12px;color:var(--dim);min-width:60px;text-align:right">${fmt(d[key])}</span>
       </div>`;
     });
   }
   buildList('rk-total','total',maxT,'rgba(192,68,14,.2)');
-  buildList('rk-reserve','reserve',maxR,'rgba(26,107,60,.15)');
+  buildList('rk-forest','f2val',maxF,'rgba(26,107,60,.15)');
 }
 
 // ============================================================
