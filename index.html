@@ -119,23 +119,12 @@ td.prov{font-weight:600}
     <div class="st" id="st-modis" onclick="setSensor('MODIS',this)"><span class="st-dot" style="color:var(--fire)"></span>MODIS</div>
     <div class="st" id="st-viirs" onclick="setSensor('VIIRS',this)"><span class="st-dot" style="color:var(--ln)"></span>VIIRs</div>
     <div class="nr">
-      <span id="enso-badge" class="badge">ยังไม่โหลด</span>
-      <!-- Sensor info popup -->
-      <div class="tooltip">
-        <span id="sensor-info-btn" style="font-size:11px;color:var(--dim);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-family:var(--mono);cursor:default;background:var(--s2)">ℹ️ Sensor</span>
-        <span class="tip" style="right:0;left:auto;transform:none;min-width:240px;text-align:left">
-          <b>📡 MODIS</b><br>
-          Terra (EOS AM-1) — เวลาผ่าน ~10:30<br>
-          Aqua (EOS PM-1) — เวลาผ่าน ~13:30<br>
-          Collection 6.1 (C6.1)<br>
-          ขนาด pixel: 1×1 km<br><br>
-          <b>🛰️ VIIRs</b><br>
-          Suomi-NPP — เวลาผ่าน ~13:30<br>
-          NOAA-20 (N) — เวลาผ่าน ~13:30<br>
-          Collection 2 (C2)<br>
-          ขนาด pixel: 375×375 m
-        </span>
-      </div>
+      <!-- Sensor info inline — เปลี่ยนตาม tab ที่เลือก -->
+      <span id="sensor-info" style="font-size:11px;color:var(--dim);font-family:var(--mono);border-left:1px solid var(--border);padding-left:10px">
+        <span style="color:var(--fire);font-weight:600">MODIS</span> Terra · Aqua
+        <span style="margin:0 4px;color:var(--border)">|</span>
+        <span style="color:var(--ln);font-weight:600">VIIRs</span> Suomi-NPP
+      </span>
       <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:1px solid var(--border);border-radius:4px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--dim)">🌙</button>
     </div>
   </div>
@@ -195,13 +184,12 @@ td.prov{font-weight:600}
         <option value="annual">Annual (JJA–MJJ)</option>
       </select>
       <div style="display:flex;gap:6px;font-size:11px;margin-left:auto;flex-wrap:wrap">
-        <span style="background:rgba(184,50,50,.3);color:var(--en);padding:2px 7px;border-radius:3px;font-weight:700">Strong EN</span>
-        <span style="background:rgba(184,50,50,.15);color:var(--en);padding:2px 7px;border-radius:3px">Mod EN</span>
-        <span style="background:rgba(184,50,50,.07);color:var(--en);padding:2px 7px;border-radius:3px;opacity:.8">Weak EN</span>
-        <span style="background:var(--s2);color:var(--dim);padding:2px 7px;border-radius:3px">Neutral</span>
-        <span style="background:rgba(26,79,138,.07);color:var(--ln);padding:2px 7px;border-radius:3px;opacity:.8">Weak LN</span>
-        <span style="background:rgba(26,79,138,.15);color:var(--ln);padding:2px 7px;border-radius:3px">Mod LN</span>
-        <span style="background:rgba(26,79,138,.3);color:var(--ln);padding:2px 7px;border-radius:3px;font-weight:700">Strong LN</span>
+        <span style="background:rgba(184,50,50,.3);color:var(--en);padding:2px 7px;border-radius:3px;font-weight:700;font-size:11px">Strong El Niño</span>
+        <span style="background:rgba(184,50,50,.15);color:var(--en);padding:2px 7px;border-radius:3px;font-size:11px">Moderate El Niño</span>
+        <span style="background:rgba(184,50,50,.07);color:var(--en);padding:2px 7px;border-radius:3px;font-size:11px">Weak El Niño</span>
+        <span style="background:rgba(26,79,138,.07);color:var(--ln);padding:2px 7px;border-radius:3px;font-size:11px">Weak La Niña</span>
+        <span style="background:rgba(26,79,138,.15);color:var(--ln);padding:2px 7px;border-radius:3px;font-size:11px">Moderate La Niña</span>
+        <span style="background:rgba(26,79,138,.3);color:var(--ln);padding:2px 7px;border-radius:3px;font-weight:700;font-size:11px">Strong La Niña</span>
       </div>
     </div>
     <div class="estrip" id="enso-strip"></div>
@@ -649,7 +637,7 @@ function calcBL(years,months,prov,forest){
   const sd=Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
   return{mean,median,sd,min:sorted[0],max:sorted[sorted.length-1],n:vals.length};
 }
-function setBadge(t,c,bg){const b=document.getElementById('enso-badge');b.textContent=t;b.style.color=c;b.style.background=bg;b.style.borderColor=c+'44';}
+function setBadge(t,c,bg){const b=document.getElementById('enso-badge');if(!b)return;b.textContent=t;b.style.color=c;b.style.background=bg;b.style.borderColor=c+'44';}
 
 // ============================================================
 // SENSOR CONTROL
@@ -658,6 +646,18 @@ function setSensor(sensor,el){
   G_SENSOR=sensor;
   document.querySelectorAll('.st').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
+
+  // อัปเดต sensor info text
+  const info=document.getElementById('sensor-info');
+  if(info){
+    if(sensor==='MODIS')
+      info.innerHTML=`<span style="color:var(--fire);font-weight:600">MODIS</span> Terra · Aqua`;
+    else if(sensor==='VIIRS')
+      info.innerHTML=`<span style="color:var(--ln);font-weight:600">VIIRs</span> Suomi-NPP`;
+    else
+      info.innerHTML=`<span style="color:var(--fire);font-weight:600">MODIS</span> Terra · Aqua <span style="margin:0 4px;color:var(--border)">|</span> <span style="color:var(--ln);font-weight:600">VIIRs</span> Suomi-NPP`;
+  }
+
   const active=document.querySelector('.page.active');
   if(!active)return;
   const id=active.id;
