@@ -2,133 +2,127 @@
 <html lang="th" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hotspot Baseline — ภาคเหนือ 9 จังหวัด</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-@font-face { font-family:'CMU Serif'; src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmunrm.woff') format('woff'); font-weight:400; }
-@font-face { font-family:'CMU Serif'; src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmunbx.woff') format('woff'); font-weight:600; }
-@font-face { font-family:'CMU Typewriter'; src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmuntt.woff') format('woff'); }
-:root {
-  --bg:#F7F5F0; --surface:#FFF; --surface2:#F0EDE8; --border:#D8D3CB; --border-s:#B8B0A4;
-  --text:#1A1714; --dim:#6B6459; --accent:#2563A8; --fire:#C0440E; --forest:#1A6B3C;
-  --protect:#8A5C10; --en:#B83232; --ln:#1A4F8A; --shadow:0 1px 3px rgba(0,0,0,.06);
-  --font:'CMU Serif','Sarabun',Georgia,serif; --mono:'CMU Typewriter','Courier New',monospace;
+@font-face{font-family:'CMU Serif';src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmunrm.woff') format('woff');font-weight:400}
+@font-face{font-family:'CMU Serif';src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmunbx.woff') format('woff');font-weight:600}
+@font-face{font-family:'CMU Typewriter';src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmuntt.woff') format('woff')}
+:root{
+  --bg:#F7F5F0;--surface:#FFF;--s2:#F0EDE8;--border:#D8D3CB;--bs:#B8B0A4;
+  --text:#1A1714;--dim:#6B6459;--acc:#2563A8;--fire:#C0440E;--forest:#1A6B3C;
+  --prot:#8A5C10;--en:#B83232;--ln:#1A4F8A;--shad:0 1px 3px rgba(0,0,0,.06);
+  --font:'CMU Serif','Sarabun',Georgia,serif;--mono:'CMU Typewriter','Courier New',monospace;
 }
-[data-theme="dark"] {
-  --bg:#0F1923; --surface:#162130; --surface2:#1E2F42; --border:#253547; --border-s:#3A5068;
-  --text:#E2EAF4; --dim:#7A95B0; --accent:#3B9EFF; --fire:#FF6B35; --forest:#2ECC71;
-  --protect:#F39C12; --en:#E74C3C; --ln:#2980B9; --shadow:0 1px 6px rgba(0,0,0,.3);
+[data-theme="dark"]{
+  --bg:#0F1923;--surface:#162130;--s2:#1E2F42;--border:#253547;--bs:#3A5068;
+  --text:#E2EAF4;--dim:#7A95B0;--acc:#3B9EFF;--fire:#FF6B35;--forest:#2ECC71;
+  --prot:#F39C12;--en:#E74C3C;--ln:#2980B9;--shad:0 1px 6px rgba(0,0,0,.3);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh}
-/* NAV */
-nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
-.nav-top{display:flex;align-items:center;height:44px;padding:0 20px;gap:8px;border-bottom:1px solid var(--border)}
-.nb{font-size:15px;font-weight:600;margin-right:16px;white-space:nowrap;flex-shrink:0}
+/* ===NAV=== */
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shad)}
+.nav-top{display:flex;align-items:center;height:44px;padding:0 20px;gap:0;border-bottom:1px solid var(--border)}
+.nb{font-size:15px;font-weight:600;margin-right:20px;white-space:nowrap;flex-shrink:0}
 .nb span{color:var(--fire)}
-/* Sensor tabs — แถวบน */
 .st{padding:0 14px;height:44px;display:flex;align-items:center;font-size:13px;font-weight:500;color:var(--dim);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;gap:5px}
 .st:hover{color:var(--text)}
-.st.active{color:var(--accent);border-bottom-color:var(--accent)}
-.st .dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
-.nav-bot{display:flex;align-items:center;height:38px;padding:0 20px;gap:0}
-/* Page tabs — แถวล่าง */
-.nt{padding:0 14px;height:38px;display:flex;align-items:center;font-size:13px;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
-.nt:hover{color:var(--text)}
-.nt.active{color:var(--accent);border-bottom-color:var(--accent)}
-.nr{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.badge{padding:3px 9px;border-radius:3px;font-size:11px;font-family:var(--mono);border:1px solid var(--border)}
-/* LAYOUT */
-main{padding:20px 24px;max-width:1500px;margin:0 auto}
-/* sensor tab colors */
+.st.active{color:var(--acc);border-bottom-color:var(--acc)}
+.st-dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block;flex-shrink:0}
 #st-modis.active{color:var(--fire);border-bottom-color:var(--fire)}
 #st-viirs.active{color:var(--ln);border-bottom-color:var(--ln)}
+.nav-bot{display:flex;align-items:center;height:38px;padding:0 20px}
+.nt{padding:0 14px;height:38px;display:flex;align-items:center;font-size:13px;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.nt:hover{color:var(--text)}
+.nt.active{color:var(--acc);border-bottom-color:var(--acc)}
+.nr{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.badge{padding:3px 9px;border-radius:3px;font-size:11px;font-family:var(--mono);border:1px solid var(--border)}
+/* ===LAYOUT=== */
+main{padding:16px 20px;max-width:1600px;margin:0 auto}
 .page{display:none}.page.active{display:block}
-/* CONTROLS */
-.ctrl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center;background:var(--surface);padding:10px 14px;border-radius:6px;border:1px solid var(--border)}
-.lsm{font-size:12px;color:var(--dim)}
+/* ===CTRL=== */
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center;background:var(--surface);padding:10px 14px;border-radius:6px;border:1px solid var(--border)}
+.lsm{font-size:12px;color:var(--dim);white-space:nowrap}
 select,.btn{height:32px;border-radius:4px;font-family:var(--font);font-size:13px;cursor:pointer}
 select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0 8px}
-select:focus{outline:none;border-color:var(--accent)}
+select:focus{outline:none;border-color:var(--acc)}
 .btn{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:0 12px;display:inline-flex;align-items:center;gap:5px;transition:all .12s}
-.btn:hover{border-color:var(--accent);color:var(--accent)}
-.btn-p{background:var(--accent);border-color:var(--accent);color:#fff}.btn-p:hover{background:#1A4F8A;color:#fff}
-.btn-sm{height:28px;font-size:12px;padding:0 10px}
-/* CARDS */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;box-shadow:var(--shadow)}
-.card-lbl{font-size:11px;color:var(--dim);margin-bottom:5px;letter-spacing:.02em}
-.card-val{font-size:26px;font-weight:600;font-family:var(--mono);line-height:1.1}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.bp{background:var(--acc);border-color:var(--acc);color:#fff}.bp:hover{background:#1A4F8A;color:#fff}
+.bsm{height:28px;font-size:12px;padding:0 10px}
+/* ===CARDS=== */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;box-shadow:var(--shad)}
+.card-lbl{font-size:11px;color:var(--dim);margin-bottom:4px}
+.card-val{font-size:24px;font-weight:600;font-family:var(--mono);line-height:1.1}
 .card-sub{font-size:11px;color:var(--dim);margin-top:3px}
-.fire .card-val{color:var(--fire)}.forest .card-val{color:var(--forest)}
-.protect .card-val{color:var(--protect)}.total .card-val{color:var(--accent)}
-.c8 .card-val{color:#7B3FA0}.c9 .card-val{color:#1A5C8A}
-/* TABLE */
-.tw{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px}
-.th2{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface2);flex-wrap:wrap;gap:6px}
+/* ===TABLE=== */
+.tw{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:var(--shad);margin-bottom:14px}
+.th2{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--s2);flex-wrap:wrap;gap:6px}
 .tt{font-size:13px;font-weight:600}
 .ts2{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
-thead th{background:var(--surface2);padding:8px 10px;text-align:left;font-size:11px;font-weight:600;color:var(--dim);border-bottom:1px solid var(--border);white-space:nowrap}
+thead th{background:var(--s2);padding:7px 10px;text-align:left;font-size:11px;font-weight:600;color:var(--dim);border-bottom:1px solid var(--border);white-space:nowrap}
 tbody tr{border-bottom:1px solid var(--border);transition:background .08s}
-tbody tr:hover{background:var(--surface2)}
+tbody tr:hover{background:var(--s2)}
 tbody tr:last-child{border-bottom:none}
-td{padding:8px 10px;white-space:nowrap}
+td{padding:7px 10px;white-space:nowrap}
 td.num{font-family:var(--mono);text-align:right;font-size:12px}
-td.prov{font-weight:600;font-size:13px}
+td.prov{font-weight:600}
 .fb-r{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:rgba(192,68,14,.1);color:var(--fire);border:1px solid rgba(192,68,14,.2)}
-.fb-p{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:rgba(138,92,16,.1);color:var(--protect);border:1px solid rgba(138,92,16,.2)}
-.fb-n{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:var(--surface2);color:var(--dim);border:1px solid var(--border)}
-/* ENSO strip */
-.estrip{display:flex;gap:4px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px}
+.fb-p{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:rgba(138,92,16,.1);color:var(--prot);border:1px solid rgba(138,92,16,.2)}
+.fb-n{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:var(--s2);color:var(--dim);border:1px solid var(--border)}
+/* ===ENSO STRIP=== */
+.estrip{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px}
 .eyr{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;flex-shrink:0}
 .ebar{width:30px;height:30px;border-radius:3px;border:1.5px solid transparent;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--mono);transition:all .12s}
-.ebar.el-nino{background:rgba(184,50,50,.12);color:var(--en);border-color:rgba(184,50,50,.3)}
-.ebar.la-nina{background:rgba(26,79,138,.12);color:var(--ln);border-color:rgba(26,79,138,.3)}
-.ebar.neutral{background:var(--surface2);color:var(--dim);border-color:var(--border)}
+.ebar.el-nino{background:rgba(184,50,50,.15);color:var(--en);border-color:rgba(184,50,50,.4)}
+.ebar.la-nina{background:rgba(26,79,138,.15);color:var(--ln);border-color:rgba(26,79,138,.4)}
+.ebar.neutral{background:var(--s2);color:var(--dim);border-color:var(--border)}
+.ebar.weak.el-nino{background:rgba(184,50,50,.07)}
+.ebar.moderate.el-nino{background:rgba(184,50,50,.15)}
+.ebar.strong.el-nino{background:rgba(184,50,50,.28)}
+.ebar.weak.la-nina{background:rgba(26,79,138,.07)}
+.ebar.moderate.la-nina{background:rgba(26,79,138,.15)}
+.ebar.strong.la-nina{background:rgba(26,79,138,.28)}
 .eyr-lbl{font-size:9px;color:var(--dim);font-family:var(--mono)}
-/* YEAR TOGGLE */
-.yr-btn{padding:5px 10px;border-radius:4px;border:2px solid var(--border);background:var(--surface2);color:var(--text);font-size:13px;font-weight:700;font-family:var(--mono);cursor:pointer;transition:all .12s;min-width:50px;text-align:center;line-height:1.3}
-.yr-btn:hover{border-color:var(--accent);color:var(--accent)}
+/* ===YEAR TOGGLE=== */
+.yr-btn{padding:5px 9px;border-radius:4px;border:2px solid var(--border);background:var(--s2);color:var(--text);font-size:13px;font-weight:700;font-family:var(--mono);cursor:pointer;transition:all .12s;min-width:50px;text-align:center;line-height:1.3}
+.yr-btn:hover{border-color:var(--acc);color:var(--acc)}
 .yr-btn.el-nino{border-color:rgba(184,50,50,.4);color:var(--en)}
 .yr-btn.la-nina{border-color:rgba(26,79,138,.4);color:var(--ln)}
 .yr-btn.selected{color:#fff!important;font-weight:700}
 .yr-btn.el-nino.selected{background:var(--en);border-color:var(--en)}
 .yr-btn.la-nina.selected{background:var(--ln);border-color:var(--ln)}
 .yr-btn.neutral.selected{background:var(--dim);border-color:var(--dim)}
-/* DIFF colors */
+/* ===DIFF=== */
 .dp{color:var(--en);font-family:var(--mono);font-size:12px}
 .dn{color:var(--forest);font-family:var(--mono);font-size:12px}
 .dz{color:var(--dim);font-family:var(--mono);font-size:12px}
-/* MISC */
+/* ===MISC=== */
 .state-msg{text-align:center;padding:40px;color:var(--dim);font-size:13px}
-.sep{width:1px;height:20px;background:var(--border)}
+.info-btn{background:none;border:none;color:var(--acc);cursor:pointer;font-size:14px;padding:0 4px}
+.tooltip{position:relative;display:inline-block}
+.tooltip .tip{visibility:hidden;background:var(--text);color:var(--bg);font-size:11px;padding:6px 10px;border-radius:4px;position:absolute;z-index:10;bottom:125%;left:50%;transform:translateX(-50%);min-width:200px;line-height:1.6;white-space:normal}
+.tooltip:hover .tip{visibility:visible}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border-s);border-radius:3px}
+::-webkit-scrollbar-thumb{background:var(--bs);border-radius:3px}
 </style>
 </head>
 <body>
 <nav>
-  <!-- แถวบน: Sensor tabs + badge + theme -->
   <div class="nav-top">
     <div class="nb">🔥 <span>Hotspot</span> Baseline</div>
-    <div class="st active" id="st-all" onclick="setSensor('all',this)">
-      <span class="dot"></span>MODIS + VIIRs
-    </div>
-    <div class="st" id="st-modis" onclick="setSensor('MODIS',this)">
-      <span class="dot" style="color:#C0440E"></span>MODIS
-    </div>
-    <div class="st" id="st-viirs" onclick="setSensor('VIIRS',this)">
-      <span class="dot" style="color:#1A4F8A"></span>VIIRs
-    </div>
+    <div class="st active" id="st-all" onclick="setSensor('all',this)"><span class="st-dot"></span>MODIS + VIIRs</div>
+    <div class="st" id="st-modis" onclick="setSensor('MODIS',this)"><span class="st-dot" style="color:var(--fire)"></span>MODIS</div>
+    <div class="st" id="st-viirs" onclick="setSensor('VIIRS',this)"><span class="st-dot" style="color:var(--ln)"></span>VIIRs</div>
     <div class="nr">
       <span id="enso-badge" class="badge">ยังไม่โหลด</span>
       <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:1px solid var(--border);border-radius:4px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--dim)">🌙</button>
     </div>
   </div>
-  <!-- แถวล่าง: Page tabs -->
   <div class="nav-bot">
     <div class="nt active" onclick="showPage('overview',this)">ภาพรวม</div>
     <div class="nt" onclick="showPage('forest',this)">แยกพื้นที่ป่า</div>
@@ -139,87 +133,59 @@ td.prov{font-weight:600;font-size:13px}
 </nav>
 <main>
 
-<!-- ========== OVERVIEW ========== -->
+<!-- ===OVERVIEW=== -->
 <div class="page active" id="page-overview">
   <div class="ctrl">
-    <span class="lsm">ปี</span>
-    <select id="ov-year"></select>
-    
+    <span class="lsm">ปี</span><select id="ov-year"></select>
     <span class="lsm">เดือน</span>
-    <select id="ov-ms">
-      <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3" selected>มี.ค.</option>
-      <option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
-      <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
-      <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
-    </select>
+    <select id="ov-ms"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3" selected>มี.ค.</option><option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select>
     <span class="lsm">ถึง</span>
-    <select id="ov-me">
-      <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option>
-      <option value="4" selected>เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
-      <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
-      <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
-    </select>
-    <button class="btn btn-p" onclick="renderOverview()">แสดงผล</button>
+    <select id="ov-me"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option><option value="4" selected>เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select>
+    <button class="btn bp" onclick="renderOverview()">แสดงผล</button>
   </div>
 
-  <!-- Summary cards — แถว 8 จังหวัด -->
-  <div style="margin-bottom:8px">
-    <div style="font-size:11px;font-weight:600;color:#7B3FA0;letter-spacing:.04em;margin-bottom:6px;padding-left:2px">8 จังหวัด (ไม่รวมตาก)</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-      <div class="card" style="border-left:4px solid #7B3FA0">
-        <div class="card-lbl">รวม 8 จังหวัด</div>
-        <div class="card-val" id="ov-c8" style="color:#7B3FA0">—</div>
-        <div class="card-sub">จุดความร้อน</div>
-      </div>
-      <div class="card" style="border-left:4px solid #7B3FA0">
-        <div class="card-lbl">ในป่า 8 จังหวัด</div>
-        <div class="card-val" id="ov-f8" style="color:#7B3FA0">—</div>
-        <div class="card-sub">จุดความร้อน</div>
-      </div>
-      <div class="card" style="border-left:4px solid #7B3FA0">
-        <div class="card-lbl">นอกป่า 8 จังหวัด</div>
-        <div class="card-val" id="ov-n8" style="color:#7B3FA0">—</div>
-        <div class="card-sub">จุดความร้อน</div>
-      </div>
+  <!-- 9 cards คงที่ -->
+  <div style="margin-bottom:10px">
+    <div style="font-size:11px;font-weight:600;color:var(--dim);margin-bottom:6px">9 จังหวัด — <span id="ov-year-lbl" style="color:var(--acc)"></span></div>
+    <div style="display:grid;grid-template-columns:repeat(9,1fr);gap:6px" id="ov-prov-cards"></div>
+  </div>
+
+  <!-- Checkbox เลือกจังหวัดที่รวม -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:12px;font-weight:600;color:var(--dim)">รวมในสรุป:</span>
+      <div id="ov-prov-checks" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <button class="btn bsm" onclick="checkAllProv(true)" style="margin-left:auto">เลือกทั้งหมด</button>
+      <button class="btn bsm" onclick="checkAllProv(false)">ล้าง</button>
     </div>
-  </div>
-
-  <!-- Summary cards — แถว 9 จังหวัด -->
-  <div style="margin-bottom:16px">
-    <div style="font-size:11px;font-weight:600;color:#1A5C8A;letter-spacing:.04em;margin-bottom:6px;padding-left:2px">9 จังหวัด (รวมตาก)</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-      <div class="card" style="border-left:4px solid #1A5C8A">
-        <div class="card-lbl">รวม 9 จังหวัด</div>
-        <div class="card-val" id="ov-c9" style="color:#1A5C8A">—</div>
-        <div class="card-sub">จุดความร้อน</div>
-      </div>
-      <div class="card" style="border-left:4px solid #1A5C8A">
-        <div class="card-lbl">ในป่า 9 จังหวัด</div>
-        <div class="card-val" id="ov-forest" style="color:#1A5C8A">—</div>
-        <div class="card-sub">จุดความร้อน</div>
-      </div>
-      <div class="card" style="border-left:4px solid #1A5C8A">
-        <div class="card-lbl">นอกป่า 9 จังหวัด</div>
-        <div class="card-val" id="ov-non" style="color:#1A5C8A">—</div>
-        <div class="card-sub">จุดความร้อน</div>
-      </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px">
+      <div class="card" style="border-left:4px solid #7B3FA0">
+        <div class="card-lbl">รวมที่เลือก (ในป่า)</div><div class="card-val" id="ov-sel-f" style="color:#7B3FA0">—</div></div>
+      <div class="card" style="border-left:4px solid #7B3FA0">
+        <div class="card-lbl">รวมที่เลือก (นอกป่า)</div><div class="card-val" id="ov-sel-n" style="color:#7B3FA0">—</div></div>
+      <div class="card" style="border-left:4px solid #7B3FA0">
+        <div class="card-lbl">รวมทั้งหมดที่เลือก</div><div class="card-val" id="ov-sel-t" style="color:#7B3FA0">—</div></div>
     </div>
   </div>
 
   <!-- ENSO strip + period selector -->
-  <div style="margin-bottom:14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap">
-      <div style="font-size:12px;font-weight:600;color:var(--dim);letter-spacing:.04em">ENSO รายปี 2012–2026</div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+      <span style="font-size:12px;font-weight:600;color:var(--dim)">ENSO รายปี 2012–2026</span>
       <span class="lsm">จำแนกตาม</span>
-      <select id="ov-enso-strip-period" onchange="buildEnsoStrip()" style="height:28px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px">
+      <select id="ov-enso-period" onchange="buildEnsoStrip();renderOvTable()" style="height:28px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px">
         <option value="smoke">Smoke Haze (JFM–AMJ)</option>
         <option value="non_smoke">Non-Smoke Haze (JJA–SON)</option>
         <option value="annual">Annual (JJA–MJJ)</option>
       </select>
-      <div style="display:flex;gap:8px;font-size:11px;margin-left:auto">
-        <span style="background:rgba(184,50,50,.15);color:var(--en);padding:2px 8px;border-radius:3px;border:1px solid rgba(184,50,50,.3)">EN = El Niño</span>
-        <span style="background:rgba(26,79,138,.15);color:var(--ln);padding:2px 8px;border-radius:3px;border:1px solid rgba(26,79,138,.3)">LN = La Niña</span>
-        <span style="background:var(--surface2);color:var(--dim);padding:2px 8px;border-radius:3px;border:1px solid var(--border)">N = Neutral</span>
+      <div style="display:flex;gap:6px;font-size:11px;margin-left:auto;flex-wrap:wrap">
+        <span style="background:rgba(184,50,50,.3);color:var(--en);padding:2px 7px;border-radius:3px;font-weight:700">Strong EN</span>
+        <span style="background:rgba(184,50,50,.15);color:var(--en);padding:2px 7px;border-radius:3px">Mod EN</span>
+        <span style="background:rgba(184,50,50,.07);color:var(--en);padding:2px 7px;border-radius:3px;opacity:.8">Weak EN</span>
+        <span style="background:var(--s2);color:var(--dim);padding:2px 7px;border-radius:3px">Neutral</span>
+        <span style="background:rgba(26,79,138,.07);color:var(--ln);padding:2px 7px;border-radius:3px;opacity:.8">Weak LN</span>
+        <span style="background:rgba(26,79,138,.15);color:var(--ln);padding:2px 7px;border-radius:3px">Mod LN</span>
+        <span style="background:rgba(26,79,138,.3);color:var(--ln);padding:2px 7px;border-radius:3px;font-weight:700">Strong LN</span>
       </div>
     </div>
     <div class="estrip" id="enso-strip"></div>
@@ -230,76 +196,88 @@ td.prov{font-weight:600;font-size:13px}
     <div class="th2">
       <div class="tt">สรุปรายปี — แยกจังหวัด</div>
       <div style="display:flex;gap:6px;align-items:center">
-        <span class="lsm">ENSO แสดงเป็น</span>
-        <select id="ov-enso-period" onchange="renderOvTable()" style="height:28px;font-size:12px">
-          <option value="smoke">Smoke Haze</option>
-          <option value="non_smoke">Non-Smoke Haze</option>
-          <option value="annual">Annual</option>
+        <span class="lsm">ENSO คอลัมน์ตาม</span>
+        <select id="ov-tbl-period" onchange="renderOvTable()" style="height:28px;font-size:12px">
+          <option value="smoke">Smoke Haze</option><option value="non_smoke">Non-Smoke</option><option value="annual">Annual</option>
         </select>
-        <button class="btn btn-sm" onclick="exportTable('ov-yr-table','overview_yearly')">⬇ Export</button>
+        <button class="btn bsm" onclick="exportTable('ov-yr-table','overview_yearly')">⬇ Export</button>
       </div>
     </div>
-    <div class="ts2">
-      <table id="ov-yr-table">
-        <thead id="ov-yr-head"></thead>
-        <tbody id="ov-yr-body"><tr><td class="state-msg">กรุณากด "แสดงผล"</td></tr></tbody>
-      </table>
-    </div>
+    <div class="ts2"><table id="ov-yr-table"><thead id="ov-yr-head"></thead><tbody id="ov-yr-body"><tr><td class="state-msg">กรุณากด "แสดงผล"</td></tr></tbody></table></div>
   </div>
 
   <!-- ตารางรายเดือน -->
   <div class="tw">
     <div class="th2">
-      <div class="tt" id="ov-mo-title">สรุปรายเดือน — ในป่า vs นอกป่า</div>
-      <button class="btn btn-sm" onclick="exportTable('ov-mo-table','overview_monthly')">⬇ Export</button>
+      <div class="tt" id="ov-mo-title">สรุปรายเดือน — รายจังหวัด</div>
+      <button class="btn bsm" onclick="exportTable('ov-mo-table','overview_monthly')">⬇ Export</button>
     </div>
-    <div class="ts2">
-      <table id="ov-mo-table">
-        <thead><tr>
-          <th>เดือน</th>
-          <th style="text-align:right">ในป่า</th>
-          <th style="text-align:right">นอกป่า</th>
-          <th style="text-align:right">รวม</th>
-          <th style="text-align:right">% ในป่า</th>
-          <th style="text-align:right">ป่าสงวนฯ</th>
-          <th style="text-align:right">ป่าอนุรักษ์</th>
-        </tr></thead>
-        <tbody id="ov-mo-body"><tr><td colspan="7" class="state-msg">กรุณากด "แสดงผล"</td></tr></tbody>
-      </table>
-    </div>
+    <div class="ts2"><table id="ov-mo-table">
+      <thead><tr><th id="ov-mo-th"></th></tr></thead>
+      <tbody id="ov-mo-body"><tr><td class="state-msg">กรุณากด "แสดงผล"</td></tr></tbody>
+    </table></div>
   </div>
 
   <!-- Download รายวัน -->
   <div class="tw">
     <div class="th2"><div class="tt">⬇ Download ข้อมูลรายวัน</div></div>
-    <div style="padding:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end">
-      <div><div class="lsm" style="margin-bottom:5px">ปีเริ่ม</div>
-        <select id="dl-ys" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px"></select></div>
-      <div><div class="lsm" style="margin-bottom:5px">เดือนเริ่ม</div>
-        <select id="dl-ms" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px">
-          <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option>
-          <option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
-          <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
-          <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
-        </select></div>
-      <div><div class="lsm" style="margin-bottom:5px">ปีจบ</div>
-        <select id="dl-ye" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px"></select></div>
-      <div><div class="lsm" style="margin-bottom:5px">เดือนจบ</div>
-        <select id="dl-me" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px">
-          <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option>
-          <option value="4" selected>เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
-          <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
-          <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
-        </select></div>
-      
-      <button class="btn btn-p" onclick="downloadDaily('csv')">⬇ CSV</button>
+    <div style="padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end">
+      <div><div class="lsm" style="margin-bottom:4px">ปีเริ่ม</div><select id="dl-ys" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px"></select></div>
+      <div><div class="lsm" style="margin-bottom:4px">เดือนเริ่ม</div><select id="dl-ms" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3" selected>มี.ค.</option><option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select></div>
+      <div><div class="lsm" style="margin-bottom:4px">ปีจบ</div><select id="dl-ye" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px"></select></div>
+      <div><div class="lsm" style="margin-bottom:4px">เดือนจบ</div><select id="dl-me" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option><option value="4" selected>เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select></div>
+      <button class="btn bp" onclick="downloadDaily('csv')">⬇ CSV</button>
       <button class="btn" onclick="downloadDaily('excel')">⬇ Excel</button>
       <span id="dl-status" style="font-size:12px;color:var(--dim)"></span>
     </div>
   </div>
 </div>
 
-<!-- ========== BASELINE ========== -->
+<!-- ===FOREST=== -->
+<div class="page" id="page-forest">
+  <div class="ctrl">
+    <span class="lsm">แสดงเป็น</span>
+    <select id="fr-groupby"><option value="monthly">รายเดือน</option><option value="yearly">รายปี</option></select>
+    <span class="lsm">ตั้งแต่</span>
+    <select id="fr-ys"></select>
+    <select id="fr-ms"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3" selected>มี.ค.</option><option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select>
+    <span class="lsm">ถึง</span>
+    <select id="fr-ye"></select>
+    <select id="fr-me"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option><option value="4" selected>เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select>
+    <span class="lsm">จังหวัด</span>
+    <select id="fr-province"><option value="all">ทั้งหมด</option></select>
+    <button class="btn bp" onclick="renderForest()">แสดงผล</button>
+    <button class="btn" onclick="exportTable('fr-table','forest')">⬇ Export</button>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
+    <div class="card" style="border-left:4px solid var(--fire)"><div class="card-lbl">ป่าสงวนฯ</div><div class="card-val" id="fr-r" style="color:var(--fire)">—</div></div>
+    <div class="card" style="border-left:4px solid var(--prot)"><div class="card-lbl">ป่าอนุรักษ์</div><div class="card-val" id="fr-p" style="color:var(--prot)">—</div></div>
+    <div class="card" style="border-left:4px solid var(--forest)"><div class="card-lbl">นอกป่า</div><div class="card-val" id="fr-n" style="color:var(--forest)">—</div></div>
+    <div class="card" style="border-left:4px solid var(--acc)"><div class="card-lbl">รวม</div><div class="card-val" id="fr-t" style="color:var(--acc)">—</div></div>
+  </div>
+  <div class="tw">
+    <div class="th2"><div class="tt" id="fr-title">แยกพื้นที่ป่า</div></div>
+    <div class="ts2"><table id="fr-table">
+      <thead><tr><th id="fr-th-p">ช่วงเวลา</th><th>จังหวัด</th><th style="text-align:right">ป่าสงวนฯ</th><th style="text-align:right">ป่าอนุรักษ์</th><th style="text-align:right">นอกป่า</th><th style="text-align:right">รวม</th><th style="text-align:right">% ในป่า</th><th style="text-align:right">% ป่าสงวนฯ</th><th style="text-align:right">% ป่าอนุรักษ์</th></tr></thead>
+      <tbody id="fr-body"><tr><td colspan="9" class="state-msg">กรุณากด "แสดงผล"</td></tr></tbody>
+    </table></div>
+  </div>
+  <!-- Download รายวัน (ข้อ 3) -->
+  <div class="tw">
+    <div class="th2"><div class="tt">⬇ Download ข้อมูลรายวัน</div></div>
+    <div style="padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end">
+      <div><div class="lsm" style="margin-bottom:4px">ปีเริ่ม</div><select id="frdl-ys" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px"></select></div>
+      <div><div class="lsm" style="margin-bottom:4px">เดือนเริ่ม</div><select id="frdl-ms" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3" selected>มี.ค.</option><option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select></div>
+      <div><div class="lsm" style="margin-bottom:4px">ปีจบ</div><select id="frdl-ye" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px"></select></div>
+      <div><div class="lsm" style="margin-bottom:4px">เดือนจบ</div><select id="frdl-me" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option><option value="4" selected>เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select></div>
+      <button class="btn bp" onclick="downloadDailyForest('csv')">⬇ CSV</button>
+      <button class="btn" onclick="downloadDailyForest('excel')">⬇ Excel</button>
+      <span id="frdl-status" style="font-size:12px;color:var(--dim)"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ===BASELINE=== -->
 <div class="page" id="page-baseline">
   <div class="ctrl">
     <span class="lsm">Baseline Scale</span>
@@ -321,231 +299,139 @@ td.prov{font-weight:600;font-size:13px}
         <option value="ln_mod">La Niña — Moderate</option>
         <option value="ln_str">La Niña — Strong</option>
       </optgroup>
-      <optgroup label="Neutral">
-        <option value="neutral">Neutral</option>
-      </optgroup>
+      <optgroup label="Neutral"><option value="neutral">Neutral</option></optgroup>
     </select>
-    <span class="lsm">ช่วงเวลา</span>
-    <select id="bl-period">
+    <span class="lsm">ENSO Period</span>
+    <select id="bl-period" onchange="onScaleChange()">
       <option value="smoke">Smoke Haze (JFM–AMJ)</option>
       <option value="non_smoke">Non-Smoke (JJA–SON)</option>
-      <option value="annual">Annual</option>
+      <option value="annual">Annual (JJA–MJJ)</option>
     </select>
-    
     <span class="lsm">พื้นที่</span>
     <select id="bl-forest">
       <option value="all">ทั้งหมด</option>
-      <option value="forest_reserve">ป่าสงวนฯ</option>
-      <option value="forest_conservation">ป่าอนุรักษ์</option>
-      <option value="non_forest">นอกป่า</option>
+      <option value="in_forest">เขตป่า (สงวน+อนุรักษ์)</option>
+      <option value="non_forest">นอกเขตป่า</option>
     </select>
-    <button class="btn btn-p" onclick="renderBaseline()">คำนวณ Baseline</button>
-    <button class="btn" onclick="exportTable('bl-table','baseline')">⬇ Export</button>
+    <button class="btn bp" onclick="renderBaseline()">คำนวณ Baseline</button>
+    <button class="btn" onclick="exportBL()">⬇ Export</button>
   </div>
 
-  <!-- Year Toggle -->
+  <!-- Year toggle -->
   <div class="tw">
     <div class="th2">
       <div class="tt">เลือกปีสำหรับ Baseline</div>
       <div style="display:flex;gap:6px">
-        <button class="btn btn-sm" onclick="selectAllYears(true)">เลือกทั้งหมด</button>
-        <button class="btn btn-sm" onclick="selectAllYears(false)">ล้างทั้งหมด</button>
+        <button class="btn bsm" onclick="selectAllYears(true)">เลือกทั้งหมด</button>
+        <button class="btn bsm" onclick="selectAllYears(false)">ล้าง</button>
       </div>
     </div>
     <div id="bl-toggle" style="display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px"></div>
     <div style="padding:0 14px 10px;font-size:11px;color:var(--dim)">
-      ปีที่เลือก: <span id="bl-count" style="font-family:var(--mono);color:var(--accent)">0</span> ปี —
+      ปีที่เลือก: <span id="bl-count" style="font-family:var(--mono);color:var(--acc)">0</span> ปี —
       <span id="bl-list" style="font-family:var(--mono)"></span>
     </div>
   </div>
 
-  <!-- Baseline table -->
+  <!-- Baseline table (ข้อ 2) -->
   <div class="tw">
     <div class="th2">
-      <div class="tt">Baseline รายจังหวัด</div>
+      <div>
+        <div class="tt">Baseline รายจังหวัด</div>
+        <div id="bl-subtitle" style="font-size:11px;color:var(--acc);margin-top:2px"></div>
+      </div>
       <span id="bl-years-used" style="font-size:11px;color:var(--dim)"></span>
     </div>
-    <div class="ts2">
-      <table id="bl-table">
-        <thead><tr>
-          <th>จังหวัด</th>
-          <th style="text-align:right">Mean</th><th style="text-align:right">Median</th>
-          <th style="text-align:right">SD</th><th style="text-align:right">Mean−SD</th>
-          <th style="text-align:right">Mean+SD</th><th style="text-align:right">Min</th>
-          <th style="text-align:right">Max</th><th style="text-align:right">จำนวนปี</th>
-        </tr></thead>
-        <tbody id="bl-body"><tr><td colspan="9" class="state-msg">เลือกปีแล้วกด "คำนวณ Baseline"</td></tr></tbody>
-      </table>
-    </div>
+    <div class="ts2"><table id="bl-table">
+      <thead><tr>
+        <th>จังหวัด</th>
+        <th style="text-align:right">Baseline Mean</th>
+        <th style="text-align:right">SD</th>
+        <th style="text-align:right;font-weight:700">Mean − SD</th>
+        <th style="text-align:right;font-weight:700">Mean + SD</th>
+        <th style="text-align:right">Min</th>
+        <th style="text-align:right">Max</th>
+        <th style="text-align:right">Median</th>
+        <th style="text-align:right">จำนวนปี</th>
+      </tr></thead>
+      <tbody id="bl-body"><tr><td colspan="9" class="state-msg">เลือกปีแล้วกด "คำนวณ Baseline"</td></tr></tbody>
+    </table></div>
   </div>
 
-  <!-- Compare -->
+  <!-- Compare vs Baseline (ข้อ 2) -->
   <div class="tw">
     <div class="th2">
       <div class="tt">เปรียบเทียบปีที่เลือก vs Baseline</div>
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <!-- Legend สี -->
+        <div style="display:flex;gap:6px;font-size:11px">
+          <span style="background:rgba(184,50,50,.12);color:var(--en);padding:2px 7px;border-radius:3px;border:1px solid rgba(184,50,50,.3)">🔴 &gt; Mean+SD</span>
+          <span style="background:rgba(243,156,18,.12);color:#7A5A00;padding:2px 7px;border-radius:3px;border:1px solid rgba(243,156,18,.3)">🟡 ±SD</span>
+          <span style="background:rgba(26,107,60,.12);color:var(--forest);padding:2px 7px;border-radius:3px;border:1px solid rgba(26,107,60,.3)">🟢 &lt; Mean−SD</span>
+          <!-- ℹ️ สูตร -->
+          <span class="tooltip"><button class="info-btn">ℹ️</button>
+            <span class="tip">
+              <b>% Difference</b><br>
+              = (ค่าปีที่เลือก − Baseline Mean) ÷ Baseline Mean × 100<br><br>
+              <b>ความแตกต่าง</b><br>
+              = ค่าปีที่เลือก − Baseline Mean<br><br>
+              <b>เทียบ ±SD</b><br>
+              🔴 = ค่า &gt; Mean + SD<br>
+              🟡 = Mean−SD ≤ ค่า ≤ Mean+SD<br>
+              🟢 = ค่า &lt; Mean − SD
+            </span>
+          </span>
+        </div>
         <span class="lsm">ปีที่เทียบ</span>
         <select id="bl-cmp-year" style="height:28px;font-size:12px"></select>
-        <button class="btn btn-p btn-sm" onclick="renderBLCompare()">เปรียบเทียบ</button>
-        <button class="btn btn-sm" onclick="exportTable('bl-cmp-table','baseline_compare')">⬇ Export</button>
+        <button class="btn bp bsm" onclick="renderBLCompare()">เปรียบเทียบ</button>
+        <button class="btn bsm" onclick="exportTable('bl-cmp-table','bl_compare')">⬇ Export</button>
       </div>
     </div>
-    <div class="ts2">
-      <table id="bl-cmp-table">
-        <thead><tr>
-          <th>จังหวัด</th><th style="text-align:right">ปีที่เลือก</th>
-          <th style="text-align:right">Baseline Mean</th><th style="text-align:right">SD</th>
-          <th style="text-align:right">% vs Mean</th><th style="text-align:right">% vs Median</th>
-          <th>เทียบ ±SD</th>
-        </tr></thead>
-        <tbody id="bl-cmp-body"><tr><td colspan="7" class="state-msg">คำนวณ Baseline ก่อน</td></tr></tbody>
-      </table>
-    </div>
+    <div class="ts2"><table id="bl-cmp-table">
+      <thead><tr>
+        <th>จังหวัด</th>
+        <th style="text-align:right">Baseline Mean</th>
+        <th style="text-align:right">SD</th>
+        <th style="text-align:right">ค่าปีที่เลือก</th>
+        <th style="text-align:right">ความแตกต่าง</th>
+        <th style="text-align:right">% Difference</th>
+        <th>เทียบ ±SD</th>
+      </tr></thead>
+      <tbody id="bl-cmp-body"><tr><td colspan="7" class="state-msg">คำนวณ Baseline ก่อน แล้วกด "เปรียบเทียบ"</td></tr></tbody>
+    </table></div>
   </div>
 </div>
 
-<!-- ========== FOREST ========== -->
-<div class="page" id="page-forest">
-  <div class="ctrl">
-    
-    <span class="lsm">แสดงเป็น</span>
-    <select id="fr-groupby">
-      <option value="monthly">รายเดือน</option>
-      <option value="yearly">รายปี</option>
-    </select>
-    <span class="lsm">ตั้งแต่</span>
-    <select id="fr-ys"></select>
-    <select id="fr-ms">
-      <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3" selected>มี.ค.</option>
-      <option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
-      <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
-      <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
-    </select>
-    <span class="lsm">ถึง</span>
-    <select id="fr-ye"></select>
-    <select id="fr-me">
-      <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option>
-      <option value="4" selected>เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
-      <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
-      <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
-    </select>
-    <span class="lsm">จังหวัด</span>
-    <select id="fr-province"><option value="all">ทั้งหมด</option></select>
-    <button class="btn btn-p" onclick="renderForest()">แสดงผล</button>
-    <button class="btn" onclick="exportTable('fr-table','forest')">⬇ Export CSV</button>
-  </div>
-
-  <div class="cards">
-    <div class="card fire"><div class="card-lbl">ป่าสงวนฯ</div><div class="card-val" id="fr-r">—</div></div>
-    <div class="card protect"><div class="card-lbl">ป่าอนุรักษ์</div><div class="card-val" id="fr-p">—</div></div>
-    <div class="card forest"><div class="card-lbl">นอกป่า</div><div class="card-val" id="fr-n">—</div></div>
-    <div class="card total"><div class="card-lbl">รวม</div><div class="card-val" id="fr-t">—</div></div>
-  </div>
-
-  <div class="tw">
-    <div class="th2"><div class="tt" id="fr-title">จุดความร้อนแยกพื้นที่ป่า</div></div>
-    <div class="ts2">
-      <table id="fr-table">
-        <thead><tr>
-          <th id="fr-th-p">ช่วงเวลา</th><th>จังหวัด</th>
-          <th style="text-align:right">ป่าสงวนฯ</th>
-          <th style="text-align:right">ป่าอนุรักษ์</th>
-          <th style="text-align:right">นอกป่า</th>
-          <th style="text-align:right">รวม</th>
-          <th style="text-align:right">% ในป่า</th>
-          <th style="text-align:right">% ป่าสงวนฯ</th>
-          <th style="text-align:right">% ป่าอนุรักษ์</th>
-        </tr></thead>
-        <tbody id="fr-body"><tr><td colspan="9" class="state-msg">กรุณากด "แสดงผล"</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ========== RANKING ========== -->
-<div class="page" id="page-ranking">
-  <div class="ctrl">
-    <span class="lsm">ปี</span><select id="rk-year"></select>
-    <span class="lsm">เดือน</span>
-    <select id="rk-month">
-      <option value="0">ทุกเดือน</option>
-      <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option>
-      <option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
-      <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
-      <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
-    </select>
-    
-    <span class="lsm">ช่องที่ 2 แสดง</span>
-    <select id="rk-forest2" onchange="renderRanking()">
-      <option value="in_forest">พื้นที่ป่า (รวม)</option>
-      <option value="forest_reserve">ป่าสงวนฯ</option>
-      <option value="forest_conservation">ป่าอนุรักษ์</option>
-    </select>
-    <button class="btn btn-p" onclick="renderRanking()">แสดงผล</button>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-    <div class="tw"><div class="th2"><div class="tt">Ranking — รวมทั้งหมด</div></div>
-      <div id="rk-total" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px"></div></div>
-    <div class="tw"><div class="th2"><div class="tt" id="rk-f2-title">Ranking — ในป่า (รวม)</div></div>
-      <div id="rk-forest" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px"></div></div>
-  </div>
-</div>
-
-<!-- ========== COMPARE ========== -->
+<!-- ===COMPARE=== -->
 <div class="page" id="page-compare">
-
-  <!-- Baseline selector + summary cards -->
   <div class="tw" style="margin-bottom:14px">
-    <div class="th2">
-      <div class="tt">ขั้นที่ 1 — เลือก Baseline ที่จะใช้เทียบ</div>
-    </div>
-    <div style="padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid var(--border)">
-      <span class="lsm">Baseline Scale</span>
+    <div class="th2"><div class="tt">ขั้นที่ 1 — เลือก Baseline ที่จะใช้เทียบ</div></div>
+    <div style="padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid var(--border)">
+      <span class="lsm">Scale</span>
       <select id="cp-scale" style="height:32px;font-size:13px">
-        <optgroup label="ช่วงปี">
-          <option value="all">ทุกปี (2012–2026)</option>
-          <option value="11yr">11 ปี (2015–2025)</option>
-          <option value="5yr">5 ปี (2021–2025)</option>
-        </optgroup>
-        <optgroup label="El Niño">
-          <option value="en_all">El Niño ทั้งหมด</option>
-          <option value="en_weak">El Niño — Weak</option>
-          <option value="en_mod">El Niño — Moderate</option>
-          <option value="en_str">El Niño — Strong/Very Strong</option>
-        </optgroup>
-        <optgroup label="La Niña">
-          <option value="ln_all">La Niña ทั้งหมด</option>
-          <option value="ln_weak">La Niña — Weak</option>
-          <option value="ln_mod">La Niña — Moderate</option>
-          <option value="ln_str">La Niña — Strong</option>
-        </optgroup>
-        <optgroup label="Neutral">
-          <option value="neutral">Neutral</option>
-        </optgroup>
+        <optgroup label="ช่วงปี"><option value="all">ทุกปี</option><option value="11yr">11 ปี (2015–2025)</option><option value="5yr">5 ปี (2021–2025)</option></optgroup>
+        <optgroup label="El Niño"><option value="en_all">El Niño ทั้งหมด</option><option value="en_weak">El Niño Weak</option><option value="en_mod">El Niño Moderate</option><option value="en_str">El Niño Strong</option></optgroup>
+        <optgroup label="La Niña"><option value="ln_all">La Niña ทั้งหมด</option><option value="ln_weak">La Niña Weak</option><option value="ln_mod">La Niña Moderate</option><option value="ln_str">La Niña Strong</option></optgroup>
+        <optgroup label="Neutral"><option value="neutral">Neutral</option></optgroup>
       </select>
-      <span class="lsm">ช่วงเวลา ENSO</span>
+      <span class="lsm">ENSO Period</span>
       <select id="cp-period" style="height:32px;font-size:13px">
-        <option value="smoke">Smoke Haze (JFM–AMJ)</option>
-        <option value="non_smoke">Non-Smoke Haze (JJA–SON)</option>
-        <option value="annual">Annual</option>
+        <option value="smoke">Smoke Haze</option><option value="non_smoke">Non-Smoke</option><option value="annual">Annual</option>
       </select>
-      
-      <button class="btn btn-p" onclick="renderCPBaseline()">คำนวณ Baseline</button>
+      <button class="btn bp" onclick="renderCPBaseline()">คำนวณ Baseline</button>
       <span id="cp-bl-info" style="font-size:11px;color:var(--dim)"></span>
     </div>
-    <div class="cards" style="padding:12px 14px;margin-bottom:0">
-      <div class="card c8"><div class="card-lbl">8 จังหวัด — Mean</div><div class="card-val" id="cp-bl8">—</div><div class="card-sub" id="cp-bl8-yr"></div></div>
-      <div class="card c9"><div class="card-lbl">9 จังหวัด — Mean</div><div class="card-val" id="cp-bl9">—</div><div class="card-sub" id="cp-bl9-yr"></div></div>
-      <div class="card fire"><div class="card-lbl">ในป่า — Mean</div><div class="card-val" id="cp-blf">—</div></div>
-      <div class="card forest"><div class="card-lbl">นอกป่า — Mean</div><div class="card-val" id="cp-bln">—</div></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 14px">
+      <div class="card" style="border-left:4px solid #7B3FA0"><div class="card-lbl">8 จังหวัด Mean</div><div class="card-val" id="cp-bl8" style="color:#7B3FA0">—</div></div>
+      <div class="card" style="border-left:4px solid #1A5C8A"><div class="card-lbl">9 จังหวัด Mean</div><div class="card-val" id="cp-bl9" style="color:#1A5C8A">—</div></div>
+      <div class="card" style="border-left:4px solid var(--fire)"><div class="card-lbl">ในป่า Mean</div><div class="card-val" id="cp-blf" style="color:var(--fire)">—</div></div>
+      <div class="card" style="border-left:4px solid var(--forest)"><div class="card-lbl">นอกป่า Mean</div><div class="card-val" id="cp-bln" style="color:var(--forest)">—</div></div>
     </div>
   </div>
-
-  <!-- Compare controls -->
   <div class="ctrl">
-    <div style="background:rgba(37,99,168,.1);border:1px solid rgba(37,99,168,.3);border-radius:4px;padding:4px 10px;font-size:12px;color:var(--accent)">ขั้นที่ 2 — เลือกปีที่จะเปรียบเทียบ</div>
-    <span class="lsm">ปี</span>
-    <select id="cp-year"></select>
+    <div style="background:rgba(37,99,168,.1);border:1px solid rgba(37,99,168,.3);border-radius:4px;padding:3px 10px;font-size:12px;color:var(--acc)">ขั้นที่ 2</div>
+    <span class="lsm">ปีที่เทียบ</span><select id="cp-year"></select>
     <span class="lsm">พื้นที่</span>
     <select id="cp-forest">
       <option value="all">รวมทั้งหมด</option>
@@ -554,109 +440,90 @@ td.prov{font-weight:600;font-size:13px}
       <option value="forest_conservation">ป่าอนุรักษ์</option>
       <option value="non_forest">นอกป่า</option>
     </select>
-    <button class="btn btn-p" onclick="renderCompare()">เปรียบเทียบ</button>
+    <button class="btn bp" onclick="renderCompare()">เปรียบเทียบ</button>
     <button class="btn" onclick="exportTable('cp-table','compare')">⬇ Export</button>
   </div>
-
   <div class="tw">
     <div class="th2">
       <div class="tt" id="cp-title">เปรียบเทียบกับ Baseline</div>
-      <div style="display:flex;gap:10px;align-items:center;font-size:12px;flex-wrap:wrap">
-        <span>เทียบ ±SD:</span>
-        <span style="background:rgba(184,50,50,.12);color:var(--en);padding:2px 8px;border-radius:3px;border:1px solid rgba(184,50,50,.3)">🔴 สูงกว่า Mean+SD</span>
-        <span style="background:rgba(26,107,60,.12);color:var(--forest);padding:2px 8px;border-radius:3px;border:1px solid rgba(26,107,60,.3)">🟢 ต่ำกว่า Mean−SD</span>
-        <span style="background:rgba(243,156,18,.12);color:#7A5A00;padding:2px 8px;border-radius:3px;border:1px solid rgba(243,156,18,.3)">🟡 อยู่ในช่วง ±SD</span>
+      <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap;align-items:center">
+        <span style="background:rgba(184,50,50,.12);color:var(--en);padding:2px 7px;border-radius:3px;border:1px solid rgba(184,50,50,.3)">🔴 &gt; Mean+SD</span>
+        <span style="background:rgba(243,156,18,.12);color:#7A5A00;padding:2px 7px;border-radius:3px;border:1px solid rgba(243,156,18,.3)">🟡 ±SD</span>
+        <span style="background:rgba(26,107,60,.12);color:var(--forest);padding:2px 7px;border-radius:3px;border:1px solid rgba(26,107,60,.3)">🟢 &lt; Mean−SD</span>
+        <span class="tooltip"><button class="info-btn">ℹ️</button>
+          <span class="tip">% Diff = (ปีที่เลือก − Mean) ÷ Mean × 100<br>ความแตกต่าง = ปีที่เลือก − Mean</span>
+        </span>
       </div>
     </div>
-    <div class="ts2">
-      <table id="cp-table">
-        <thead><tr>
-          <th>จังหวัด</th>
-          <th style="text-align:right">Baseline Mean</th>
-          <th style="text-align:right">SD</th>
-          <th style="text-align:right">จุดความร้อน (ปีที่เลือก)</th>
-          <th style="text-align:right">ความแตกต่าง</th>
-          <th style="text-align:right">% Difference</th>
-          <th>เทียบ ±SD</th>
-        </tr></thead>
-        <tbody id="cp-body"><tr><td colspan="7" class="state-msg">เลือกปีแล้วกด "เปรียบเทียบ"</td></tr></tbody>
-      </table>
-    </div>
+    <div class="ts2"><table id="cp-table">
+      <thead><tr><th>จังหวัด</th><th style="text-align:right">Baseline Mean</th><th style="text-align:right">SD</th><th style="text-align:right">ค่าปีที่เลือก</th><th style="text-align:right">ความแตกต่าง</th><th style="text-align:right">% Difference</th><th>เทียบ ±SD</th></tr></thead>
+      <tbody id="cp-body"><tr><td colspan="7" class="state-msg">เลือกปีแล้วกด "เปรียบเทียบ"</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ===RANKING=== -->
+<div class="page" id="page-ranking">
+  <div class="ctrl">
+    <span class="lsm">ปี</span><select id="rk-year"></select>
+    <span class="lsm">เดือน</span>
+    <select id="rk-month"><option value="0">ทุกเดือน</option><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option><option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select>
+    <span class="lsm">ช่อง 2 แสดง</span>
+    <select id="rk-f2" onchange="renderRanking()">
+      <option value="in_forest">ในป่า (รวม)</option>
+      <option value="forest_reserve">ป่าสงวนฯ</option>
+      <option value="forest_conservation">ป่าอนุรักษ์</option>
+    </select>
+    <button class="btn bp" onclick="renderRanking()">แสดงผล</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="tw"><div class="th2"><div class="tt">Ranking — รวมทั้งหมด</div></div>
+      <div id="rk-total" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px"></div></div>
+    <div class="tw"><div class="th2"><div class="tt" id="rk-f2-title">Ranking — ในป่า</div></div>
+      <div id="rk-forest" style="padding:12px 14px;display:flex;flex-direction:column;gap:6px"></div></div>
   </div>
 </div>
 
 </main>
 <script>
 // ============================================================
-// DATA & CONSTANTS
+// CONSTANTS & STATE
 // ============================================================
-const DB = { daily:[], monthly:[], yearly:[], enso:[], loaded:false };
-const MONTHS_TH = ['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-const PM = { smoke:[1,2,3,4], non_smoke:[6,7,8,9], annual:[1,2,3,4,5,6,7,8,9,10,11,12] };
-const BASE = './data';
-const PROV_9 = ['CHIANG MAI','CHIANG RAI','MAE HONG SON','LAMPANG','LAMPHUN','NAN','PHAYAO','PHRAE','TAK'];
-const PROV_8 = ['CHIANG MAI','CHIANG RAI','MAE HONG SON','LAMPANG','LAMPHUN','NAN','PHAYAO','PHRAE'];
-
-// Global sensor state — ใช้ทุกหน้า
-let G_SENSOR = 'all';
-
-let BL_DATA = {};
-let BL_SEL  = new Set();
-
-// ============================================================
-// GLOBAL SENSOR SELECTOR
-// ============================================================
-function setSensor(sensor, el) {
-  G_SENSOR = sensor;
-  // อัปเดต UI tabs
-  document.querySelectorAll('.st').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  // re-render หน้าที่กำลังแสดงอยู่
-  const activePage = document.querySelector('.page.active');
-  if (!activePage) return;
-  const pageId = activePage.id;
-  if (pageId === 'page-overview')  renderOverview();
-  if (pageId === 'page-forest')    renderForest();
-  if (pageId === 'page-baseline')  { /* ให้ผู้ใช้กด "คำนวณ Baseline" เอง */ }
-  if (pageId === 'page-ranking')   renderRanking();
-  if (pageId === 'page-compare')   renderCPBaseline();
-}
-
-// ฟังก์ชัน helper ดึง sensor ปัจจุบัน
-function getSensor() { return G_SENSOR; }
+const DB={daily:[],monthly:[],yearly:[],enso:[],loaded:false};
+const MTH=['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const PM={smoke:[1,2,3,4],non_smoke:[6,7,8,9],annual:[1,2,3,4,5,6,7,8,9,10,11,12]};
+const BASE='./data';
+const P9=['CHIANG MAI','CHIANG RAI','MAE HONG SON','LAMPANG','LAMPHUN','NAN','PHAYAO','PHRAE','TAK'];
+const P8=['CHIANG MAI','CHIANG RAI','MAE HONG SON','LAMPANG','LAMPHUN','NAN','PHAYAO','PHRAE'];
+const P9_TH={'CHIANG MAI':'เชียงใหม่','CHIANG RAI':'เชียงราย','MAE HONG SON':'แม่ฮ่องสอน','LAMPANG':'ลำปาง','LAMPHUN':'ลำพูน','NAN':'น่าน','PHAYAO':'พะเยา','PHRAE':'แพร่','TAK':'ตาก'};
+let G_SENSOR='all';
+let OV_CHECKED=new Set(P9);
+let BL_DATA={};
+let BL_SEL=new Set();
+let CP_BL={};
 
 // ============================================================
 // LOAD
 // ============================================================
-async function tryCSV(url) {
-  try {
-    const r = await fetch(url);
-    if (!r.ok) return [];
-    const text = await r.text();
-    const lines = text.trim().split('\n');
-    if (lines.length < 2) return [];
-    const hdr = lines[0].split(',').map(h=>h.trim());
-    return lines.slice(1).map(line => {
-      const v = line.split(',');
-      const o = {};
-      hdr.forEach((h,i)=>{ const x=(v[i]||'').trim(); o[h]=isNaN(x)||x===''?x:+x; });
-      return o;
-    });
-  } catch(e) { return []; }
+async function tryCSV(url){
+  try{
+    const r=await fetch(url);
+    if(!r.ok) return[];
+    const t=await r.text();
+    const L=t.trim().split('\n');
+    if(L.length<2) return[];
+    const H=L[0].split(',').map(h=>h.trim());
+    return L.slice(1).map(l=>{const v=l.split(',');const o={};H.forEach((h,i)=>{const x=(v[i]||'').trim();o[h]=isNaN(x)||x===''?x:+x;});return o;});
+  }catch(e){return[];}
 }
-
-async function loadAll() {
+async function loadEnso(){
+  for(const n of['enso_config.csv','enso_config-1.csv','enso.csv']){
+    const r=await tryCSV(`${BASE}/${n}`);if(r.length)return r;
+  }return[];
+}
+async function loadAll(){
   setBadge('กำลังโหลด…','#6B6459','#F0EDE8');
-  // ลองโหลด enso_config หลายชื่อ (บน GitHub อาจชื่อ enso_config-1.csv)
-  async function loadEnso(){
-    for(const name of ['enso_config.csv','enso_config-1.csv','enso-config.csv','enso.csv']){
-      const r=await tryCSV(`${BASE}/${name}`);
-      if(r.length) return r;
-    }
-    return [];
-  }
-
-  const [mD,vD,mM,vM,mY,vY,enso] = await Promise.all([
+  const[mD,vD,mM,vM,mY,vY,enso]=await Promise.all([
     tryCSV(`${BASE}/MODIS/hotspot_forest_daily.csv`),
     tryCSV(`${BASE}/VIIRs/hotspot_forest_daily.csv`),
     tryCSV(`${BASE}/MODIS/hotspot_forest_monthly.csv`),
@@ -665,138 +532,126 @@ async function loadAll() {
     tryCSV(`${BASE}/VIIRs/hotspot_forest_yearly.csv`),
     loadEnso(),
   ]);
-  DB.daily=[...mD,...vD]; DB.monthly=[...mM,...vM];
-  DB.yearly=[...mY,...vY]; DB.enso=enso; DB.loaded=true;
-
-  const hM=mD.length>0, hV=vD.length>0;
-  const lbl=[hM?`MODIS(${[...new Set(mD.map(d=>d.satellite))].join('/')})`:''
-             ,hV?`VIIRs(${[...new Set(vD.map(d=>d.satellite).filter(Boolean))].map(s=>s==='N'?'NOAA-20':s==='SNPP'?'Suomi-NPP':s).join('/')})`:''
-  ].filter(Boolean).join(' · ');
-  const sb=document.getElementById('sensor-badge');
-  if(sb&&lbl){sb.textContent=lbl;sb.style.display='inline-block';}
-  if(!hM&&!hV) setBadge('ไม่มีข้อมูล','#B83232','rgba(184,50,50,.1)');
-  else setBadge(`โหลดแล้ว ✓`,'#1A6B3C','rgba(26,107,60,.1)');
+  DB.daily=[...mD,...vD];DB.monthly=[...mM,...vM];DB.yearly=[...mY,...vY];DB.enso=enso;DB.loaded=true;
+  const hM=mD.length>0,hV=vD.length>0;
+  const lbl=[hM?'MODIS':'',hV?'VIIRs':''].filter(Boolean).join('+');
+  if(!hM&&!hV)setBadge('ไม่มีข้อมูล','#B83232','rgba(184,50,50,.1)');
+  else setBadge(`โหลดแล้ว: ${lbl} ✓`,'#1A6B3C','rgba(26,107,60,.1)');
   init();
 }
 
 // ============================================================
 // HELPERS
 // ============================================================
-function isVP(p){ if(!p) return false; const v=String(p).trim().toUpperCase(); return v&&v!=='NA'&&v!=='NULL'&&v!=='UNDEFINED'; }
-
+function isVP(p){if(!p)return false;const v=String(p).trim().toUpperCase();return v&&v!=='NA'&&v!=='NULL'&&v!=='UNDEFINED';}
 function isSensor(sat,inst,sf){
-  if(!sf||sf==='all') return true;
-  const s=(sat||'').toUpperCase(), i=(inst||'').toUpperCase();
-  if(sf==='MODIS') return i==='MODIS'||s==='TERRA'||s==='AQUA';
-  if(sf==='VIIRS') return i==='VIIRS'||i==='SNPP'||s==='SNPP'||s==='N'||s.includes('NPP')||s.includes('NOAA');
+  if(!sf||sf==='all')return true;
+  const s=(sat||'').toUpperCase(),i=(inst||'').toUpperCase();
+  if(sf==='MODIS')return i==='MODIS'||s==='TERRA'||s==='AQUA';
+  if(sf==='VIIRS')return i==='VIIRS'||i==='SNPP'||s==='SNPP'||s==='N'||s.includes('NPP')||s.includes('NOAA');
   return true;
 }
-
-function fd(data,{year,sensor,months,province,forest,yearFrom,monthFrom,yearTo,monthTo}={}){
+function fd(data,{year,months,province,forest,yearFrom,monthFrom,yearTo,monthTo}={}){
+  const sf=G_SENSOR;
   return data.filter(d=>{
-    if(!isVP(d.province_en)) return false;
-    if(year && d.year!==+year) return false;
-    if(sensor&&sensor!=='all'&&!isSensor(d.satellite,d.instrument,sensor)) return false;
-    if(months&&months.length&&!months.includes(d.month)) return false;
-    if(province&&province!=='all'&&d.province_en!==province) return false;
-    if(forest&&forest!=='all'&&forest!=='in_forest'&&d.forest_type!==forest) return false;
-    if(forest==='in_forest'&&d.forest_type==='non_forest') return false;
-    // date range filter
+    if(!isVP(d.province_en))return false;
+    if(year&&d.year!==+year)return false;
+    if(!isSensor(d.satellite,d.instrument,sf))return false;
+    if(months&&months.length&&!months.includes(d.month))return false;
+    if(province&&province!=='all'&&d.province_en!==province)return false;
+    if(forest&&forest!=='all'&&forest!=='in_forest'&&d.forest_type!==forest)return false;
+    if(forest==='in_forest'&&d.forest_type==='non_forest')return false;
     if(yearFrom!==undefined){
-      const dy=d.year, dm=d.month||1;
-      if(dy<yearFrom||(dy===yearFrom&&dm<monthFrom)) return false;
-      if(dy>yearTo||(dy===yearTo&&dm>monthTo)) return false;
+      const dy=d.year,dm=d.month||1;
+      if(dy<yearFrom||(dy===yearFrom&&dm<monthFrom))return false;
+      if(dy>yearTo||(dy===yearTo&&dm>monthTo))return false;
     }
     return true;
   });
 }
-
 function aggF(data){
   const r={forest_reserve:0,forest_conservation:0,non_forest:0};
-  data.forEach(d=>{ if(r[d.forest_type]!==undefined) r[d.forest_type]+=(d.count||0); });
+  data.forEach(d=>{if(r[d.forest_type]!==undefined)r[d.forest_type]+=(d.count||0);});
   return r;
 }
+function sC(data){return data.reduce((s,d)=>s+(d.count||0),0);}
+function fmt(n){return(n===null||n===undefined||isNaN(n))?'—':Math.round(n).toLocaleString('th-TH');}
+function fmtP(n){if(!isFinite(n))return'—';return(n>=0?'+':'')+n.toFixed(1)+'%';}
 
-function sumCount(data){ return data.reduce((s,d)=>s+(d.count||0),0); }
-function fmt(n){ return(n===null||n===undefined||isNaN(n))?'—':Math.round(n).toLocaleString('th-TH'); }
-function fmtP(n){ if(!isFinite(n)) return '—'; return (n>=0?'+':'')+n.toFixed(1)+'%'; }
-
-function getEnso(yr, period='smoke') {
-  // yr อาจเป็น number หรือ string — แปลงให้ตรงกัน
-  const r = DB.enso.find(e => +e.year === +yr);
-  if (!r) return { cat:'Neutral', type:'Neutral' };
-  // period map: 'smoke' → smoke_category, 'non_smoke' → non_smoke_category, 'annual' → annual_category
-  const catKey  = `${period}_category`;
-  const typeKey = `${period}_type`;
-  return {
-    cat:  r[catKey]  || r.annual_category || 'Neutral',
-    type: r[typeKey] || r.annual_type     || 'Neutral',
-  };
+function getEnso(yr,period='smoke'){
+  const r=DB.enso.find(e=>+e.year===+yr);
+  if(!r)return{cat:'Neutral',type:'Neutral'};
+  return{cat:(r[`${period}_category`]||r.annual_category||'Neutral').trim(),
+         type:(r[`${period}_type`]||r.annual_type||'Neutral').trim()};
 }
-
-function eClass(cat) {
-  if (!cat) return 'neutral';
-  const c = cat.toString().toLowerCase().replace(/\s+/g,'');
-  if (c.includes('elnino'))  return 'el-nino';
-  if (c.includes('lanina'))  return 'la-nina';
-  return 'neutral';
+function eClass(cat){
+  if(!cat)return'neutral';
+  const c=cat.trim();
+  return c==='El Nino'?'el-nino':c==='La Nina'?'la-nina':'neutral';
 }
-
-function eStyle(cat) {
-  const ec = eClass(cat);
-  return ec==='el-nino' ? `background:rgba(184,50,50,.1);color:var(--en);border:1px solid rgba(184,50,50,.25)`
-       : ec==='la-nina' ? `background:rgba(26,79,138,.1);color:var(--ln);border:1px solid rgba(26,79,138,.25)`
-       : `background:var(--surface2);color:var(--dim);border:1px solid var(--border)`;
+function eStrength(type){
+  const t=type.toLowerCase();
+  if(t.startsWith('very')||t.startsWith('strong'))return'strong';
+  if(t.startsWith('moderate'))return'moderate';
+  if(t.startsWith('weak'))return'weak';
+  return'';
 }
-
-function getYearsForScale(scale, period='smoke') {
-  const allYrs = [...new Set(DB.monthly.map(d=>d.year))].filter(y=>y&&!isNaN(y)).sort((a,b)=>a-b);
-  if (scale==='all')  return allYrs;
-  if (scale==='11yr') return allYrs.filter(y=>y>=2015&&y<=2025);
-  if (scale==='5yr')  return allYrs.filter(y=>y>=2021&&y<=2025);
-
-  // ENSO scale: neutral, en_all, en_weak, en_mod, en_str, ln_all, ln_weak, ln_mod, ln_str
-  return DB.enso.filter(e => {
-    const cat  = (e[`${period}_category`] || e.annual_category || '').toString().trim();
-    const typ  = (e[`${period}_type`]     || e.annual_type     || '').toString().trim().toLowerCase();
-
-    if (scale === 'neutral') return cat === 'Neutral';
-
-    const isEN = scale.startsWith('en');
-    const targetCat = isEN ? 'El Nino' : 'La Nina';
-    if (cat !== targetCat) return false;
-
-    const sub = scale.split('_')[1]; // all, weak, mod, str
-    if (sub === 'all')  return true;
-    if (sub === 'weak') return typ.startsWith('weak');
-    if (sub === 'mod')  return typ.startsWith('moderate');
-    if (sub === 'str')  return typ.startsWith('strong') || typ.startsWith('very strong');
+function eStyle(cat){
+  const ec=eClass(cat);
+  return ec==='el-nino'?`background:rgba(184,50,50,.1);color:var(--en);border:1px solid rgba(184,50,50,.25)`
+        :ec==='la-nina'?`background:rgba(26,79,138,.1);color:var(--ln);border:1px solid rgba(26,79,138,.25)`
+        :`background:var(--s2);color:var(--dim);border:1px solid var(--border)`;
+}
+function getYearsForScale(scale,period='smoke'){
+  const all=[...new Set(DB.monthly.map(d=>d.year))].filter(y=>y&&!isNaN(y)).sort((a,b)=>a-b);
+  if(scale==='all')return all;
+  if(scale==='11yr')return all.filter(y=>y>=2015&&y<=2025);
+  if(scale==='5yr')return all.filter(y=>y>=2021&&y<=2025);
+  if(scale==='neutral')return DB.enso.filter(e=>getEnso(+e.year,period).cat==='Neutral').map(e=>+e.year);
+  const isEN=scale.startsWith('en');
+  const catMatch=isEN?'El Nino':'La Nina';
+  const sub=scale.split('_')[1];
+  return DB.enso.filter(e=>{
+    const{cat,type}=getEnso(+e.year,period);
+    if(cat!==catMatch)return false;
+    if(sub==='all')return true;
+    const t=type.toLowerCase();
+    if(sub==='weak')return t.startsWith('weak');
+    if(sub==='mod')return t.startsWith('moderate');
+    if(sub==='str')return t.startsWith('strong')||t.startsWith('very');
     return true;
-  }).map(e => +e.year);
+  }).map(e=>+e.year);
 }
-
-function setBadge(t,c,bg){
-  const b=document.getElementById('enso-badge');
-  b.textContent=t;b.style.color=c;b.style.background=bg;b.style.borderColor=c+'44';
-}
-
-function calcFromVals(vals){
-  if(!vals||!vals.length||!vals.some(v=>v>0)) return null;
+function calcBL(years,months,prov,forest){
+  const vals=years.map(yr=>{
+    let data=fd(DB.monthly,{year:yr,months,province:prov});
+    if(forest==='in_forest') data=data.filter(d=>d.forest_type!=='non_forest');
+    else if(forest&&forest!=='all') data=data.filter(d=>d.forest_type===forest);
+    return data.reduce((s,d)=>s+(d.count||0),0);
+  });
+  if(!vals.some(v=>v>0))return null;
   const sorted=[...vals].sort((a,b)=>a-b);
   const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
   const median=sorted.length%2===0?(sorted[sorted.length/2-1]+sorted[sorted.length/2])/2:sorted[Math.floor(sorted.length/2)];
   const sd=Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
-  return {mean,median,sd,min:sorted[0],max:sorted[sorted.length-1],n:vals.length,vals,sorted};
+  return{mean,median,sd,min:sorted[0],max:sorted[sorted.length-1],n:vals.length};
 }
+function setBadge(t,c,bg){const b=document.getElementById('enso-badge');b.textContent=t;b.style.color=c;b.style.background=bg;b.style.borderColor=c+'44';}
 
-function calcBaseline(years,sensor,months,province,forest){
-  const vals=years.map(yr=>sumCount(fd(DB.monthly,{year:yr,sensor,months,province,forest}))).filter((_,i)=>true);
-  if(!vals.length) return null;
-  const sorted=[...vals].sort((a,b)=>a-b);
-  const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
-  const median=sorted.length%2===0?(sorted[sorted.length/2-1]+sorted[sorted.length/2])/2:sorted[Math.floor(sorted.length/2)];
-  const sd=Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
-  return {mean,median,sd,min:sorted[0],max:sorted[sorted.length-1],n:vals.length,vals,sorted};
+// ============================================================
+// SENSOR CONTROL
+// ============================================================
+function setSensor(sensor,el){
+  G_SENSOR=sensor;
+  document.querySelectorAll('.st').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const active=document.querySelector('.page.active');
+  if(!active)return;
+  const id=active.id;
+  if(id==='page-overview')renderOverview();
+  if(id==='page-forest')renderForest();
+  if(id==='page-ranking')renderRanking();
+  if(id==='page-compare')renderCPBaseline();
 }
 
 // ============================================================
@@ -804,85 +659,283 @@ function calcBaseline(years,sensor,months,province,forest){
 // ============================================================
 function init(){
   const years=[...new Set([...DB.monthly.map(d=>d.year),...DB.yearly.map(d=>d.year)])].filter(y=>y&&!isNaN(y)).sort((a,b)=>a-b);
-  const provinces=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
-
+  const provs=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
   ['ov-year','rk-year','cp-year'].forEach(id=>{
-    const s=document.getElementById(id);
-    if(!s) return;
+    const s=document.getElementById(id);if(!s)return;
     years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;s.appendChild(o);});
     s.value=years[years.length-1];
   });
-
-  // fr-ys, fr-ye, dl-ys, dl-ye
-  ['fr-ys','fr-ye','dl-ys','dl-ye'].forEach(id=>{
-    const s=document.getElementById(id);
-    if(!s) return;
+  ['fr-ys','fr-ye','dl-ys','dl-ye','frdl-ys','frdl-ye'].forEach(id=>{
+    const s=document.getElementById(id);if(!s)return;
     years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;s.appendChild(o);});
-    if(id.endsWith('s')) s.value=years[0];
-    else s.value=years[years.length-1];
+    s.value=id.endsWith('s')?years[0]:years[years.length-1];
   });
-
   const fp=document.getElementById('fr-province');
-  if(fp) provinces.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;fp.appendChild(o);});
-
+  if(fp)provs.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=P9_TH[p]||p;fp.appendChild(o);});
   buildEnsoStrip();
   buildYearToggle(years);
-
+  buildProvCards();
+  buildProvChecks();
   // bl-cmp-year
   const bcy=document.getElementById('bl-cmp-year');
   if(bcy){years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;bcy.appendChild(o);});bcy.value=years[years.length-1];}
-
   renderOverview();
 }
 
 // ============================================================
-// ENSO STRIP
+// ENSO STRIP (9 สภาวะย่อย)
 // ============================================================
 function buildEnsoStrip(){
   const strip=document.getElementById('enso-strip');
-  if(!strip) return;
+  if(!strip)return;
   strip.innerHTML='';
-  // ดึง period จาก dropdown ที่เลือก
-  const periodSel=document.getElementById('ov-enso-strip-period');
-  const period=periodSel?periodSel.value:'smoke';
+  const period=(document.getElementById('ov-enso-period')||{}).value||'smoke';
   DB.enso.forEach(row=>{
-    const enso=getEnso(+row.year, period);
-    const ec=eClass(enso.cat);
+    const{cat,type}=getEnso(+row.year,period);
+    const ec=eClass(cat);
+    const str=eStrength(type);
+    const lbl=ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N';
+    // sub-label แสดงความรุนแรง
+    const sub=str==='strong'?'S':str==='moderate'?'M':str==='weak'?'W':'';
     const d=document.createElement('div');
     d.className='eyr';
-    d.title=`${row.year}: ${enso.type} (${period})`;
-    d.innerHTML=`<div class="ebar ${ec}">${ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N'}</div><div class="eyr-lbl">${row.year}</div>`;
+    d.title=`${row.year}: ${type}`;
+    d.innerHTML=`<div class="ebar ${str} ${ec}">${lbl}${sub?'<span style="font-size:8px">'+sub+'</span>':''}</div><div class="eyr-lbl">${row.year}</div>`;
     strip.appendChild(d);
   });
 }
 
 // ============================================================
-// YEAR TOGGLE (Baseline)
+// PROVINCE CARDS & CHECKS (ข้อ 1)
+// ============================================================
+function buildProvCards(){
+  const c=document.getElementById('ov-prov-cards');
+  if(!c)return;
+  c.innerHTML='';
+  P9.forEach(p=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.style.borderTop='3px solid var(--acc)';
+    div.style.textAlign='center';
+    div.innerHTML=`<div style="font-size:10px;color:var(--dim);margin-bottom:3px">${P9_TH[p]||p}</div>
+      <div style="font-size:18px;font-weight:600;font-family:var(--mono);color:var(--acc)" id="pc-${p.replace(/ /g,'_')}">—</div>`;
+    c.appendChild(div);
+  });
+}
+function buildProvChecks(){
+  const c=document.getElementById('ov-prov-checks');
+  if(!c)return;
+  c.innerHTML='';
+  P9.forEach(p=>{
+    const label=document.createElement('label');
+    label.style.cssText='display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer';
+    const cb=document.createElement('input');
+    cb.type='checkbox';cb.value=p;cb.checked=true;
+    cb.onchange=()=>{
+      if(cb.checked)OV_CHECKED.add(p);else OV_CHECKED.delete(p);
+      updateSelSummary();
+    };
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(P9_TH[p]||p));
+    c.appendChild(label);
+  });
+}
+function checkAllProv(all){
+  document.querySelectorAll('#ov-prov-checks input').forEach(cb=>{
+    cb.checked=all;
+    if(all)OV_CHECKED.add(cb.value);else OV_CHECKED.delete(cb.value);
+  });
+  updateSelSummary();
+}
+function updateSelSummary(){
+  if(!DB.loaded)return;
+  const year=+document.getElementById('ov-year').value;
+  const ms=+document.getElementById('ov-ms').value;
+  const me=+document.getElementById('ov-me').value;
+  const months=[];for(let m=ms;m<=me;m++)months.push(m);
+  let selF=0,selN=0,selT=0;
+  OV_CHECKED.forEach(p=>{
+    const a=aggF(fd(DB.monthly,{year,months,province:p}));
+    selF+=a.forest_reserve+a.forest_conservation;selN+=a.non_forest;
+  });
+  selT=selF+selN;
+  document.getElementById('ov-sel-f').textContent=fmt(selF);
+  document.getElementById('ov-sel-n').textContent=fmt(selN);
+  document.getElementById('ov-sel-t').textContent=fmt(selT);
+}
+
+// ============================================================
+// OVERVIEW
+// ============================================================
+function renderOverview(){
+  if(!DB.loaded)return;
+  const year=+document.getElementById('ov-year').value;
+  const ms=+document.getElementById('ov-ms').value;
+  const me=+document.getElementById('ov-me').value;
+  const months=[];for(let m=ms;m<=me;m++)months.push(m);
+  document.getElementById('ov-year-lbl').textContent=`ปี ${year} (${MTH[ms]}–${MTH[me]})`;
+
+  // 9 province cards
+  P9.forEach(p=>{
+    const el=document.getElementById(`pc-${p.replace(/ /g,'_')}`);
+    if(el)el.textContent=fmt(sC(fd(DB.monthly,{year,months,province:p})));
+  });
+  // ENSO badge
+  const period=(document.getElementById('ov-enso-period')||{}).value||'smoke';
+  const enso=getEnso(year,period);
+  const ec=eClass(enso.cat);
+  setBadge(`${year} — ${enso.type}`,
+    ec==='el-nino'?'var(--en)':ec==='la-nina'?'var(--ln)':'var(--dim)',
+    ec==='el-nino'?'rgba(184,50,50,.08)':ec==='la-nina'?'rgba(26,79,138,.08)':'var(--s2)');
+
+  updateSelSummary();
+  renderOvTable();
+  renderOvMonthly(year,months);
+}
+
+function renderOvTable(){
+  if(!DB.loaded)return;
+  const year=+document.getElementById('ov-year').value;
+  const ms=+document.getElementById('ov-ms').value;
+  const me=+document.getElementById('ov-me').value;
+  const months=[];for(let m=ms;m<=me;m++)months.push(m);
+  // ใช้ period จาก dropdown ตาราง (sync กับ strip)
+  const ep=(document.getElementById('ov-tbl-period')||{}).value||'smoke';
+  // sync strip ถ้ายังไม่ตรง
+  const stripSel=document.getElementById('ov-enso-period');
+  if(stripSel&&stripSel.value!==ep){stripSel.value=ep;buildEnsoStrip();}
+
+  const years=[...new Set(DB.monthly.map(d=>d.year).filter(y=>y&&!isNaN(y)))].sort((a,b)=>a-b);
+  const head=document.getElementById('ov-yr-head');
+  head.innerHTML=`<tr><th>ปี</th><th>ENSO (${ep})</th>${P9.map(p=>`<th style="text-align:right">${P9_TH[p]||p}</th>`).join('')}<th style="text-align:right">รวม 8 จว.</th><th style="text-align:right">รวม 9 จว.</th></tr>`;
+  const body=document.getElementById('ov-yr-body');
+  body.innerHTML='';
+  years.forEach(yr=>{
+    const enso=getEnso(yr,ep);
+    const counts=P9.map(p=>sC(fd(DB.monthly,{year:yr,months,province:p})));
+    const t8=counts.slice(0,8).reduce((a,b)=>a+b,0);
+    const t9=counts.reduce((a,b)=>a+b,0);
+    const tr=document.createElement('tr');
+    if(yr===year)tr.style.background='rgba(37,99,168,.06)';
+    tr.innerHTML=`<td><b>${yr}</b></td>
+      <td><span style="font-size:11px;padding:2px 7px;border-radius:3px;${eStyle(enso.cat)}">${enso.type}</span></td>
+      ${counts.map(c=>`<td class="num">${fmt(c)}</td>`).join('')}
+      <td class="num"><b>${fmt(t8)}</b></td><td class="num"><b>${fmt(t9)}</b></td>`;
+    body.appendChild(tr);
+  });
+}
+
+function renderOvMonthly(year,months){
+  const body=document.getElementById('ov-mo-body');
+  document.getElementById('ov-mo-title').textContent=`สรุปรายเดือน — ปี ${year} รายจังหวัด`;
+  // build header dynamically
+  const thead=document.querySelector('#ov-mo-table thead tr');
+  if(thead)thead.innerHTML=`<th>เดือน</th><th>จังหวัด</th><th style="text-align:right">ในป่า</th><th style="text-align:right">นอกป่า</th><th style="text-align:right">รวม</th><th style="text-align:right">% ในป่า</th><th style="text-align:right">ป่าสงวนฯ</th><th style="text-align:right">ป่าอนุรักษ์</th>`;
+  body.innerHTML='';
+  months.forEach(m=>{
+    P9.forEach(prov=>{
+      const a=aggF(fd(DB.monthly,{year,months:[m],province:prov}));
+      const inF=a.forest_reserve+a.forest_conservation,total=inF+a.non_forest;
+      if(total===0)return;
+      const pct=total>0?(inF/total*100).toFixed(1):'0.0';
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${MTH[m]}</td><td class="prov">${P9_TH[prov]||prov}</td>
+        <td class="num">${fmt(inF)}</td><td class="num">${fmt(a.non_forest)}</td>
+        <td class="num"><b>${fmt(total)}</b></td><td class="num">${pct}%</td>
+        <td class="num"><span class="fb-r">${fmt(a.forest_reserve)}</span></td>
+        <td class="num"><span class="fb-p">${fmt(a.forest_conservation)}</span></td>`;
+      body.appendChild(tr);
+    });
+    // แถวรวม 8 และ 9 จว
+    ['8','9'].forEach(n=>{
+      const list=n==='8'?P8:P9;
+      const ag=list.reduce((acc,p)=>{const a=aggF(fd(DB.monthly,{year,months:[m],province:p}));acc.r+=a.forest_reserve;acc.p+=a.forest_conservation;acc.n+=a.non_forest;return acc;},{r:0,p:0,n:0});
+      const inF=ag.r+ag.p,total=inF+ag.n;
+      if(total===0)return;
+      const pct=total>0?(inF/total*100).toFixed(1):'0.0';
+      const tr=document.createElement('tr');
+      tr.style.cssText='background:rgba(37,99,168,.05);font-weight:600';
+      tr.innerHTML=`<td>${MTH[m]}</td><td style="color:var(--acc)">รวม ${n} จังหวัด</td>
+        <td class="num">${fmt(inF)}</td><td class="num">${fmt(ag.n)}</td>
+        <td class="num"><b>${fmt(total)}</b></td><td class="num">${pct}%</td>
+        <td class="num"><span class="fb-r">${fmt(ag.r)}</span></td>
+        <td class="num"><span class="fb-p">${fmt(ag.p)}</span></td>`;
+      body.appendChild(tr);
+    });
+  });
+  if(!body.children.length)body.innerHTML='<tr><td colspan="8" class="state-msg">ไม่พบข้อมูล</td></tr>';
+}
+
+// ============================================================
+// FOREST (แยกพื้นที่ป่า)
+// ============================================================
+function renderForest(){
+  if(!DB.loaded)return;
+  const gb=document.getElementById('fr-groupby').value;
+  const ys=+document.getElementById('fr-ys').value;
+  const ms=+document.getElementById('fr-ms').value;
+  const ye=+document.getElementById('fr-ye').value;
+  const me=+document.getElementById('fr-me').value;
+  const prov=document.getElementById('fr-province').value;
+  const src=gb==='yearly'?DB.yearly:DB.monthly;
+  const fdata=fd(src,{province:prov,yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
+  const agg=aggF(fdata);const tot=agg.forest_reserve+agg.forest_conservation+agg.non_forest;
+  document.getElementById('fr-r').textContent=fmt(agg.forest_reserve);
+  document.getElementById('fr-p').textContent=fmt(agg.forest_conservation);
+  document.getElementById('fr-n').textContent=fmt(agg.non_forest);
+  document.getElementById('fr-t').textContent=fmt(tot);
+  document.getElementById('fr-th-p').textContent=gb==='yearly'?'ปี':'เดือน/ปี';
+  document.getElementById('fr-title').textContent=`แยกพื้นที่ป่า — ${ys}/${MTH[ms]} ถึง ${ye}/${MTH[me]}`;
+  const grouped={};
+  fdata.forEach(d=>{
+    const period=gb==='yearly'?`${d.year}`:`${MTH[d.month||1]} ${d.year}`;
+    const key=`${period}__${d.province_en}`;
+    if(!grouped[key])grouped[key]={period,province:d.province_en,r:0,p:0,n:0};
+    if(d.forest_type==='forest_reserve')grouped[key].r+=d.count||0;
+    if(d.forest_type==='forest_conservation')grouped[key].p+=d.count||0;
+    if(d.forest_type==='non_forest')grouped[key].n+=d.count||0;
+  });
+  const body=document.getElementById('fr-body');body.innerHTML='';
+  Object.values(grouped).sort((a,b)=>a.period.localeCompare(b.period)||a.province.localeCompare(b.province)).forEach(r=>{
+    const t=r.r+r.p+r.n;
+    const pf=t>0?((r.r+r.p)/t*100).toFixed(1):'0.0';
+    const pr=t>0?(r.r/t*100).toFixed(1):'0.0';
+    const pp=t>0?(r.p/t*100).toFixed(1):'0.0';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${r.period}</td><td class="prov">${P9_TH[r.province]||r.province}</td>
+      <td class="num"><span class="fb-r">${fmt(r.r)}</span></td><td class="num"><span class="fb-p">${fmt(r.p)}</span></td>
+      <td class="num"><span class="fb-n">${fmt(r.n)}</span></td><td class="num"><b>${fmt(t)}</b></td>
+      <td class="num" style="color:${+pf>50?'var(--forest)':'var(--dim)'}">${pf}%</td>
+      <td class="num" style="color:var(--fire)">${pr}%</td>
+      <td class="num" style="color:var(--prot)">${pp}%</td>`;
+    body.appendChild(tr);
+  });
+  if(!body.children.length)body.innerHTML='<tr><td colspan="9" class="state-msg">ไม่พบข้อมูล</td></tr>';
+}
+
+// ============================================================
+// BASELINE (ข้อ 2)
 // ============================================================
 function buildYearToggle(years){
-  const c=document.getElementById('bl-toggle');
-  if(!c) return;
+  const c=document.getElementById('bl-toggle');if(!c)return;
   c.innerHTML='';
   years.forEach(yr=>{
-    const enso=getEnso(yr,'smoke');
-    const ec=eClass(enso.cat);
+    const{cat,type}=getEnso(yr,'smoke');
+    const ec=eClass(cat);const str=eStrength(type);
     const btn=document.createElement('button');
-    btn.className=`yr-btn ${ec}`;
-    btn.dataset.year=yr;
-    btn.title=`${yr}: ${enso.type}`;
-    btn.innerHTML=`${yr}<br><span style="font-size:9px;opacity:.75">${ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N'}</span>`;
+    btn.className=`yr-btn ${ec}`;btn.dataset.year=yr;
+    btn.title=`${yr}: ${type}`;
+    btn.innerHTML=`${yr}<br><span style="font-size:9px;opacity:.75">${ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N'}${str==='strong'?'S':str==='moderate'?'M':str==='weak'?'W':''}</span>`;
     btn.onclick=()=>toggleYear(yr,btn);
     c.appendChild(btn);
   });
   selectAllYears(true);
 }
-
 function toggleYear(yr,btn){
   if(BL_SEL.has(yr)){BL_SEL.delete(yr);btn.classList.remove('selected');}
   else{BL_SEL.add(yr);btn.classList.add('selected');}
   updateSelInfo();
 }
-
 function selectAllYears(all){
   document.querySelectorAll('.yr-btn').forEach(btn=>{
     const yr=+btn.dataset.year;
@@ -891,13 +944,11 @@ function selectAllYears(all){
   });
   updateSelInfo();
 }
-
 function updateSelInfo(){
   const s=[...BL_SEL].sort();
   document.getElementById('bl-count').textContent=s.length;
   document.getElementById('bl-list').textContent=s.join(', ');
 }
-
 function onScaleChange(){
   const scale=document.getElementById('bl-scale').value;
   const period=document.getElementById('bl-period').value;
@@ -911,319 +962,184 @@ function onScaleChange(){
   updateSelInfo();
 }
 
-// ============================================================
-// OVERVIEW
-// ============================================================
-function renderOverview(){
-  if(!DB.loaded) return;
-  const year=+document.getElementById('ov-year').value;
-  const sensor=getSensor();
-  const ms=+document.getElementById('ov-ms').value;
-  const me=+document.getElementById('ov-me').value;
-  const months=[];
-  for(let m=ms;m<=me;m++) months.push(m);
-
-  // Cards — คำนวณแยก 8 และ 9 จังหวัด
-  const agg8total={r:0,p:0,n:0};
-  PROV_8.forEach(pv=>{
-    const a=aggF(fd(DB.monthly,{year,sensor,months,province:pv}));
-    agg8total.r+=a.forest_reserve; agg8total.p+=a.forest_conservation; agg8total.n+=a.non_forest;
-  });
-  const sum8=agg8total.r+agg8total.p+agg8total.n;
-  const inF8=agg8total.r+agg8total.p;
-
-  const agg9total={r:0,p:0,n:0};
-  PROV_9.forEach(pv=>{
-    const a=aggF(fd(DB.monthly,{year,sensor,months,province:pv}));
-    agg9total.r+=a.forest_reserve; agg9total.p+=a.forest_conservation; agg9total.n+=a.non_forest;
-  });
-  const sum9=agg9total.r+agg9total.p+agg9total.n;
-  const inF9=agg9total.r+agg9total.p;
-
-  document.getElementById('ov-c8').textContent=fmt(sum8);
-  document.getElementById('ov-f8').textContent=fmt(inF8);
-  document.getElementById('ov-n8').textContent=fmt(agg8total.n);
-  document.getElementById('ov-c9').textContent=fmt(sum9);
-  document.getElementById('ov-forest').textContent=fmt(inF9);
-  document.getElementById('ov-non').textContent=fmt(agg9total.n);
-
-  // Update ENSO badge
-  const enso=getEnso(year,'smoke');
-  const ec=eClass(enso.cat);
-  setBadge(`${year} — ${enso.type}`,
-    ec==='el-nino'?'var(--en)':ec==='la-nina'?'var(--ln)':'var(--dim)',
-    ec==='el-nino'?'rgba(184,50,50,.08)':ec==='la-nina'?'rgba(26,79,138,.08)':'var(--surface2)');
-
-  renderOvTable();
-  renderOvMonthly(year,sensor,months);
-}
-
-function renderOvTable(){
-  if(!DB.loaded) return;
-  const year=+document.getElementById('ov-year').value;
-  const sensor=getSensor();
-  const ms=+document.getElementById('ov-ms').value;
-  const me=+document.getElementById('ov-me').value;
-  const months=[];
-  for(let m=ms;m<=me;m++) months.push(m);
-  const ep=document.getElementById('ov-enso-period').value;
-
-  const years=[...new Set(DB.monthly.map(d=>d.year).filter(y=>y&&!isNaN(y)))].sort((a,b)=>a-b);
-  const provs=PROV_9;
-
-  // Build header
-  const head=document.getElementById('ov-yr-head');
-  head.innerHTML=`<tr><th>ปี</th><th>ENSO</th>${provs.map(p=>`<th style="text-align:right">${p}</th>`).join('')}<th style="text-align:right">รวม 8 จว.</th><th style="text-align:right">รวม 9 จว.</th></tr>`;
-
-  const body=document.getElementById('ov-yr-body');
-  body.innerHTML='';
-  years.forEach(yr=>{
-    const enso=getEnso(yr,ep);
-    const ec=eClass(enso.cat);
-    const provCounts=provs.map(p=>sumCount(fd(DB.monthly,{year:yr,sensor,months,province:p})));
-    const t8=provCounts.slice(0,8).reduce((a,b)=>a+b,0);
-    const t9=provCounts.reduce((a,b)=>a+b,0);
-    const tr=document.createElement('tr');
-    if(yr===year) tr.style.background='rgba(37,99,168,.08)';
-    tr.innerHTML=`<td><b>${yr}</b></td>
-      <td><span style="font-size:11px;padding:2px 7px;border-radius:3px;${eStyle(enso.cat)}">${enso.type}</span></td>
-      ${provCounts.map(c=>`<td class="num">${fmt(c)}</td>`).join('')}
-      <td class="num"><b>${fmt(t8)}</b></td>
-      <td class="num"><b>${fmt(t9)}</b></td>`;
-    body.appendChild(tr);
-  });
-}
-
-function renderOvMonthly(year,sensor,months){
-  const body=document.getElementById('ov-mo-body');
-  document.getElementById('ov-mo-title').textContent=`สรุปรายเดือน — ปี ${year} (รายจังหวัด)`;
-
-  // สร้าง header ใหม่ให้มีจังหวัด
-  const thead=document.querySelector('#ov-mo-table thead');
-  thead.innerHTML=`<tr>
-    <th>เดือน</th>
-    ${PROV_9.map(p=>`<th style="text-align:right">${p}</th>`).join('')}
-    <th style="text-align:right">รวม 8 จว.</th>
-    <th style="text-align:right">รวม 9 จว.</th>
-    <th style="text-align:right">ในป่า</th>
-    <th style="text-align:right">นอกป่า</th>
-  </tr>`;
-
-  body.innerHTML='';
-  months.forEach(m=>{
-    const provCounts=PROV_9.map(p=>sumCount(fd(DB.monthly,{year,sensor,months:[m],province:p})));
-    const t8=provCounts.slice(0,8).reduce((a,b)=>a+b,0);
-    const t9=provCounts.reduce((a,b)=>a+b,0);
-    const mdata=fd(DB.monthly,{year,sensor,months:[m]});
-    const agg=aggF(mdata);
-    const inF=agg.forest_reserve+agg.forest_conservation;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td><b>${MONTHS_TH[m]}</b></td>
-      ${provCounts.map(c=>`<td class="num">${fmt(c)}</td>`).join('')}
-      <td class="num"><b>${fmt(t8)}</b></td>
-      <td class="num"><b>${fmt(t9)}</b></td>
-      <td class="num"><span class="fb-r">${fmt(inF)}</span></td>
-      <td class="num"><span class="fb-n">${fmt(agg.non_forest)}</span></td>`;
-    body.appendChild(tr);
-  });
-  if(!body.children.length) body.innerHTML='<tr><td colspan="13" class="state-msg">ไม่พบข้อมูล</td></tr>';
-}
-
-// ============================================================
-// BASELINE
-// ============================================================
 function renderBaseline(){
-  if(!DB.loaded) return;
+  if(!DB.loaded)return;
   const period=document.getElementById('bl-period').value;
-  const sensor=getSensor();
   const forest=document.getElementById('bl-forest').value;
   const months=PM[period];
   const validYears=[...BL_SEL].sort();
-
   if(!validYears.length){
     document.getElementById('bl-body').innerHTML='<tr><td colspan="9" class="state-msg">กรุณาเลือกปีอย่างน้อย 1 ปี</td></tr>';
     return;
   }
-  document.getElementById('bl-years-used').textContent=`ปีที่ใช้: ${validYears.join(', ')} (${validYears.length} ปี)`;
+  const scale=document.getElementById('bl-scale').value;
+  const periodLabels={'smoke':'Smoke Haze (JFM–AMJ)','non_smoke':'Non-Smoke Haze (JJA–SON)','annual':'Annual (JJA–MJJ)'};
+  const forestLabels={'all':'ทั้งหมด','in_forest':'เขตป่า (สงวน+อนุรักษ์)','non_forest':'นอกเขตป่า'};
+  document.getElementById('bl-subtitle').textContent=`${periodLabels[period]} | ${forestLabels[forest]||forest} | ${validYears.length} ปี: ${validYears.join(', ')}`;
+  document.getElementById('bl-years-used').textContent='';
 
+  const provs=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
   BL_DATA={};
-  const body=document.getElementById('bl-body');
-  body.innerHTML='';
-
-  // แสดงรายจังหวัด 9 จังหวัดตามลำดับ
-  PROV_9.forEach(prov=>{
-    const bl=calcBaseline(validYears,sensor,months,prov,forest);
-    if(!bl||!bl.vals.some(v=>v>0)) return;
+  const body=document.getElementById('bl-body');body.innerHTML='';
+  provs.forEach(prov=>{
+    const bl=calcBL(validYears,months,prov,forest);
+    if(!bl)return;
     BL_DATA[prov]=bl;
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="prov">${prov}</td>
-      <td class="num">${fmt(bl.mean)}</td><td class="num">${fmt(bl.median)}</td>
+    tr.innerHTML=`<td class="prov">${P9_TH[prov]||prov}</td>
+      <td class="num"><b>${fmt(bl.mean)}</b></td>
       <td class="num">${fmt(bl.sd)}</td>
-      <td class="num" style="color:var(--dim)">${fmt(bl.mean-bl.sd)}</td>
-      <td class="num" style="color:var(--dim)">${fmt(bl.mean+bl.sd)}</td>
-      <td class="num">${fmt(bl.min)}</td><td class="num">${fmt(bl.max)}</td>
+      <td class="num" style="font-weight:700;color:var(--forest)"><b>${fmt(bl.mean-bl.sd)}</b></td>
+      <td class="num" style="font-weight:700;color:var(--en)"><b>${fmt(bl.mean+bl.sd)}</b></td>
+      <td class="num">${fmt(bl.min)}</td>
+      <td class="num">${fmt(bl.max)}</td>
+      <td class="num">${fmt(bl.median)}</td>
       <td class="num">${bl.n}</td>`;
     body.appendChild(tr);
   });
+  if(!body.children.length)body.innerHTML='<tr><td colspan="9" class="state-msg">ไม่พบข้อมูล</td></tr>';
+}
 
-  // แถวรวม 8 จังหวัด
-  const bl8vals=validYears.map(yr=>PROV_8.reduce((s,p)=>s+sumCount(fd(DB.monthly,{year:yr,sensor,months,province:p,forest})),0));
-  const bl8=calcFromVals(bl8vals);
-  if(bl8){
-    const tr=document.createElement('tr');
-    tr.style.background='rgba(123,63,160,.06)';tr.style.fontWeight='600';
-    tr.innerHTML=`<td class="prov" style="color:#7B3FA0">รวม 8 จังหวัด</td>
-      <td class="num">${fmt(bl8.mean)}</td><td class="num">${fmt(bl8.median)}</td>
-      <td class="num">${fmt(bl8.sd)}</td>
-      <td class="num" style="color:var(--dim)">${fmt(bl8.mean-bl8.sd)}</td>
-      <td class="num" style="color:var(--dim)">${fmt(bl8.mean+bl8.sd)}</td>
-      <td class="num">${fmt(bl8.min)}</td><td class="num">${fmt(bl8.max)}</td>
-      <td class="num">${bl8.n}</td>`;
-    body.appendChild(tr);
-  }
-
-  // แถวรวม 9 จังหวัด
-  const bl9vals=validYears.map(yr=>PROV_9.reduce((s,p)=>s+sumCount(fd(DB.monthly,{year:yr,sensor,months,province:p,forest})),0));
-  const bl9=calcFromVals(bl9vals);
-  if(bl9){
-    const tr=document.createElement('tr');
-    tr.style.background='rgba(26,92,138,.06)';tr.style.fontWeight='600';
-    tr.innerHTML=`<td class="prov" style="color:#1A5C8A">รวม 9 จังหวัด</td>
-      <td class="num">${fmt(bl9.mean)}</td><td class="num">${fmt(bl9.median)}</td>
-      <td class="num">${fmt(bl9.sd)}</td>
-      <td class="num" style="color:var(--dim)">${fmt(bl9.mean-bl9.sd)}</td>
-      <td class="num" style="color:var(--dim)">${fmt(bl9.mean+bl9.sd)}</td>
-      <td class="num">${fmt(bl9.min)}</td><td class="num">${fmt(bl9.max)}</td>
-      <td class="num">${bl9.n}</td>`;
-    body.appendChild(tr);
-  }
-
-  if(!body.children.length) body.innerHTML='<tr><td colspan="9" class="state-msg">ไม่พบข้อมูลสำหรับเงื่อนไขที่เลือก</td></tr>';
+function exportBL(){
+  // Export พร้อม metadata
+  if(!Object.keys(BL_DATA).length){alert('กรุณาคำนวณ Baseline ก่อน');return;}
+  const period=document.getElementById('bl-period').value;
+  const forest=document.getElementById('bl-forest').value;
+  const validYears=[...BL_SEL].sort();
+  const scale=document.getElementById('bl-scale').value;
+  let rows=`"Baseline Export"\n"Scale","${scale}"\n"Period","${period}"\n"Forest","${forest}"\n"Years","${validYears.join(', ')}"\n\n`;
+  rows+='"Province","Baseline Mean","SD","Mean-SD","Mean+SD","Min","Max","Median","N"\n';
+  Object.entries(BL_DATA).forEach(([p,bl])=>{
+    rows+=`"${P9_TH[p]||p}",${Math.round(bl.mean)},${Math.round(bl.sd)},${Math.round(bl.mean-bl.sd)},${Math.round(bl.mean+bl.sd)},${bl.min},${bl.max},${Math.round(bl.median)},${bl.n}\n`;
+  });
+  const blob=new Blob(['\uFEFF'+rows],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`baseline_${scale}_${period}_${new Date().toISOString().slice(0,10)}.csv`;a.click();
 }
 
 function renderBLCompare(){
   if(!Object.keys(BL_DATA).length){alert('กรุณาคำนวณ Baseline ก่อน');return;}
   const year=+document.getElementById('bl-cmp-year').value;
   const period=document.getElementById('bl-period').value;
-  const sensor=getSensor();
   const forest=document.getElementById('bl-forest').value;
   const months=PM[period];
-  const body=document.getElementById('bl-cmp-body');
-  body.innerHTML='';
+  const body=document.getElementById('bl-cmp-body');body.innerHTML='';
   Object.entries(BL_DATA).forEach(([prov,bl])=>{
-    const cur=sumCount(fd(DB.monthly,{year,sensor,months,province:prov,forest}));
-    const dm=bl.mean>0?((cur-bl.mean)/bl.mean*100):null;
-    const dmd=bl.median>0?((cur-bl.median)/bl.median*100):null;
-    const sdS=cur>bl.mean+bl.sd?'🔴 > Mean+SD':cur<bl.mean-bl.sd?'🟢 < Mean−SD':'🟡 ±SD';
+    let data=fd(DB.monthly,{year,months,province:prov});
+    if(forest==='in_forest')data=data.filter(d=>d.forest_type!=='non_forest');
+    else if(forest&&forest!=='all')data=data.filter(d=>d.forest_type===forest);
+    const cur=data.reduce((s,d)=>s+(d.count||0),0);
+    const diff=cur-bl.mean;
+    const diffP=bl.mean>0?((cur-bl.mean)/bl.mean*100):null;
+    const sdS=cur>bl.mean+bl.sd?'🔴':cur<bl.mean-bl.sd?'🟢':'🟡';
+    const sdLbl=cur>bl.mean+bl.sd?'สูงกว่า Mean+SD':cur<bl.mean-bl.sd?'ต่ำกว่า Mean−SD':'อยู่ในช่วง ±SD';
     const dc=d=>d===null?'dz':d>10?'dp':d<-10?'dn':'dz';
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="prov">${prov}</td>
-      <td class="num">${fmt(cur)}</td><td class="num">${fmt(bl.mean)}</td>
+    tr.innerHTML=`<td class="prov">${P9_TH[prov]||prov}</td>
+      <td class="num">${fmt(bl.mean)}</td>
       <td class="num">${fmt(bl.sd)}</td>
-      <td class="num ${dc(dm)}">${dm!==null?fmtP(dm):'—'}</td>
-      <td class="num ${dc(dmd)}">${dmd!==null?fmtP(dmd):'—'}</td>
-      <td style="font-size:12px">${sdS}</td>`;
+      <td class="num"><b>${fmt(cur)}</b></td>
+      <td class="num ${diff>=0?'dp':'dn'}">${diff>=0?'+':''}${fmt(Math.abs(diff))}</td>
+      <td class="num ${dc(diffP)}">${diffP!==null?fmtP(diffP):'—'}</td>
+      <td style="font-size:12px">${sdS} ${sdLbl}</td>`;
     body.appendChild(tr);
   });
-  if(!body.children.length) body.innerHTML='<tr><td colspan="7" class="state-msg">ไม่พบข้อมูล</td></tr>';
+  if(!body.children.length)body.innerHTML='<tr><td colspan="7" class="state-msg">ไม่พบข้อมูล</td></tr>';
 }
 
 // ============================================================
-// FOREST
+// COMPARE
 // ============================================================
-function renderForest(){
-  if(!DB.loaded) return;
-  const sensor=getSensor();
-  const groupby=document.getElementById('fr-groupby').value;
-  const ys=+document.getElementById('fr-ys').value;
-  const ms=+document.getElementById('fr-ms').value;
-  const ye=+document.getElementById('fr-ye').value;
-  const me2=+document.getElementById('fr-me').value;
-  const prov=document.getElementById('fr-province').value;
-
-  const src=groupby==='yearly'?DB.yearly:DB.monthly;
-  const fdata=fd(src,{sensor,province:prov,yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me2});
-
-  const agg=aggF(fdata);
-  const tot=agg.forest_reserve+agg.forest_conservation+agg.non_forest;
-  document.getElementById('fr-r').textContent=fmt(agg.forest_reserve);
-  document.getElementById('fr-p').textContent=fmt(agg.forest_conservation);
-  document.getElementById('fr-n').textContent=fmt(agg.non_forest);
-  document.getElementById('fr-t').textContent=fmt(tot);
-  document.getElementById('fr-th-p').textContent=groupby==='yearly'?'ปี':'เดือน/ปี';
-  document.getElementById('fr-title').textContent=`แยกพื้นที่ป่า — ${ys}/${MONTHS_TH[ms]} ถึง ${ye}/${MONTHS_TH[me2]}`;
-
-  // group rows
-  const grouped={};
-  fdata.forEach(d=>{
-    const period=groupby==='yearly'?`${d.year}`:`${MONTHS_TH[d.month||1]} ${d.year}`;
-    const key=`${period}__${d.province_en}`;
-    if(!grouped[key]) grouped[key]={period,province:d.province_en,r:0,p:0,n:0};
-    if(d.forest_type==='forest_reserve')      grouped[key].r+=d.count||0;
-    if(d.forest_type==='forest_conservation') grouped[key].p+=d.count||0;
-    if(d.forest_type==='non_forest')          grouped[key].n+=d.count||0;
+function renderCPBaseline(){
+  if(!DB.loaded)return;
+  const scale=document.getElementById('cp-scale').value;
+  const period=document.getElementById('cp-period').value;
+  const months=PM[period];
+  const years=getYearsForScale(scale,period);
+  CP_BL={};
+  if(!years.length){document.getElementById('cp-bl-info').textContent='ไม่พบปีที่ตรงเกณฑ์';return;}
+  P9.forEach(p=>{
+    CP_BL[p]={
+      all:calcBL(years,months,p,'all'),
+      in:calcBL(years,months,p,'in_forest'),
+      r:calcBL(years,months,p,'forest_reserve'),
+      p:calcBL(years,months,p,'forest_conservation'),
+      n:calcBL(years,months,p,'non_forest'),
+    };
   });
+  const bl8=P8.reduce((s,p)=>s+(CP_BL[p]?.all?.mean||0),0);
+  const bl9=P9.reduce((s,p)=>s+(CP_BL[p]?.all?.mean||0),0);
+  const blf=P9.reduce((s,p)=>s+(CP_BL[p]?.in?.mean||0),0);
+  const bln=P9.reduce((s,p)=>s+(CP_BL[p]?.n?.mean||0),0);
+  document.getElementById('cp-bl8').textContent=fmt(bl8);
+  document.getElementById('cp-bl9').textContent=fmt(bl9);
+  document.getElementById('cp-blf').textContent=fmt(blf);
+  document.getElementById('cp-bln').textContent=fmt(bln);
+  document.getElementById('cp-bl-info').textContent=`ปีที่ใช้ (${years.length} ปี): ${years.sort((a,b)=>a-b).join(', ')}`;
+}
 
-  const body=document.getElementById('fr-body');
-  body.innerHTML='';
-  Object.values(grouped).sort((a,b)=>a.period.localeCompare(b.period)||a.province.localeCompare(b.province)).forEach(r=>{
-    const t=r.r+r.p+r.n;
-    const pf=t>0?((r.r+r.p)/t*100).toFixed(1):'0.0';
-    const pr=t>0?(r.r/t*100).toFixed(1):'0.0';
-    const pp=t>0?(r.p/t*100).toFixed(1):'0.0';
+function renderCompare(){
+  if(!DB.loaded)return;
+  if(!Object.keys(CP_BL).length)renderCPBaseline();
+  const year=+document.getElementById('cp-year').value;
+  const forest=document.getElementById('cp-forest').value;
+  const period=document.getElementById('cp-period').value;
+  const months=PM[period];
+  const scale=document.getElementById('cp-scale').value;
+  const fkey=forest==='all'?'all':forest==='in_forest'?'in':forest==='forest_reserve'?'r':forest==='forest_conservation'?'p':'n';
+  document.getElementById('cp-title').textContent=`ปี ${year} vs Baseline [${scale}][${period}]`;
+  const body=document.getElementById('cp-body');body.innerHTML='';
+  P9.forEach(prov=>{
+    const bl=CP_BL[prov]?.[fkey];if(!bl)return;
+    let data=fd(DB.monthly,{year,months,province:prov});
+    if(forest==='in_forest')data=data.filter(d=>d.forest_type!=='non_forest');
+    else if(forest!=='all')data=data.filter(d=>d.forest_type===forest);
+    const cur=data.reduce((s,d)=>s+(d.count||0),0);
+    const diff=cur-bl.mean;
+    const diffP=bl.mean>0?((cur-bl.mean)/bl.mean*100):null;
+    const sdS=cur>bl.mean+bl.sd?'🔴 > Mean+SD':cur<bl.mean-bl.sd?'🟢 < Mean−SD':'🟡 ±SD';
+    const dc=d=>d===null?'dz':d>10?'dp':d<-10?'dn':'dz';
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${r.period}</td><td class="prov">${r.province}</td>
-      <td class="num"><span class="fb-r">${fmt(r.r)}</span></td>
-      <td class="num"><span class="fb-p">${fmt(r.p)}</span></td>
-      <td class="num"><span class="fb-n">${fmt(r.n)}</span></td>
-      <td class="num"><b>${fmt(t)}</b></td>
-      <td class="num" style="color:${+pf>50?'var(--forest)':'var(--dim)'}">${pf}%</td>
-      <td class="num" style="color:var(--fire)">${pr}%</td>
-      <td class="num" style="color:var(--protect)">${pp}%</td>`;
+    tr.innerHTML=`<td class="prov">${P9_TH[prov]||prov}</td>
+      <td class="num">${fmt(bl.mean)}</td>
+      <td class="num">${fmt(bl.sd)}</td>
+      <td class="num"><b>${fmt(cur)}</b></td>
+      <td class="num ${diff>=0?'dp':'dn'}">${diff>=0?'+':''}${fmt(Math.abs(diff))}</td>
+      <td class="num ${dc(diffP)}">${diffP!==null?fmtP(diffP):'—'}</td>
+      <td style="font-size:12px">${sdS}</td>`;
     body.appendChild(tr);
   });
-  if(!body.children.length) body.innerHTML='<tr><td colspan="9" class="state-msg">ไม่พบข้อมูล</td></tr>';
+  if(!body.children.length)body.innerHTML='<tr><td colspan="7" class="state-msg">ไม่พบข้อมูล</td></tr>';
 }
 
 // ============================================================
 // RANKING
 // ============================================================
 function renderRanking(){
-  if(!DB.loaded) return;
+  if(!DB.loaded)return;
   const year=+document.getElementById('rk-year').value;
   const month=+document.getElementById('rk-month').value;
-  const sensor=getSensor();
-  const forest2=document.getElementById('rk-forest2').value;
+  const f2=document.getElementById('rk-f2').value;
   const months=month===0?null:[month];
-  const provinces=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
-
-  // อัปเดต title ช่องที่ 2
   const f2Labels={'in_forest':'ในป่า (รวม)','forest_reserve':'ป่าสงวนฯ','forest_conservation':'ป่าอนุรักษ์'};
-  document.getElementById('rk-f2-title').textContent=`Ranking — ${f2Labels[forest2]||'ในป่า'}`;
-
-  const pData=provinces.map(prov=>{
-    const d=fd(DB.monthly,{year,sensor,months,province:prov});
-    const a=aggF(d);
+  document.getElementById('rk-f2-title').textContent=`Ranking — ${f2Labels[f2]||f2}`;
+  const provs=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
+  const pData=provs.map(prov=>{
+    const a=aggF(fd(DB.monthly,{year,months,province:prov}));
     const total=a.forest_reserve+a.forest_conservation+a.non_forest;
-    let f2val;
-    if(forest2==='in_forest') f2val=a.forest_reserve+a.forest_conservation;
-    else if(forest2==='forest_reserve') f2val=a.forest_reserve;
-    else f2val=a.forest_conservation;
-    return {prov, total, f2val};
+    let f2val=f2==='in_forest'?a.forest_reserve+a.forest_conservation:f2==='forest_reserve'?a.forest_reserve:a.forest_conservation;
+    return{prov,total,f2val};
   });
-
   const maxT=Math.max(...pData.map(d=>d.total),1);
   const maxF=Math.max(...pData.map(d=>d.f2val),1);
-
   function buildList(elId,key,maxV,color){
-    const el=document.getElementById(elId);
-    el.innerHTML='';
+    const el=document.getElementById(elId);el.innerHTML='';
     [...pData].sort((a,b)=>b[key]-a[key]).forEach((d,i)=>{
       const pct=(d[key]/maxV*100).toFixed(1);
       el.innerHTML+=`<div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:11px;color:var(--dim);font-family:var(--mono);width:18px;text-align:right">${i+1}</span>
-        <div style="flex:1;background:var(--surface2);border-radius:3px;height:24px;overflow:hidden;border:1px solid var(--border)">
-          <div style="background:${color};height:100%;width:max(${pct}%,60px);display:flex;align-items:center;padding:0 8px;font-size:12px;font-weight:600">${d.prov}</div>
+        <div style="flex:1;background:var(--s2);border-radius:3px;height:24px;overflow:hidden;border:1px solid var(--border)">
+          <div style="background:${color};height:100%;width:max(${pct}%,60px);display:flex;align-items:center;padding:0 8px;font-size:12px;font-weight:600">${P9_TH[d.prov]||d.prov}</div>
         </div>
         <span style="font-family:var(--mono);font-size:12px;color:var(--dim);min-width:60px;text-align:right">${fmt(d[key])}</span>
       </div>`;
@@ -1234,167 +1150,69 @@ function renderRanking(){
 }
 
 // ============================================================
-// COMPARE
-// ============================================================
-let CP_BL_CACHE={};
-
-function renderCPBaseline(){
-  if(!DB.loaded) return;
-  const scale=document.getElementById('cp-scale').value;
-  const period=document.getElementById('cp-period').value;
-  const sensor=getSensor();
-  const months=PM[period];
-  const years=getYearsForScale(scale,period);
-  CP_BL_CACHE={};
-
-  if(!years.length){
-    document.getElementById('cp-bl-info').textContent='ไม่พบปีที่ตรงเกณฑ์';
-    return;
-  }
-
-  PROV_9.forEach(prov=>{
-    CP_BL_CACHE[prov]={
-      all: calcBaseline(years,sensor,months,prov,'all'),
-      in:  calcBaseline(years,sensor,months,prov,'in_forest'),
-      r:   calcBaseline(years,sensor,months,prov,'forest_reserve'),
-      p:   calcBaseline(years,sensor,months,prov,'forest_conservation'),
-      n:   calcBaseline(years,sensor,months,prov,'non_forest'),
-    };
-  });
-
-  const bl8=PROV_8.reduce((s,p)=>s+(CP_BL_CACHE[p]?.all?.mean||0),0);
-  const bl9=PROV_9.reduce((s,p)=>s+(CP_BL_CACHE[p]?.all?.mean||0),0);
-  const blf=PROV_9.reduce((s,p)=>s+(CP_BL_CACHE[p]?.in?.mean||0),0);
-  const bln=PROV_9.reduce((s,p)=>s+(CP_BL_CACHE[p]?.n?.mean||0),0);
-
-  document.getElementById('cp-bl8').textContent=fmt(bl8);
-  document.getElementById('cp-bl9').textContent=fmt(bl9);
-  document.getElementById('cp-blf').textContent=fmt(blf);
-  document.getElementById('cp-bln').textContent=fmt(bln);
-
-  // แสดงปีที่ใช้ใต้ card
-  const yrLabel=years.sort((a,b)=>a-b).join(', ');
-  const info=`ปีที่ใช้ (${years.length} ปี): ${yrLabel}`;
-  document.getElementById('cp-bl-info').textContent=info;
-  const s8=document.getElementById('cp-bl8-yr');
-  const s9=document.getElementById('cp-bl9-yr');
-  if(s8) s8.textContent=`${years.length} ปี`;
-  if(s9) s9.textContent=`${years.length} ปี`;
-}
-
-function renderCompare(){
-  if(!DB.loaded) return;
-  if(!Object.keys(CP_BL_CACHE).length) renderCPBaseline();
-
-  const year=+document.getElementById('cp-year').value;
-  const forest=document.getElementById('cp-forest').value;
-  const period=document.getElementById('cp-period').value;
-  const sensor=getSensor();
-  const months=PM[period];
-  const scale=document.getElementById('cp-scale').value;
-
-  const fkey=forest==='all'?'all':forest==='in_forest'?'in':forest==='forest_reserve'?'r':forest==='forest_conservation'?'p':'n';
-  const scaleLabels={'all':'ทุกปี','11yr':'11 ปี','5yr':'5 ปี','en_all':'El Niño','en_weak':'El Niño Weak','en_mod':'El Niño Moderate','en_str':'El Niño Strong','ln_all':'La Niña','ln_weak':'La Niña Weak','ln_mod':'La Niña Moderate','ln_str':'La Niña Strong','neutral':'Neutral'};
-  const periodLabels={'smoke':'Smoke Haze','non_smoke':'Non-Smoke Haze','annual':'Annual'};
-  const forestLabels={'all':'รวม','in_forest':'ในป่า','forest_reserve':'ป่าสงวนฯ','forest_conservation':'ป่าอนุรักษ์','non_forest':'นอกป่า'};
-  document.getElementById('cp-title').textContent=`ปี ${year} vs Baseline [${scaleLabels[scale]||scale}] [${periodLabels[period]||period}] — ${forestLabels[forest]||forest}`;
-
-  const body=document.getElementById('cp-body');
-  body.innerHTML='';
-
-  PROV_9.forEach(prov=>{
-    const bl=CP_BL_CACHE[prov]?.[fkey];
-    if(!bl) return;
-    let cur;
-    if(forest==='in_forest') cur=sumCount(fd(DB.monthly,{year,sensor,months,province:prov}).filter(d=>d.forest_type!=='non_forest'));
-    else cur=sumCount(fd(DB.monthly,{year,sensor,months,province:prov,forest:forest==='all'?undefined:forest}));
-    const diff=cur-bl.mean;
-    const diffP=bl.mean>0?((cur-bl.mean)/bl.mean*100):null;
-    const sdS=cur>bl.mean+bl.sd?'🔴 > Mean+SD':cur<bl.mean-bl.sd?'🟢 < Mean−SD':'🟡 ±SD';
-    const dc=d=>d===null?'dz':d>10?'dp':d<-10?'dn':'dz';
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="prov">${prov}</td>
-      <td class="num">${fmt(bl.mean)}</td>
-      <td class="num">${fmt(bl.sd)}</td>
-      <td class="num"><b>${fmt(cur)}</b></td>
-      <td class="num ${diff>=0?'dp':'dn'}">${diff>=0?'+':''}${fmt(Math.abs(diff))}</td>
-      <td class="num ${dc(diffP)}">${diffP!==null?fmtP(diffP):'—'}</td>
-      <td style="font-size:12px">${sdS}</td>`;
-    body.appendChild(tr);
-  });
-  if(!body.children.length) body.innerHTML='<tr><td colspan="7" class="state-msg">ไม่พบข้อมูล</td></tr>';
-}
-
-// ============================================================
-// DOWNLOAD DAILY
+// DOWNLOAD
 // ============================================================
 function downloadDaily(format){
-  if(!DB.loaded){alert('กรุณาโหลดข้อมูลก่อน');return;}
+  if(!DB.loaded){alert('ยังไม่โหลดข้อมูล');return;}
   const ys=+document.getElementById('dl-ys').value;
   const ms=+document.getElementById('dl-ms').value;
   const ye=+document.getElementById('dl-ye').value;
   const me=+document.getElementById('dl-me').value;
-  const sensor=getSensor();
-  const status=document.getElementById('dl-status');
-
-  // กรองรายวัน (รวมทุกพื้นที่ ไม่แยกป่า)
-  const raw=fd(DB.daily,{sensor,yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
-
-  // aggregate รายวัน × จังหวัด (รวม forest_type)
+  doDownload(ys,ms,ye,me,format,'dl-status','hotspot_daily');
+}
+function downloadDailyForest(format){
+  if(!DB.loaded){alert('ยังไม่โหลดข้อมูล');return;}
+  const ys=+document.getElementById('frdl-ys').value;
+  const ms=+document.getElementById('frdl-ms').value;
+  const ye=+document.getElementById('frdl-ye').value;
+  const me=+document.getElementById('frdl-me').value;
+  doDownload(ys,ms,ye,me,format,'frdl-status','hotspot_daily_forest');
+}
+function doDownload(ys,ms,ye,me,format,statusId,fname){
+  const raw=fd(DB.daily,{yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
   const grouped={};
   raw.forEach(d=>{
     const key=`${d.year}-${String(d.month).padStart(2,'0')}-${String(d.day).padStart(2,'0')}__${d.province_en}`;
-    if(!grouped[key]) grouped[key]={year:d.year,month:d.month,day:d.day,province_th:d.province_th||'',province_en:d.province_en,satellite:d.satellite,instrument:d.instrument,count:0,frp_sum:0};
+    if(!grouped[key])grouped[key]={year:d.year,month:d.month,day:d.day,province_th:d.province_th||'',province_en:d.province_en,satellite:d.satellite,instrument:d.instrument,count:0,frp_sum:0};
     grouped[key].count+=(d.count||0);
     grouped[key].frp_sum+=parseFloat(d.frp_sum||0);
   });
-
-  const rows=Object.values(grouped).sort((a,b)=>{
-    if(a.year!==b.year) return a.year-b.year;
-    if(a.month!==b.month) return a.month-b.month;
-    if(a.day!==b.day) return a.day-b.day;
-    return a.province_en.localeCompare(b.province_en);
-  });
-
+  const rows=Object.values(grouped).sort((a,b)=>a.year-b.year||a.month-b.month||a.day-b.day||a.province_en.localeCompare(b.province_en));
   if(!rows.length){alert('ไม่พบข้อมูล');return;}
-
-  const fname=`hotspot_daily_${ys}${String(ms).padStart(2,'0')}-${ye}${String(me).padStart(2,'0')}`;
   const keys=['year','month','day','province_th','province_en','satellite','instrument','count','frp_sum'];
-
+  const filename=`${fname}_${ys}${String(ms).padStart(2,'0')}-${ye}${String(me).padStart(2,'0')}`;
   if(format==='csv'){
     const csv=[keys.join(','),...rows.map(r=>keys.map(k=>r[k]??'').join(','))].join('\n');
     const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname+'.csv';a.click();
-  } else {
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename+'.csv';a.click();
+  }else{
     const hdr=keys.map(k=>`<th>${k}</th>`).join('');
     const bdy=rows.map(r=>'<tr>'+keys.map(k=>`<td>${r[k]??''}</td>`).join('')+'</tr>').join('');
     const html=`<html><head><meta charset="utf-8"></head><body><table><thead><tr>${hdr}</tr></thead><tbody>${bdy}</tbody></table></body></html>`;
     const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname+'.xls';a.click();
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename+'.xls';a.click();
   }
-  status.textContent=`✓ ${rows.length.toLocaleString('th-TH')} rows`;
-  status.style.color='var(--forest)';
+  document.getElementById(statusId).textContent=`✓ ${rows.length.toLocaleString('th-TH')} rows`;
+  document.getElementById(statusId).style.color='var(--forest)';
 }
 
 // ============================================================
-// NAV + EXPORT + THEME
+// NAV & UTILS
 // ============================================================
 function showPage(name,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nt').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   el.classList.add('active');
-  if(name==='compare') renderCPBaseline();
-  if(name==='ranking') renderRanking();
+  if(name==='compare')renderCPBaseline();
+  if(name==='ranking')renderRanking();
 }
-
 function exportTable(id,name){
   const t=document.getElementById(id);if(!t)return;
   const rows=[...t.querySelectorAll('tr')].map(tr=>[...tr.querySelectorAll('th,td')].map(td=>`"${td.textContent.trim()}"`).join(',')).join('\n');
   const blob=new Blob(['\uFEFF'+rows],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`hotspot_${name}_${new Date().toISOString().slice(0,10)}.csv`;a.click();
 }
-
 function toggleTheme(){
   const d=document.documentElement;
   const n=d.getAttribute('data-theme')==='dark'?'light':'dark';
@@ -1402,13 +1220,12 @@ function toggleTheme(){
   document.getElementById('theme-btn').textContent=n==='dark'?'☀️':'🌙';
   localStorage.setItem('theme',n);
 }
-
 (function(){
   const s=localStorage.getItem('theme')||'light';
   document.documentElement.setAttribute('data-theme',s);
   document.addEventListener('DOMContentLoaded',()=>{
     const b=document.getElementById('theme-btn');
-    if(b) b.textContent=s==='dark'?'☀️':'🌙';
+    if(b)b.textContent=s==='dark'?'☀️':'🌙';
   });
 })();
 
