@@ -23,16 +23,27 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh}
 /* NAV */
-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;height:52px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);gap:4px}
-.nb{font-size:16px;font-weight:600;margin-right:28px;white-space:nowrap}
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.nav-top{display:flex;align-items:center;height:44px;padding:0 20px;gap:8px;border-bottom:1px solid var(--border)}
+.nb{font-size:15px;font-weight:600;margin-right:16px;white-space:nowrap;flex-shrink:0}
 .nb span{color:var(--fire)}
-.nt{padding:0 12px;height:100%;display:flex;align-items:center;font-size:13px;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+/* Sensor tabs — แถวบน */
+.st{padding:0 14px;height:44px;display:flex;align-items:center;font-size:13px;font-weight:500;color:var(--dim);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;gap:5px}
+.st:hover{color:var(--text)}
+.st.active{color:var(--accent);border-bottom-color:var(--accent)}
+.st .dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+.nav-bot{display:flex;align-items:center;height:38px;padding:0 20px;gap:0}
+/* Page tabs — แถวล่าง */
+.nt{padding:0 14px;height:38px;display:flex;align-items:center;font-size:13px;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
 .nt:hover{color:var(--text)}
 .nt.active{color:var(--accent);border-bottom-color:var(--accent)}
 .nr{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .badge{padding:3px 9px;border-radius:3px;font-size:11px;font-family:var(--mono);border:1px solid var(--border)}
 /* LAYOUT */
 main{padding:20px 24px;max-width:1500px;margin:0 auto}
+/* sensor tab colors */
+#st-modis.active{color:var(--fire);border-bottom-color:var(--fire)}
+#st-viirs.active{color:var(--ln);border-bottom-color:var(--ln)}
 .page{display:none}.page.active{display:block}
 /* CONTROLS */
 .ctrl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center;background:var(--surface);padding:10px 14px;border-radius:6px;border:1px solid var(--border)}
@@ -100,16 +111,30 @@ td.prov{font-weight:600;font-size:13px}
 </head>
 <body>
 <nav>
-  <div class="nb">🔥 <span>Hotspot</span> Baseline</div>
-  <div class="nt active" onclick="showPage('overview',this)">ภาพรวม</div>
-  <div class="nt" onclick="showPage('baseline',this)">Baseline</div>
-  <div class="nt" onclick="showPage('forest',this)">แยกพื้นที่ป่า</div>
-  <div class="nt" onclick="showPage('ranking',this)">Ranking</div>
-  <div class="nt" onclick="showPage('compare',this)">เปรียบเทียบปี</div>
-  <div class="nr">
-    <span id="sensor-badge" class="badge" style="display:none"></span>
-    <span id="enso-badge" class="badge">ยังไม่โหลด</span>
-    <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:1px solid var(--border);border-radius:4px;width:30px;height:30px;cursor:pointer;font-size:15px;color:var(--dim)">🌙</button>
+  <!-- แถวบน: Sensor tabs + badge + theme -->
+  <div class="nav-top">
+    <div class="nb">🔥 <span>Hotspot</span> Baseline</div>
+    <div class="st active" id="st-all" onclick="setSensor('all',this)">
+      <span class="dot"></span>MODIS + VIIRs
+    </div>
+    <div class="st" id="st-modis" onclick="setSensor('MODIS',this)">
+      <span class="dot" style="color:#C0440E"></span>MODIS
+    </div>
+    <div class="st" id="st-viirs" onclick="setSensor('VIIRS',this)">
+      <span class="dot" style="color:#1A4F8A"></span>VIIRs
+    </div>
+    <div class="nr">
+      <span id="enso-badge" class="badge">ยังไม่โหลด</span>
+      <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:1px solid var(--border);border-radius:4px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--dim)">🌙</button>
+    </div>
+  </div>
+  <!-- แถวล่าง: Page tabs -->
+  <div class="nav-bot">
+    <div class="nt active" onclick="showPage('overview',this)">ภาพรวม</div>
+    <div class="nt" onclick="showPage('forest',this)">แยกพื้นที่ป่า</div>
+    <div class="nt" onclick="showPage('baseline',this)">Baseline</div>
+    <div class="nt" onclick="showPage('compare',this)">เปรียบเทียบปี</div>
+    <div class="nt" onclick="showPage('ranking',this)">Ranking</div>
   </div>
 </nav>
 <main>
@@ -119,12 +144,7 @@ td.prov{font-weight:600;font-size:13px}
   <div class="ctrl">
     <span class="lsm">ปี</span>
     <select id="ov-year"></select>
-    <span class="lsm">Sensor</span>
-    <select id="ov-sensor">
-      <option value="all">MODIS+VIIRs</option>
-      <option value="MODIS">MODIS</option>
-      <option value="VIIRS">VIIRs</option>
-    </select>
+    
     <span class="lsm">เดือน</span>
     <select id="ov-ms">
       <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3" selected>มี.ค.</option>
@@ -271,10 +291,7 @@ td.prov{font-weight:600;font-size:13px}
           <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
           <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
         </select></div>
-      <div><div class="lsm" style="margin-bottom:5px">Sensor</div>
-        <select id="dl-sensor" style="height:32px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px">
-          <option value="all">MODIS+VIIRs</option><option value="MODIS">MODIS</option><option value="VIIRS">VIIRs</option>
-        </select></div>
+      
       <button class="btn btn-p" onclick="downloadDaily('csv')">⬇ CSV</button>
       <button class="btn" onclick="downloadDaily('excel')">⬇ Excel</button>
       <span id="dl-status" style="font-size:12px;color:var(--dim)"></span>
@@ -314,12 +331,7 @@ td.prov{font-weight:600;font-size:13px}
       <option value="non_smoke">Non-Smoke (JJA–SON)</option>
       <option value="annual">Annual</option>
     </select>
-    <span class="lsm">Sensor</span>
-    <select id="bl-sensor">
-      <option value="all">MODIS+VIIRs</option>
-      <option value="MODIS">MODIS</option>
-      <option value="VIIRS">VIIRs</option>
-    </select>
+    
     <span class="lsm">พื้นที่</span>
     <select id="bl-forest">
       <option value="all">ทั้งหมด</option>
@@ -395,10 +407,7 @@ td.prov{font-weight:600;font-size:13px}
 <!-- ========== FOREST ========== -->
 <div class="page" id="page-forest">
   <div class="ctrl">
-    <span class="lsm">Sensor</span>
-    <select id="fr-sensor">
-      <option value="all">MODIS+VIIRs</option><option value="MODIS">MODIS</option><option value="VIIRS">VIIRs</option>
-    </select>
+    
     <span class="lsm">แสดงเป็น</span>
     <select id="fr-groupby">
       <option value="monthly">รายเดือน</option>
@@ -465,10 +474,7 @@ td.prov{font-weight:600;font-size:13px}
       <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
       <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
     </select>
-    <span class="lsm">Sensor</span>
-    <select id="rk-sensor">
-      <option value="all">MODIS+VIIRs</option><option value="MODIS">MODIS</option><option value="VIIRS">VIIRs</option>
-    </select>
+    
     <span class="lsm">ช่องที่ 2 แสดง</span>
     <select id="rk-forest2" onchange="renderRanking()">
       <option value="in_forest">พื้นที่ป่า (รวม)</option>
@@ -523,12 +529,7 @@ td.prov{font-weight:600;font-size:13px}
         <option value="non_smoke">Non-Smoke Haze (JJA–SON)</option>
         <option value="annual">Annual</option>
       </select>
-      <span class="lsm">Sensor</span>
-      <select id="cp-sensor" style="height:32px;font-size:13px">
-        <option value="all">MODIS+VIIRs</option>
-        <option value="MODIS">MODIS</option>
-        <option value="VIIRS">VIIRs</option>
-      </select>
+      
       <button class="btn btn-p" onclick="renderCPBaseline()">คำนวณ Baseline</button>
       <span id="cp-bl-info" style="font-size:11px;color:var(--dim)"></span>
     </div>
@@ -596,8 +597,33 @@ const BASE = './data';
 const PROV_9 = ['CHIANG MAI','CHIANG RAI','MAE HONG SON','LAMPANG','LAMPHUN','NAN','PHAYAO','PHRAE','TAK'];
 const PROV_8 = ['CHIANG MAI','CHIANG RAI','MAE HONG SON','LAMPANG','LAMPHUN','NAN','PHAYAO','PHRAE'];
 
+// Global sensor state — ใช้ทุกหน้า
+let G_SENSOR = 'all';
+
 let BL_DATA = {};
 let BL_SEL  = new Set();
+
+// ============================================================
+// GLOBAL SENSOR SELECTOR
+// ============================================================
+function setSensor(sensor, el) {
+  G_SENSOR = sensor;
+  // อัปเดต UI tabs
+  document.querySelectorAll('.st').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  // re-render หน้าที่กำลังแสดงอยู่
+  const activePage = document.querySelector('.page.active');
+  if (!activePage) return;
+  const pageId = activePage.id;
+  if (pageId === 'page-overview')  renderOverview();
+  if (pageId === 'page-forest')    renderForest();
+  if (pageId === 'page-baseline')  { /* ให้ผู้ใช้กด "คำนวณ Baseline" เอง */ }
+  if (pageId === 'page-ranking')   renderRanking();
+  if (pageId === 'page-compare')   renderCPBaseline();
+}
+
+// ฟังก์ชัน helper ดึง sensor ปัจจุบัน
+function getSensor() { return G_SENSOR; }
 
 // ============================================================
 // LOAD
@@ -891,7 +917,7 @@ function onScaleChange(){
 function renderOverview(){
   if(!DB.loaded) return;
   const year=+document.getElementById('ov-year').value;
-  const sensor=document.getElementById('ov-sensor').value;
+  const sensor=getSensor();
   const ms=+document.getElementById('ov-ms').value;
   const me=+document.getElementById('ov-me').value;
   const months=[];
@@ -935,7 +961,7 @@ function renderOverview(){
 function renderOvTable(){
   if(!DB.loaded) return;
   const year=+document.getElementById('ov-year').value;
-  const sensor=document.getElementById('ov-sensor').value;
+  const sensor=getSensor();
   const ms=+document.getElementById('ov-ms').value;
   const me=+document.getElementById('ov-me').value;
   const months=[];
@@ -1009,7 +1035,7 @@ function renderOvMonthly(year,sensor,months){
 function renderBaseline(){
   if(!DB.loaded) return;
   const period=document.getElementById('bl-period').value;
-  const sensor=document.getElementById('bl-sensor').value;
+  const sensor=getSensor();
   const forest=document.getElementById('bl-forest').value;
   const months=PM[period];
   const validYears=[...BL_SEL].sort();
@@ -1079,7 +1105,7 @@ function renderBLCompare(){
   if(!Object.keys(BL_DATA).length){alert('กรุณาคำนวณ Baseline ก่อน');return;}
   const year=+document.getElementById('bl-cmp-year').value;
   const period=document.getElementById('bl-period').value;
-  const sensor=document.getElementById('bl-sensor').value;
+  const sensor=getSensor();
   const forest=document.getElementById('bl-forest').value;
   const months=PM[period];
   const body=document.getElementById('bl-cmp-body');
@@ -1107,7 +1133,7 @@ function renderBLCompare(){
 // ============================================================
 function renderForest(){
   if(!DB.loaded) return;
-  const sensor=document.getElementById('fr-sensor').value;
+  const sensor=getSensor();
   const groupby=document.getElementById('fr-groupby').value;
   const ys=+document.getElementById('fr-ys').value;
   const ms=+document.getElementById('fr-ms').value;
@@ -1166,7 +1192,7 @@ function renderRanking(){
   if(!DB.loaded) return;
   const year=+document.getElementById('rk-year').value;
   const month=+document.getElementById('rk-month').value;
-  const sensor=document.getElementById('rk-sensor').value;
+  const sensor=getSensor();
   const forest2=document.getElementById('rk-forest2').value;
   const months=month===0?null:[month];
   const provinces=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
@@ -1216,7 +1242,7 @@ function renderCPBaseline(){
   if(!DB.loaded) return;
   const scale=document.getElementById('cp-scale').value;
   const period=document.getElementById('cp-period').value;
-  const sensor=document.getElementById('cp-sensor').value;
+  const sensor=getSensor();
   const months=PM[period];
   const years=getYearsForScale(scale,period);
   CP_BL_CACHE={};
@@ -1263,7 +1289,7 @@ function renderCompare(){
   const year=+document.getElementById('cp-year').value;
   const forest=document.getElementById('cp-forest').value;
   const period=document.getElementById('cp-period').value;
-  const sensor=document.getElementById('cp-sensor').value;
+  const sensor=getSensor();
   const months=PM[period];
   const scale=document.getElementById('cp-scale').value;
 
@@ -1308,7 +1334,7 @@ function downloadDaily(format){
   const ms=+document.getElementById('dl-ms').value;
   const ye=+document.getElementById('dl-ye').value;
   const me=+document.getElementById('dl-me').value;
-  const sensor=document.getElementById('dl-sensor').value;
+  const sensor=getSensor();
   const status=document.getElementById('dl-status');
 
   // กรองรายวัน (รวมทุกพื้นที่ ไม่แยกป่า)
@@ -1359,6 +1385,7 @@ function showPage(name,el){
   document.getElementById('page-'+name).classList.add('active');
   el.classList.add('active');
   if(name==='compare') renderCPBaseline();
+  if(name==='ranking') renderRanking();
 }
 
 function exportTable(id,name){

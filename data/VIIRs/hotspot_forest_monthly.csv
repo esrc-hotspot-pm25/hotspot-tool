@@ -1,4 +1,91 @@
 year,month,province_th,province_en,satellite,instrument,forest_type,count,frp_mean,frp_sum
+2012,1,ตาก,TAK,N,VIIRS,forest_conservation,42,3.5,139.89
+2012,1,ตาก,TAK,N,VIIRS,forest_reserve,797,4.26,3127.11
+2012,1,ตาก,TAK,N,VIIRS,non_forest,79,4.5,325.13
+2012,1,น่าน,NAN,N,VIIRS,forest_reserve,51,5.05,238.3
+2012,1,น่าน,NAN,N,VIIRS,non_forest,10,3.23,28.56
+2012,1,พะเยา,PHAYAO,N,VIIRS,forest_conservation,1,5.86,5.86
+2012,1,พะเยา,PHAYAO,N,VIIRS,forest_reserve,89,4.86,365.96
+2012,1,พะเยา,PHAYAO,N,VIIRS,non_forest,99,7.01,492.32
+2012,1,ลำปาง,LAMPANG,N,VIIRS,forest_conservation,4,1.98,8.04
+2012,1,ลำปาง,LAMPANG,N,VIIRS,forest_reserve,505,5.14,2339.17
+2012,1,ลำปาง,LAMPANG,N,VIIRS,non_forest,123,4.68,560.91
+2012,1,ลำพูน,LAMPHUN,N,VIIRS,forest_reserve,289,3.91,1079.85
+2012,1,ลำพูน,LAMPHUN,N,VIIRS,non_forest,73,4.07,323.75
+2012,1,เชียงราย,CHIANG RAI,N,VIIRS,forest_conservation,1,25.45,25.45
+2012,1,เชียงราย,CHIANG RAI,N,VIIRS,forest_reserve,145,7.53,1029.65
+2012,1,เชียงราย,CHIANG RAI,N,VIIRS,non_forest,115,4.81,497.51
+2012,1,เชียงใหม่,CHIANG MAI,N,VIIRS,forest_conservation,25,2.31,68.58
+2012,1,เชียงใหม่,CHIANG MAI,N,VIIRS,forest_reserve,639,4.8,2591.64
+2012,1,เชียงใหม่,CHIANG MAI,N,VIIRS,non_forest,50,3.92,197.43
+2012,1,แพร่,PHRAE,N,VIIRS,forest_reserve,99,4.16,416.53
+2012,1,แพร่,PHRAE,N,VIIRS,non_forest,29,7.54,184.99
+2012,1,แม่ฮ่องสอน,MAE HONG SON,N,VIIRS,forest_conservation,56,3.76,184.6
+2012,1,แม่ฮ่องสอน,MAE HONG SON,N,VIIRS,forest_reserve,39,4.37,181.65
+2012,1,แม่ฮ่องสอน,MAE HONG SON,N,VIIRS,non_forest,6,2.83,14.6
+2012,1,NA,NA,N,VIIRS,forest_conservation,137,10.37,2080.92
+2012,1,NA,NA,N,VIIRS,forest_reserve,1074,4.97,5351.67
+2012,1,NA,NA,N,VIIRS,non_forest,45113,6.13,283392.38
+2012,2,ตาก,TAK,N,VIIRS,forest_conservation,721,4.54,3998.85
+2012,2,ตาก,TAK,N,VIIRS,forest_reserve,5906,7.4,54443.5
+2012,2,ตาก,TAK,N,VIIRS,non_forest,455,5.84,2876.17
+2012,2,น่าน,NAN,N,VIIRS,forest_conservation,6,4.52,31.19
+2012,2,น่าน,NAN,N,VIIRS,forest_reserve,2224,8.14,25074.59
+2012,2,น่าน,NAN,N,VIIRS,non_forest,201,6.4,1907.51
+2012,2,พะเยา,PHAYAO,N,VIIRS,forest_conservation,33,4.08,136.38
+2012,2,พะเยา,PHAYAO,N,VIIRS,forest_reserve,1210,4.65,5984.68
+2012,2,พะเยา,PHAYAO,N,VIIRS,non_forest,262,5.39,1423.15
+2012,2,ลำปาง,LAMPANG,N,VIIRS,forest_conservation,57,5.69,350.53
+2012,2,ลำปาง,LAMPANG,N,VIIRS,forest_reserve,3591,5.37,22121.17
+2012,2,ลำปาง,LAMPANG,N,VIIRS,non_forest,363,6.05,1927.41
+2012,2,ลำพูน,LAMPHUN,N,VIIRS,forest_conservation,25,5.38,149.36
+2012,2,ลำพูน,LAMPHUN,N,VIIRS,forest_reserve,1892,5.4,11544.75
+2012,2,ลำพูน,LAMPHUN,N,VIIRS,non_forest,288,6.22,2158.67
+2012,2,เชียงราย,CHIANG RAI,N,VIIRS,forest_conservation,9,4.93,45.52
+2012,2,เชียงราย,CHIANG RAI,N,VIIRS,forest_reserve,2161,9.2,16839.16
+2012,2,เชียงราย,CHIANG RAI,N,VIIRS,non_forest,373,5.81,2538.89
+2012,2,เชียงใหม่,CHIANG MAI,N,VIIRS,forest_conservation,144,4.03,584.87
+2012,2,เชียงใหม่,CHIANG MAI,N,VIIRS,forest_reserve,7202,5.84,46915.65
+2012,2,เชียงใหม่,CHIANG MAI,N,VIIRS,non_forest,260,5.79,1802.66
+2012,2,แพร่,PHRAE,N,VIIRS,forest_conservation,5,5.58,26.58
+2012,2,แพร่,PHRAE,N,VIIRS,forest_reserve,1475,7.4,11243.11
+2012,2,แพร่,PHRAE,N,VIIRS,non_forest,156,9.34,1621.23
+2012,2,แม่ฮ่องสอน,MAE HONG SON,N,VIIRS,forest_conservation,1241,5.47,6665.92
+2012,2,แม่ฮ่องสอน,MAE HONG SON,N,VIIRS,forest_reserve,2696,5.16,16625.14
+2012,2,แม่ฮ่องสอน,MAE HONG SON,N,VIIRS,non_forest,120,4.41,566.94
+2012,2,NA,NA,N,VIIRS,forest_conservation,1554,6.86,10880.64
+2012,2,NA,NA,N,VIIRS,forest_reserve,13424,5.84,84528.24
+2012,2,NA,NA,N,VIIRS,non_forest,266021,6.22,1732866.21
+2012,3,ตาก,TAK,N,VIIRS,forest_conservation,317,5.07,1594.53
+2012,3,ตาก,TAK,N,VIIRS,forest_reserve,4908,15.54,77019.21
+2012,3,ตาก,TAK,N,VIIRS,non_forest,322,5.31,1851
+2012,3,น่าน,NAN,N,VIIRS,forest_conservation,24,15.37,436.07
+2012,3,น่าน,NAN,N,VIIRS,forest_reserve,7663,10.5,95221.98
+2012,3,น่าน,NAN,N,VIIRS,non_forest,557,8.39,5542.46
+2012,3,พะเยา,PHAYAO,N,VIIRS,forest_conservation,29,2.28,66.65
+2012,3,พะเยา,PHAYAO,N,VIIRS,forest_reserve,1613,8.7,14040.69
+2012,3,พะเยา,PHAYAO,N,VIIRS,non_forest,167,6.08,890.9
+2012,3,ลำปาง,LAMPANG,N,VIIRS,forest_conservation,22,8.41,136.32
+2012,3,ลำปาง,LAMPANG,N,VIIRS,forest_reserve,2361,6.46,17255.77
+2012,3,ลำปาง,LAMPANG,N,VIIRS,non_forest,301,4.93,1626.45
+2012,3,ลำพูน,LAMPHUN,N,VIIRS,forest_conservation,6,8.23,56.43
+2012,3,ลำพูน,LAMPHUN,N,VIIRS,forest_reserve,431,5.08,2207.23
+2012,3,ลำพูน,LAMPHUN,N,VIIRS,non_forest,116,4.89,694.4
+2012,3,เชียงราย,CHIANG RAI,N,VIIRS,forest_conservation,86,8.47,857.9
+2012,3,เชียงราย,CHIANG RAI,N,VIIRS,forest_reserve,3868,7.1,31484.57
+2012,3,เชียงราย,CHIANG RAI,N,VIIRS,non_forest,266,5.1,1464.08
+2012,3,เชียงใหม่,CHIANG MAI,N,VIIRS,forest_conservation,85,3.96,413.63
+2012,3,เชียงใหม่,CHIANG MAI,N,VIIRS,forest_reserve,6470,14.13,89500.01
+2012,3,เชียงใหม่,CHIANG MAI,N,VIIRS,non_forest,252,7.17,1880.05
+2012,3,แพร่,PHRAE,N,VIIRS,forest_conservation,15,5.35,77.46
+2012,3,แพร่,PHRAE,N,VIIRS,forest_reserve,1614,6.92,12384.35
+2012,3,แพร่,PHRAE,N,VIIRS,non_forest,199,6.84,1324
+2012,3,แม่ฮ่องสอน,MAE HONG SON,N,VIIRS,forest_conservation,1299,5.44,7353.98
+2012,3,แม่ฮ่องสอน,MAE HONG SON,N,VIIRS,forest_reserve,8286,12.82,99561.76
+2012,3,แม่ฮ่องสอน,MAE HONG SON,N,VIIRS,non_forest,498,14.45,11370.86
+2012,3,NA,NA,N,VIIRS,forest_conservation,1164,6.18,7965.54
+2012,3,NA,NA,N,VIIRS,forest_reserve,11196,5.66,63588.97
+2012,3,NA,NA,N,VIIRS,non_forest,531784,9.9,5931746.3
 2012,4,ตาก,TAK,N,VIIRS,forest_conservation,12,4.92,54.17
 2012,4,ตาก,TAK,N,VIIRS,forest_reserve,274,5.36,1500.44
 2012,4,ตาก,TAK,N,VIIRS,non_forest,80,5.26,451.79
