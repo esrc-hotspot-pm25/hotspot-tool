@@ -120,6 +120,22 @@ td.prov{font-weight:600}
     <div class="st" id="st-viirs" onclick="setSensor('VIIRS',this)"><span class="st-dot" style="color:var(--ln)"></span>VIIRs</div>
     <div class="nr">
       <span id="enso-badge" class="badge">ยังไม่โหลด</span>
+      <!-- Sensor info popup -->
+      <div class="tooltip">
+        <span id="sensor-info-btn" style="font-size:11px;color:var(--dim);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-family:var(--mono);cursor:default;background:var(--s2)">ℹ️ Sensor</span>
+        <span class="tip" style="right:0;left:auto;transform:none;min-width:240px;text-align:left">
+          <b>📡 MODIS</b><br>
+          Terra (EOS AM-1) — เวลาผ่าน ~10:30<br>
+          Aqua (EOS PM-1) — เวลาผ่าน ~13:30<br>
+          Collection 6.1 (C6.1)<br>
+          ขนาด pixel: 1×1 km<br><br>
+          <b>🛰️ VIIRs</b><br>
+          Suomi-NPP — เวลาผ่าน ~13:30<br>
+          NOAA-20 (N) — เวลาผ่าน ~13:30<br>
+          Collection 2 (C2)<br>
+          ขนาด pixel: 375×375 m
+        </span>
+      </div>
       <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:1px solid var(--border);border-radius:4px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--dim)">🌙</button>
     </div>
   </div>
@@ -173,7 +189,7 @@ td.prov{font-weight:600}
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
       <span style="font-size:12px;font-weight:600;color:var(--dim)">ENSO รายปี 2012–2026</span>
       <span class="lsm">จำแนกตาม</span>
-      <select id="ov-enso-period" onchange="buildEnsoStrip();renderOvTable()" style="height:28px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px">
+      <select id="ov-enso-period" onchange="buildEnsoStrip()" style="height:28px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px">
         <option value="smoke">Smoke Haze (JFM–AMJ)</option>
         <option value="non_smoke">Non-Smoke Haze (JJA–SON)</option>
         <option value="annual">Annual (JJA–MJJ)</option>
@@ -191,15 +207,12 @@ td.prov{font-weight:600}
     <div class="estrip" id="enso-strip"></div>
   </div>
 
-  <!-- ตารางรายปี × จังหวัด -->
+  <!-- ตารางรายปี × จังหวัด (ENSO column ตาม strip period) -->
   <div class="tw">
     <div class="th2">
       <div class="tt">สรุปรายปี — แยกจังหวัด</div>
       <div style="display:flex;gap:6px;align-items:center">
-        <span class="lsm">ENSO คอลัมน์ตาม</span>
-        <select id="ov-tbl-period" onchange="renderOvTable()" style="height:28px;font-size:12px">
-          <option value="smoke">Smoke Haze</option><option value="non_smoke">Non-Smoke</option><option value="annual">Annual</option>
-        </select>
+        <span id="ov-tbl-period-lbl" style="font-size:11px;color:var(--dim)">ENSO: Smoke Haze</span>
         <button class="btn bsm" onclick="exportTable('ov-yr-table','overview_yearly')">⬇ Export</button>
       </div>
     </div>
@@ -683,26 +696,37 @@ function init(){
 }
 
 // ============================================================
-// ENSO STRIP (9 สภาวะย่อย)
+// ENSO STRIP (9 สภาวะย่อย — ชื่อเต็ม)
 // ============================================================
 function buildEnsoStrip(){
   const strip=document.getElementById('enso-strip');
   if(!strip)return;
   strip.innerHTML='';
   const period=(document.getElementById('ov-enso-period')||{}).value||'smoke';
+
+  // อัปเดต label บน table header ให้ sync
+  const periodFull={smoke:'Smoke Haze (JFM–AMJ)',non_smoke:'Non-Smoke Haze (JJA–SON)',annual:'Annual (JJA–MJJ)'};
+  const lblEl=document.getElementById('ov-tbl-period-lbl');
+  if(lblEl) lblEl.textContent=`ENSO จำแนกตาม: ${periodFull[period]||period}`;
+
   DB.enso.forEach(row=>{
     const{cat,type}=getEnso(+row.year,period);
     const ec=eClass(cat);
     const str=eStrength(type);
     const lbl=ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N';
-    // sub-label แสดงความรุนแรง
     const sub=str==='strong'?'S':str==='moderate'?'M':str==='weak'?'W':'';
+    const textColor=ec==='el-nino'?'var(--en)':ec==='la-nina'?'var(--ln)':'var(--dim)';
     const d=document.createElement('div');
     d.className='eyr';
     d.title=`${row.year}: ${type}`;
-    d.innerHTML=`<div class="ebar ${str} ${ec}">${lbl}${sub?'<span style="font-size:8px">'+sub+'</span>':''}</div><div class="eyr-lbl">${row.year}</div>`;
+    d.innerHTML=`<div class="ebar ${str} ${ec}">${lbl}${sub?'<span style="font-size:7px">'+sub+'</span>':''}</div>
+      <div class="eyr-lbl">${row.year}</div>
+      <div style="font-size:8px;color:${textColor};font-family:var(--mono);text-align:center;white-space:nowrap;max-width:36px;overflow:hidden;text-overflow:ellipsis" title="${type}">${type}</div>`;
     strip.appendChild(d);
   });
+
+  // sync ตาราง ENSO column
+  if(DB.loaded) renderOvTable();
 }
 
 // ============================================================
@@ -799,15 +823,13 @@ function renderOvTable(){
   const ms=+document.getElementById('ov-ms').value;
   const me=+document.getElementById('ov-me').value;
   const months=[];for(let m=ms;m<=me;m++)months.push(m);
-  // ใช้ period จาก dropdown ตาราง (sync กับ strip)
-  const ep=(document.getElementById('ov-tbl-period')||{}).value||'smoke';
-  // sync strip ถ้ายังไม่ตรง
-  const stripSel=document.getElementById('ov-enso-period');
-  if(stripSel&&stripSel.value!==ep){stripSel.value=ep;buildEnsoStrip();}
+  // ใช้ period จาก ov-enso-period เพียงจุดเดียว
+  const ep=(document.getElementById('ov-enso-period')||{}).value||'smoke';
+  const epLabel={'smoke':'Smoke Haze','non_smoke':'Non-Smoke Haze','annual':'Annual'}[ep]||ep;
 
   const years=[...new Set(DB.monthly.map(d=>d.year).filter(y=>y&&!isNaN(y)))].sort((a,b)=>a-b);
   const head=document.getElementById('ov-yr-head');
-  head.innerHTML=`<tr><th>ปี</th><th>ENSO (${ep})</th>${P9.map(p=>`<th style="text-align:right">${P9_TH[p]||p}</th>`).join('')}<th style="text-align:right">รวม 8 จว.</th><th style="text-align:right">รวม 9 จว.</th></tr>`;
+  head.innerHTML=`<tr><th>ปี</th><th>ENSO — ${epLabel}</th>${P9.map(p=>`<th style="text-align:right">${P9_TH[p]||p}</th>`).join('')}<th style="text-align:right">รวม 8 จว.</th><th style="text-align:right">รวม 9 จว.</th></tr>`;
   const body=document.getElementById('ov-yr-body');
   body.innerHTML='';
   years.forEach(yr=>{
@@ -920,12 +942,14 @@ function buildYearToggle(years){
   const c=document.getElementById('bl-toggle');if(!c)return;
   c.innerHTML='';
   years.forEach(yr=>{
-    const{cat,type}=getEnso(yr,'smoke');
+    const period=(document.getElementById('bl-period')||{}).value||'smoke';
+    const{cat,type}=getEnso(yr,period);
     const ec=eClass(cat);const str=eStrength(type);
     const btn=document.createElement('button');
     btn.className=`yr-btn ${ec}`;btn.dataset.year=yr;
     btn.title=`${yr}: ${type}`;
-    btn.innerHTML=`${yr}<br><span style="font-size:9px;opacity:.75">${ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N'}${str==='strong'?'S':str==='moderate'?'M':str==='weak'?'W':''}</span>`;
+    // แสดงชื่อเต็มใต้ปี
+    btn.innerHTML=`${yr}<br><span style="font-size:8px;opacity:.85;font-weight:500">${type}</span>`;
     btn.onclick=()=>toggleYear(yr,btn);
     c.appendChild(btn);
   });
