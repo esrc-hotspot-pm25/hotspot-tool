@@ -242,30 +242,39 @@ td.prov{font-weight:600}
 
 <!-- ===FOREST=== -->
 <div class="page" id="page-forest">
+  <!-- Controls เหมือนหน้าภาพรวม -->
   <div class="ctrl">
-    <span class="lsm">แสดงเป็น</span>
-    <select id="fr-groupby" onchange="onFrGroupByChange()"><option value="monthly">รายเดือน</option><option value="yearly">รายปี</option><option value="daily">รายวัน</option></select>
-    <span class="lsm">ตั้งแต่</span>
-    <select id="fr-ys"></select>
+    <span class="lsm">ปี</span>
+    <select id="fr-year"></select>
+    <span class="lsm">เดือน</span>
     <select id="fr-ms"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3" selected>มี.ค.</option><option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select>
     <span class="lsm">ถึง</span>
-    <select id="fr-ye"></select>
     <select id="fr-me"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option><option value="4" selected>เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select>
-    <span class="lsm">จังหวัด</span>
-    <select id="fr-province"><option value="all">ทั้งหมด</option></select>
     <button class="btn bp" onclick="renderForest()">แสดงผล</button>
-    <button class="btn" onclick="exportTable('fr-table','forest')">⬇ Export</button>
   </div>
+
+  <!-- Summary cards เหมือนหน้าภาพรวม -->
+  <div style="margin-bottom:14px">
+    <div style="font-size:11px;font-weight:600;color:var(--dim);margin-bottom:6px">9 จังหวัด — <span id="fr-year-lbl" style="color:var(--acc)"></span></div>
+    <div style="display:grid;grid-template-columns:repeat(9,1fr);gap:6px" id="fr-prov-cards"></div>
+  </div>
+
+  <!-- Summary cards รวม -->
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
-    <div class="card" style="border-left:4px solid var(--fire)"><div class="card-lbl">ป่าสงวนฯ</div><div class="card-val" id="fr-r" style="color:var(--fire)">—</div></div>
-    <div class="card" style="border-left:4px solid var(--prot)"><div class="card-lbl">ป่าอนุรักษ์</div><div class="card-val" id="fr-p" style="color:var(--prot)">—</div></div>
-    <div class="card" style="border-left:4px solid var(--forest)"><div class="card-lbl">นอกป่า</div><div class="card-val" id="fr-n" style="color:var(--forest)">—</div></div>
-    <div class="card" style="border-left:4px solid var(--acc)"><div class="card-lbl">รวม</div><div class="card-val" id="fr-t" style="color:var(--acc)">—</div></div>
+    <div class="card" style="border-left:4px solid var(--fire)"><div class="card-lbl">ป่าสงวนฯ (9 จว.)</div><div class="card-val" id="fr-r" style="color:var(--fire)">—</div></div>
+    <div class="card" style="border-left:4px solid var(--prot)"><div class="card-lbl">ป่าอนุรักษ์ (9 จว.)</div><div class="card-val" id="fr-p" style="color:var(--prot)">—</div></div>
+    <div class="card" style="border-left:4px solid var(--forest)"><div class="card-lbl">นอกป่า (9 จว.)</div><div class="card-val" id="fr-n" style="color:var(--forest)">—</div></div>
+    <div class="card" style="border-left:4px solid var(--acc)"><div class="card-lbl">รวม (9 จว.)</div><div class="card-val" id="fr-t" style="color:var(--acc)">—</div></div>
   </div>
   <div class="tw">
     <div class="th2">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="tt" id="fr-title">แยกพื้นที่ป่า</div>
+        <select id="fr-groupby" onchange="onFrGroupByChange()" style="height:28px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);padding:0 8px">
+          <option value="yearly">รายปี</option>
+          <option value="monthly">รายเดือน</option>
+          <option value="daily">รายวัน</option>
+        </select>
         <!-- ปุ่มเลื่อน (แสดงเฉพาะรายวัน) -->
         <div id="fr-nav" style="display:none;align-items:center;gap:6px">
           <button class="btn bsm" onclick="navMonthFr(-1)">← ก่อนหน้า</button>
@@ -690,7 +699,7 @@ function setSensor(sensor,el){
 function init(){
   const years=[...new Set([...DB.monthly.map(d=>d.year),...DB.yearly.map(d=>d.year)])].filter(y=>y&&!isNaN(y)).sort((a,b)=>a-b);
   const provs=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
-  ['ov-year','rk-year','cp-year'].forEach(id=>{
+  ['ov-year','fr-year','rk-year','cp-year'].forEach(id=>{
     const s=document.getElementById(id);if(!s)return;
     years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;s.appendChild(o);});
     s.value=years[years.length-1];
@@ -998,6 +1007,7 @@ function renderOvTable(){ renderOvMainTable(); }
 // FOREST (แยกพื้นที่ป่า) — คอลัมน์จังหวัด × แถวเวลา
 // ============================================================
 let FR_NAV_YEAR=2024, FR_NAV_MONTH=3;
+let FR_NAV_MIN_Y=2012, FR_NAV_MIN_M=1, FR_NAV_MAX_Y=2026, FR_NAV_MAX_M=12;
 
 function onFrGroupByChange(){
   const gb=document.getElementById('fr-groupby').value;
@@ -1009,21 +1019,46 @@ function navMonthFr(dir){
   FR_NAV_MONTH+=dir;
   if(FR_NAV_MONTH>12){FR_NAV_MONTH=1;FR_NAV_YEAR++;}
   if(FR_NAV_MONTH<1){FR_NAV_MONTH=12;FR_NAV_YEAR--;}
+  // clamp
+  if(FR_NAV_YEAR<FR_NAV_MIN_Y||(FR_NAV_YEAR===FR_NAV_MIN_Y&&FR_NAV_MONTH<FR_NAV_MIN_M)){FR_NAV_YEAR=FR_NAV_MIN_Y;FR_NAV_MONTH=FR_NAV_MIN_M;}
+  if(FR_NAV_YEAR>FR_NAV_MAX_Y||(FR_NAV_YEAR===FR_NAV_MAX_Y&&FR_NAV_MONTH>FR_NAV_MAX_M)){FR_NAV_YEAR=FR_NAV_MAX_Y;FR_NAV_MONTH=FR_NAV_MAX_M;}
   renderForest();
 }
 
 function renderForest(){
   if(!DB.loaded)return;
   const gb=document.getElementById('fr-groupby').value;
-  const ys=+document.getElementById('fr-ys').value;
+  const year=+document.getElementById('fr-year').value;
   const ms=+document.getElementById('fr-ms').value;
-  const ye=+document.getElementById('fr-ye').value;
   const me=+document.getElementById('fr-me').value;
+  const ys=year, ye=year;
 
-  // set nav range
-  FR_NAV_YEAR=ys; FR_NAV_MONTH=ms;
+  // set nav range (ภายในปีและเดือนที่เลือก)
+  FR_NAV_MIN_Y=ys; FR_NAV_MIN_M=ms;
+  FR_NAV_MAX_Y=ye; FR_NAV_MAX_M=me;
+  if(FR_NAV_YEAR<FR_NAV_MIN_Y||(FR_NAV_YEAR===FR_NAV_MIN_Y&&FR_NAV_MONTH<FR_NAV_MIN_M)){FR_NAV_YEAR=FR_NAV_MIN_Y;FR_NAV_MONTH=FR_NAV_MIN_M;}
+  if(FR_NAV_YEAR>FR_NAV_MAX_Y||(FR_NAV_YEAR===FR_NAV_MAX_Y&&FR_NAV_MONTH>FR_NAV_MAX_M)){FR_NAV_YEAR=FR_NAV_MAX_Y;FR_NAV_MONTH=FR_NAV_MAX_M;}
 
-  document.getElementById('fr-title').textContent=`แยกพื้นที่ป่า — ${ys}/${MTH[ms]} ถึง ${ye}/${MTH[me]}`;
+  document.getElementById('fr-title').textContent=`แยกพื้นที่ป่า`;
+  const frYrLbl=document.getElementById('fr-year-lbl');
+  if(frYrLbl)frYrLbl.textContent=`ปี ${year} (${MTH[ms]}–${MTH[me]})`;
+
+  // Province cards รายจังหวัด (รวมทั้งหมด)
+  const frPC=document.getElementById('fr-prov-cards');
+  if(frPC&&frPC.children.length===0){
+    P9.forEach(p=>{
+      const div=document.createElement('div');
+      div.className='card';div.style.borderTop='3px solid var(--fire)';div.style.textAlign='center';
+      div.innerHTML=`<div style="font-size:10px;color:var(--dim);margin-bottom:3px">${P9_TH[p]||p}</div>
+        <div style="font-size:16px;font-weight:600;font-family:var(--mono);color:var(--fire)" id="frpc-${p.replace(/ /g,'_')}">—</div>`;
+      frPC.appendChild(div);
+    });
+  }
+  const months2=[];for(let m=ms;m<=me;m++)months2.push(m);
+  P9.forEach(p=>{
+    const el=document.getElementById(`frpc-${p.replace(/ /g,'_')}`);
+    if(el)el.textContent=fmt(sC(fd(DB.monthly,{year,months:months2,province:p})));
+  });
 
   // Summary cards
   const allFdata=fd(gb==='yearly'?DB.yearly:DB.monthly,{yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
@@ -1063,19 +1098,36 @@ function renderForest(){
       <td class="num"${bg?` style="background:${bg}"`:''}><span class="fb-n">${fmt(v.n)}</span></td>`;
   }
   function makeStatRowsFR(matrix){
-    // matrix: array ของ array [{r,p,n,t} x P9] per row
+    // matrix: array ของ {provVals:[{r,p,n,t}×9], v8:{r,p,n,t}, v9:{r,p,n,t}} per row
     if(!matrix.length)return;
-    const cols=P9.length+2; // 9 จว + 2 รวม
+    const keys=['t','r','p','n'];
     ['เฉลี่ย (Mean)','ส่วนเบี่ยงเบนมาตรฐาน (SD)'].forEach((label,idx)=>{
       const tr=document.createElement('tr');
       tr.style.cssText=`background:rgba(37,99,168,.0${idx?2:4});font-style:italic`;
       let cells=`<td style="color:${idx?'var(--dim)':'var(--acc)'};font-size:12px;font-weight:${idx?400:600}">${label}</td>`;
-      for(let ci=0;ci<cols;ci++){
-        const vals=matrix.map(row=>row[ci]);
-        const stat=idx===0?vals.reduce((a,b)=>a+b,0)/vals.length:Math.sqrt(vals.reduce((s,v,_,a)=>s+(v-a.reduce((x,y)=>x+y,0)/a.length)**2,0)/vals.length);
-        const bg=ci>=P9.length?(ci===P9.length?'rgba(123,63,160,.05)':'rgba(26,92,138,.05)'):'';
-        cells+=`<td class="num" style="color:${idx?'var(--dim)':'var(--acc)'};${bg?'background:'+bg:''}">${fmt(stat)}</td>`;
-      }
+      // แต่ละจังหวัด 4 sub-col
+      P9.forEach((_,pi)=>{
+        keys.forEach(k=>{
+          const vals=matrix.map(row=>row.provVals[pi][k]||0);
+          const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+          const stat=idx===0?mean:Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
+          cells+=`<td class="num" style="color:${idx?'var(--dim)':'var(--acc)'}">${fmt(stat)}</td>`;
+        });
+      });
+      // รวม 8 จว
+      keys.forEach(k=>{
+        const vals=matrix.map(row=>row.v8[k]||0);
+        const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+        const stat=idx===0?mean:Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
+        cells+=`<td class="num" style="color:${idx?'var(--dim)':'#7B3FA0'};background:rgba(123,63,160,.05)">${fmt(stat)}</td>`;
+      });
+      // รวม 9 จว
+      keys.forEach(k=>{
+        const vals=matrix.map(row=>row.v9[k]||0);
+        const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+        const stat=idx===0?mean:Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
+        cells+=`<td class="num" style="color:${idx?'var(--dim)':'#1A5C8A'};background:rgba(26,92,138,.05)">${fmt(stat)}</td>`;
+      });
       tr.innerHTML=cells;
       body.appendChild(tr);
     });
@@ -1084,21 +1136,28 @@ function renderForest(){
   const src2=gb==='yearly'?DB.yearly:DB.monthly;
   const matrix=[];
 
+  function buildProvVals(src3){
+    const provVals=P9.map(p=>{
+      const rows=src3.filter(d=>d.province_en===p);
+      const a=aggF(rows);
+      return{r:a.forest_reserve,p:a.forest_conservation,n:a.non_forest,t:a.forest_reserve+a.forest_conservation+a.non_forest};
+    });
+    const v8={r:0,p:0,n:0,t:0},v9={r:0,p:0,n:0,t:0};
+    P8.forEach(p=>{const v=provVals[P9.indexOf(p)];v8.r+=v.r;v8.p+=v.p;v8.n+=v.n;v8.t+=v.t;});
+    P9.forEach(p=>{const v=provVals[P9.indexOf(p)];v9.r+=v.r;v9.p+=v.p;v9.n+=v.n;v9.t+=v.t;});
+    return{provVals,v8,v9};
+  }
+
   if(gb==='daily'){
-    // รายวัน — เลื่อนได้
     const navLabel=document.getElementById('fr-nav-label');
     if(navLabel)navLabel.textContent=`${MTH[FR_NAV_MONTH]} ${FR_NAV_YEAR}`;
     const days=[...new Set(
-      DB.daily.filter(d=>isVP(d.province_en)&&d.year===FR_NAV_YEAR&&d.month===FR_NAV_MONTH).map(d=>d.day)
+      DB.daily.filter(d=>isVP(d.province_en)&&d.year===FR_NAV_YEAR&&d.month===FR_NAV_MONTH&&isSensor(d.satellite,d.instrument,G_SENSOR)).map(d=>d.day)
     )].sort((a,b)=>a-b);
     days.forEach(day=>{
       const src3=DB.daily.filter(d=>isVP(d.province_en)&&d.year===FR_NAV_YEAR&&d.month===FR_NAV_MONTH&&d.day===day&&isSensor(d.satellite,d.instrument,G_SENSOR));
-      const provVals=P9.map(p=>getFR(src3,{province:p},p));
-      const v8={r:0,p:0,n:0,t:0},v9={r:0,p:0,n:0,t:0};
-      P8.forEach(p=>{const v=provVals[P9.indexOf(p)];v8.r+=v.r;v8.p+=v.p;v8.n+=v.n;v8.t+=v.t;});
-      P9.forEach(p=>{const v=provVals[P9.indexOf(p)];v9.r+=v.r;v9.p+=v.p;v9.n+=v.n;v9.t+=v.t;});
-      const rowTotals=[...provVals.map(v=>v.t),v8.t,v9.t];
-      matrix.push(rowTotals);
+      const{provVals,v8,v9}=buildProvVals(src3);
+      matrix.push({provVals,v8,v9});
       const dateStr=`${FR_NAV_YEAR}-${String(FR_NAV_MONTH).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
       const tr=document.createElement('tr');
       tr.innerHTML=`<td style="font-family:var(--mono);font-size:12px">${dateStr}</td>
@@ -1109,18 +1168,17 @@ function renderForest(){
     if(!days.length)body.innerHTML=`<tr><td colspan="38" class="state-msg">ไม่พบข้อมูลในเดือนนี้</td></tr>`;
   } else {
     const periods=gb==='yearly'
-      ?[...new Set(src2.filter(d=>isVP(d.province_en)).map(d=>d.year))].sort((a,b)=>a-b)
-      :Array.from({length:(ye-ys)*12+(me-ms)+1},(_,i)=>{const y=ys+Math.floor((ms-1+i)/12);const m=(ms-1+i)%12+1;return{y,m};}).filter(({y,m})=>y<ye||(y===ye&&m<=me));
+      ?[...new Set(src2.filter(d=>isVP(d.province_en)&&isSensor(d.satellite,d.instrument,G_SENSOR)).map(d=>d.year))].sort((a,b)=>a-b)
+      :Array.from({length:(me-ms)+1},(_,i)=>({y:ys,m:ms+i}));
 
     periods.forEach(period=>{
       const isYr=gb==='yearly';
-      const opts=isYr?{year:period,yearFrom:period,monthFrom:1,yearTo:period,monthTo:12}:{yearFrom:period.y,monthFrom:period.m,yearTo:period.y,monthTo:period.m};
-      const provVals=P9.map(p=>getFR(src2,opts,p));
-      const v8={r:0,p:0,n:0,t:0},v9={r:0,p:0,n:0,t:0};
-      P8.forEach(p=>{const v=provVals[P9.indexOf(p)];v8.r+=v.r;v8.p+=v.p;v8.n+=v.n;v8.t+=v.t;});
-      P9.forEach(p=>{const v=provVals[P9.indexOf(p)];v9.r+=v.r;v9.p+=v.p;v9.n+=v.n;v9.t+=v.t;});
-      const rowTotals=[...provVals.map(v=>v.t),v8.t,v9.t];
-      matrix.push(rowTotals);
+      const src3=(isYr
+        ?src2.filter(d=>isVP(d.province_en)&&d.year===period&&isSensor(d.satellite,d.instrument,G_SENSOR))
+        :src2.filter(d=>isVP(d.province_en)&&d.year===period.y&&d.month===period.m&&isSensor(d.satellite,d.instrument,G_SENSOR))
+      );
+      const{provVals,v8,v9}=buildProvVals(src3);
+      matrix.push({provVals,v8,v9});
       const lbl=isYr?`<b>${period}</b>`:`${MTH[period.m]} ${period.y}`;
       const tr=document.createElement('tr');
       tr.innerHTML=`<td>${lbl}</td>
