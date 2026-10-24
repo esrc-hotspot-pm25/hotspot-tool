@@ -244,7 +244,7 @@ td.prov{font-weight:600}
 <div class="page" id="page-forest">
   <div class="ctrl">
     <span class="lsm">แสดงเป็น</span>
-    <select id="fr-groupby"><option value="monthly">รายเดือน</option><option value="yearly">รายปี</option></select>
+    <select id="fr-groupby" onchange="onFrGroupByChange()"><option value="monthly">รายเดือน</option><option value="yearly">รายปี</option><option value="daily">รายวัน</option></select>
     <span class="lsm">ตั้งแต่</span>
     <select id="fr-ys"></select>
     <select id="fr-ms"><option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3" selected>มี.ค.</option><option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option><option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option><option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option></select>
@@ -263,10 +263,21 @@ td.prov{font-weight:600}
     <div class="card" style="border-left:4px solid var(--acc)"><div class="card-lbl">รวม</div><div class="card-val" id="fr-t" style="color:var(--acc)">—</div></div>
   </div>
   <div class="tw">
-    <div class="th2"><div class="tt" id="fr-title">แยกพื้นที่ป่า</div></div>
+    <div class="th2">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="tt" id="fr-title">แยกพื้นที่ป่า</div>
+        <!-- ปุ่มเลื่อน (แสดงเฉพาะรายวัน) -->
+        <div id="fr-nav" style="display:none;align-items:center;gap:6px">
+          <button class="btn bsm" onclick="navMonthFr(-1)">← ก่อนหน้า</button>
+          <span id="fr-nav-label" style="font-size:13px;font-weight:600;font-family:var(--mono);min-width:100px;text-align:center"></span>
+          <button class="btn bsm" onclick="navMonthFr(1)">ถัดไป →</button>
+        </div>
+      </div>
+      <button class="btn bsm" onclick="exportTable('fr-table','forest')">⬇ Export</button>
+    </div>
     <div class="ts2"><table id="fr-table">
-      <thead><tr><th id="fr-th-p">ช่วงเวลา</th><th>จังหวัด</th><th style="text-align:right">ป่าสงวนฯ</th><th style="text-align:right">ป่าอนุรักษ์</th><th style="text-align:right">นอกป่า</th><th style="text-align:right">รวม</th><th style="text-align:right">% ในป่า</th><th style="text-align:right">% ป่าสงวนฯ</th><th style="text-align:right">% ป่าอนุรักษ์</th></tr></thead>
-      <tbody id="fr-body"><tr><td colspan="9" class="state-msg">กรุณากด "แสดงผล"</td></tr></tbody>
+      <thead id="fr-head"></thead>
+      <tbody id="fr-body"><tr><td colspan="38" class="state-msg">กรุณากด "แสดงผล"</td></tr></tbody>
     </table></div>
   </div>
   <!-- Download รายวัน (ข้อ 3) -->
@@ -846,6 +857,9 @@ function navMonth(dir){
   renderOvMainTable();
 }
 
+// helper: คำนวณ Mean และ SD จาก array
+function calcStats(arr){ if(!arr.length)return{mean:0,sd:0}; const m=arr.reduce((a,b)=>a+b,0)/arr.length; return{mean:m,sd:Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length)}; }
+
 function renderOvMainTable(){
   if(!DB.loaded)return;
   const year=+document.getElementById('ov-year').value;
@@ -857,135 +871,119 @@ function renderOvMainTable(){
   const epLabel={'smoke':'Smoke Haze','non_smoke':'Non-Smoke Haze','annual':'Annual'}[ep]||ep;
   const head=document.getElementById('ov-main-head');
   const body=document.getElementById('ov-main-body');
-  const provCols=P9.map(p=>`<th style="text-align:right">${P9_TH[p]||p}</th>`).join('');
   const statsRow=document.getElementById('ov-stats-row');
+  statsRow.style.display='none';
+
+  // คอลัมน์: 9 จังหวัด + รวม 8 + รวม 9
+  const provCols=P9.map(p=>`<th style="text-align:right">${P9_TH[p]||p}</th>`).join('');
+  const extraCols=`<th style="text-align:right;background:rgba(123,63,160,.08)">รวม 8 จว.</th><th style="text-align:right;background:rgba(26,92,138,.08)">รวม 9 จว.</th>`;
+
+  // ฟังก์ชันสร้าง data row: คืน {counts:[...], t8, t9}
+  function getProvCounts(src, filterOpts){
+    const counts=P9.map(p=>sC(fd(src,{...filterOpts,province:p})));
+    const t8=counts.slice(0,8).reduce((a,b)=>a+b,0);
+    const t9=counts.reduce((a,b)=>a+b,0);
+    return{counts,t8,t9};
+  }
+  function makeRow(labelHtml, {counts,t8,t9}, highlight=false){
+    const tr=document.createElement('tr');
+    if(highlight)tr.style.background='rgba(37,99,168,.06)';
+    tr.innerHTML=`${labelHtml}${counts.map(c=>`<td class="num">${fmt(c)}</td>`).join('')}
+      <td class="num" style="font-weight:700;background:rgba(123,63,160,.05)">${fmt(t8)}</td>
+      <td class="num" style="font-weight:700;background:rgba(26,92,138,.05)">${fmt(t9)}</td>`;
+    return tr;
+  }
+  function makeStatRows(matrix){
+    // matrix: array of {counts, t8, t9} per row
+    const n=matrix.length; if(!n)return;
+    const meanCounts=P9.map((_,i)=>calcStats(matrix.map(r=>r.counts[i])).mean);
+    const sdCounts=P9.map((_,i)=>calcStats(matrix.map(r=>r.counts[i])).sd);
+    const meanT8=calcStats(matrix.map(r=>r.t8)).mean;
+    const sdT8=calcStats(matrix.map(r=>r.t8)).sd;
+    const meanT9=calcStats(matrix.map(r=>r.t9)).mean;
+    const sdT9=calcStats(matrix.map(r=>r.t9)).sd;
+    const rowMean=document.createElement('tr');
+    rowMean.style.cssText='background:rgba(37,99,168,.04);font-style:italic';
+    rowMean.innerHTML=`<td colspan="2" style="color:var(--acc);font-weight:600;font-size:12px">เฉลี่ย (Mean)</td>
+      ${meanCounts.map(v=>`<td class="num" style="color:var(--acc)">${fmt(v)}</td>`).join('')}
+      <td class="num" style="color:#7B3FA0;font-weight:700;background:rgba(123,63,160,.05)">${fmt(meanT8)}</td>
+      <td class="num" style="color:#1A5C8A;font-weight:700;background:rgba(26,92,138,.05)">${fmt(meanT9)}</td>`;
+    const rowSD=document.createElement('tr');
+    rowSD.style.cssText='background:rgba(37,99,168,.02);font-style:italic';
+    rowSD.innerHTML=`<td colspan="2" style="color:var(--dim);font-size:12px">ส่วนเบี่ยงเบนมาตรฐาน (SD)</td>
+      ${sdCounts.map(v=>`<td class="num" style="color:var(--dim)">${fmt(v)}</td>`).join('')}
+      <td class="num" style="color:#7B3FA0;background:rgba(123,63,160,.05)">${fmt(sdT8)}</td>
+      <td class="num" style="color:#1A5C8A;background:rgba(26,92,138,.05)">${fmt(sdT9)}</td>`;
+    body.appendChild(rowMean);
+    body.appendChild(rowSD);
+  }
+
+  // Header แนวนอน: แถวแรก = ปี/เดือน/วัน + ENSO | แถวสอง = ชื่อจังหวัด
+  const hRow1=`<th rowspan="2" style="vertical-align:bottom">${gb==='yearly'?'ปี':gb==='monthly'?'เดือน':'วันที่'}</th>
+    <th rowspan="2" style="vertical-align:bottom">ENSO<br><span style="font-size:10px;font-weight:400">${epLabel}</span></th>
+    ${P9.map(p=>`<th style="text-align:right">${P9_TH[p]||p}</th>`).join('')}
+    <th style="text-align:right;background:rgba(123,63,160,.1)">รวม 8 จว.</th>
+    <th style="text-align:right;background:rgba(26,92,138,.1)">รวม 9 จว.</th>`;
+  head.innerHTML=`<tr>${hRow1}</tr>`;
+  body.innerHTML='';
 
   // ============ รายปี ============
   if(gb==='yearly'){
     document.getElementById('ov-tbl-title').textContent='สรุปรายปี — แยกจังหวัด';
-    head.innerHTML=`<tr><th>ปี</th><th>ENSO — ${epLabel}</th>${provCols}<th style="text-align:right">รวม 8 จว.</th><th style="text-align:right">รวม 9 จว.</th></tr>`;
-    body.innerHTML='';
     const years=[...new Set(DB.monthly.map(d=>d.year).filter(y=>y&&!isNaN(y)))].sort((a,b)=>a-b);
-    const allT9=[];
+    const matrix=[];
     years.forEach(yr=>{
       const enso=getEnso(yr,ep);
-      const counts=P9.map(p=>sC(fd(DB.monthly,{year:yr,months,province:p})));
-      const t8=counts.slice(0,8).reduce((a,b)=>a+b,0);
-      const t9=counts.reduce((a,b)=>a+b,0);
-      allT9.push(t9);
-      const tr=document.createElement('tr');
-      if(yr===year)tr.style.background='rgba(37,99,168,.06)';
-      tr.innerHTML=`<td><b>${yr}</b></td>
-        <td><span style="font-size:11px;padding:2px 7px;border-radius:3px;${eStyle(enso.cat)}">${enso.type}</span></td>
-        ${counts.map(c=>`<td class="num">${fmt(c)}</td>`).join('')}
-        <td class="num"><b>${fmt(t8)}</b></td><td class="num"><b>${fmt(t9)}</b></td>`;
-      body.appendChild(tr);
+      const d=getProvCounts(DB.monthly,{year:yr,months});
+      matrix.push(d);
+      const lbl=`<td><b>${yr}</b></td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;${eStyle(enso.cat)}">${enso.type}</span></td>`;
+      body.appendChild(makeRow(lbl,d,yr===year));
     });
-    // Stats
-    if(allT9.length){
-      const mean=allT9.reduce((a,b)=>a+b,0)/allT9.length;
-      const sd=Math.sqrt(allT9.reduce((s,v)=>s+(v-mean)**2,0)/allT9.length);
-      statsRow.style.display='flex';
-      statsRow.innerHTML=`<span style="font-size:12px;color:var(--dim)">สถิติ 9 จังหวัด (รายปี):</span>
-        <span>Mean = <b>${fmt(mean)}</b></span>
-        <span>SD = <b>${fmt(sd)}</b></span>
-        <span>Mean−SD = <b style="color:var(--forest)">${fmt(mean-sd)}</b></span>
-        <span>Mean+SD = <b style="color:var(--en)">${fmt(mean+sd)}</b></span>`;
-    }
+    if(!matrix.length)body.innerHTML=`<tr><td colspan="${11}" class="state-msg">ไม่พบข้อมูล</td></tr>`;
+    else makeStatRows(matrix);
 
   // ============ รายเดือน ============
   }else if(gb==='monthly'){
     document.getElementById('ov-tbl-title').textContent=`สรุปรายเดือน — ปี ${year}`;
-    head.innerHTML=`<tr><th>เดือน</th><th>จังหวัด</th><th style="text-align:right">ในป่า</th><th style="text-align:right">นอกป่า</th><th style="text-align:right">รวม</th><th style="text-align:right">% ในป่า</th><th style="text-align:right">ป่าสงวนฯ</th><th style="text-align:right">ป่าอนุรักษ์</th></tr>`;
-    body.innerHTML='';
-    const allTotals=[];
+    const matrix=[];
     months.forEach(m=>{
-      P9.forEach(prov=>{
-        const a=aggF(fd(DB.monthly,{year,months:[m],province:prov}));
-        const inF=a.forest_reserve+a.forest_conservation,total=inF+a.non_forest;
-        if(total===0)return;
-        allTotals.push(total);
-        const pct=(inF/total*100).toFixed(1);
-        const tr=document.createElement('tr');
-        tr.innerHTML=`<td>${MTH[m]}</td><td class="prov">${P9_TH[prov]||prov}</td>
-          <td class="num">${fmt(inF)}</td><td class="num">${fmt(a.non_forest)}</td>
-          <td class="num"><b>${fmt(total)}</b></td><td class="num">${pct}%</td>
-          <td class="num"><span class="fb-r">${fmt(a.forest_reserve)}</span></td>
-          <td class="num"><span class="fb-p">${fmt(a.forest_conservation)}</span></td>`;
-        body.appendChild(tr);
-      });
-      // แถวรวม 8 และ 9 จว
-      ['8','9'].forEach(n=>{
-        const list=n==='8'?P8:P9;
-        const ag=list.reduce((acc,p)=>{const a=aggF(fd(DB.monthly,{year,months:[m],province:p}));acc.r+=a.forest_reserve;acc.p+=a.forest_conservation;acc.n+=a.non_forest;return acc;},{r:0,p:0,n:0});
-        const inF=ag.r+ag.p,total=inF+ag.n;
-        if(total===0)return;
-        const pct=(inF/total*100).toFixed(1);
-        const tr=document.createElement('tr');
-        tr.style.cssText='background:rgba(37,99,168,.05);font-weight:600';
-        tr.innerHTML=`<td>${MTH[m]}</td><td style="color:var(--acc)">รวม ${n} จังหวัด</td>
-          <td class="num">${fmt(inF)}</td><td class="num">${fmt(ag.n)}</td>
-          <td class="num"><b>${fmt(total)}</b></td><td class="num">${pct}%</td>
-          <td class="num"><span class="fb-r">${fmt(ag.r)}</span></td>
-          <td class="num"><span class="fb-p">${fmt(ag.p)}</span></td>`;
-        body.appendChild(tr);
-      });
+      const enso=getEnso(year,ep);
+      const d=getProvCounts(DB.monthly,{year,months:[m]});
+      matrix.push(d);
+      const lbl=`<td><b>${MTH[m]}</b></td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;${eStyle(enso.cat)}">${enso.type}</span></td>`;
+      body.appendChild(makeRow(lbl,d));
     });
-    if(!body.children.length)body.innerHTML='<tr><td colspan="8" class="state-msg">ไม่พบข้อมูล</td></tr>';
-    // Stats
-    if(allTotals.length){
-      const mean=allTotals.reduce((a,b)=>a+b,0)/allTotals.length;
-      const sd=Math.sqrt(allTotals.reduce((s,v)=>s+(v-mean)**2,0)/allTotals.length);
-      statsRow.style.display='flex';
-      statsRow.innerHTML=`<span style="font-size:12px;color:var(--dim)">สถิติรายจังหวัด/เดือน:</span>
-        <span>Mean = <b>${fmt(mean)}</b></span>
-        <span>SD = <b>${fmt(sd)}</b></span>`;
-    }
+    if(!matrix.length)body.innerHTML=`<tr><td colspan="${11}" class="state-msg">ไม่พบข้อมูล</td></tr>`;
+    else makeStatRows(matrix);
 
   // ============ รายวัน ============
   }else{
-    // อัปเดต nav label
     const navLabel=document.getElementById('ov-nav-label');
     if(navLabel)navLabel.textContent=`${MTH[OV_NAV_MONTH]} ${OV_NAV_YEAR}`;
     document.getElementById('ov-tbl-title').textContent=`รายวัน — ${MTH[OV_NAV_MONTH]} ${OV_NAV_YEAR}`;
-    head.innerHTML=`<tr><th>วันที่</th><th>จังหวัด</th><th style="text-align:right">ในป่า</th><th style="text-align:right">นอกป่า</th><th style="text-align:right">รวม</th><th style="text-align:right">ป่าสงวนฯ</th><th style="text-align:right">ป่าอนุรักษ์</th></tr>`;
-    body.innerHTML='';
-    // ดึงข้อมูลรายวันของเดือนนั้น
-    const dayData=fd(DB.daily,{yearFrom:OV_NAV_YEAR,monthFrom:OV_NAV_MONTH,yearTo:OV_NAV_YEAR,monthTo:OV_NAV_MONTH});
-    // group by day × province
-    const grouped={};
-    dayData.forEach(d=>{
-      const key=`${d.day}__${d.province_en}`;
-      if(!grouped[key])grouped[key]={day:d.day,province:d.province_en,r:0,p:0,n:0};
-      if(d.forest_type==='forest_reserve')grouped[key].r+=d.count||0;
-      if(d.forest_type==='forest_conservation')grouped[key].p+=d.count||0;
-      if(d.forest_type==='non_forest')grouped[key].n+=d.count||0;
+    // หาวันทั้งหมดในเดือนนั้น
+    const days=[...new Set(
+      DB.daily.filter(d=>isVP(d.province_en)&&d.year===OV_NAV_YEAR&&d.month===OV_NAV_MONTH).map(d=>d.day)
+    )].sort((a,b)=>a-b);
+    const matrix=[];
+    days.forEach(day=>{
+      const enso=getEnso(OV_NAV_YEAR,ep);
+      const d=getProvCounts(DB.daily,{yearFrom:OV_NAV_YEAR,monthFrom:OV_NAV_MONTH,yearTo:OV_NAV_YEAR,monthTo:OV_NAV_MONTH});
+      // filter เฉพาะวันนั้น
+      const dayD={
+        counts:P9.map(p=>sC(DB.daily.filter(r=>isVP(r.province_en)&&r.year===OV_NAV_YEAR&&r.month===OV_NAV_MONTH&&r.day===day&&r.province_en===p&&isSensor(r.satellite,r.instrument,G_SENSOR)))),
+        t8:0,t9:0
+      };
+      dayD.t8=dayD.counts.slice(0,8).reduce((a,b)=>a+b,0);
+      dayD.t9=dayD.counts.reduce((a,b)=>a+b,0);
+      matrix.push(dayD);
+      const dateStr=`${OV_NAV_YEAR}-${String(OV_NAV_MONTH).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const lbl=`<td style="font-family:var(--mono);font-size:12px">${dateStr}</td>
+        <td><span style="font-size:10px;padding:1px 6px;border-radius:3px;${eStyle(enso.cat)}">${enso.type}</span></td>`;
+      body.appendChild(makeRow(lbl,dayD));
     });
-    const allTotals=[];
-    Object.values(grouped).sort((a,b)=>a.day-b.day||a.province.localeCompare(b.province)).forEach(r=>{
-      const inF=r.r+r.p,total=inF+r.n;
-      allTotals.push(total);
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td style="font-family:var(--mono)">${OV_NAV_YEAR}-${String(OV_NAV_MONTH).padStart(2,'0')}-${String(r.day).padStart(2,'0')}</td>
-        <td class="prov">${P9_TH[r.province]||r.province}</td>
-        <td class="num">${fmt(inF)}</td><td class="num">${fmt(r.n)}</td>
-        <td class="num"><b>${fmt(total)}</b></td>
-        <td class="num"><span class="fb-r">${fmt(r.r)}</span></td>
-        <td class="num"><span class="fb-p">${fmt(r.p)}</span></td>`;
-      body.appendChild(tr);
-    });
-    if(!body.children.length)body.innerHTML='<tr><td colspan="7" class="state-msg">ไม่พบข้อมูลในเดือนนี้</td></tr>';
-    // Stats
-    if(allTotals.length){
-      const mean=allTotals.reduce((a,b)=>a+b,0)/allTotals.length;
-      const sd=Math.sqrt(allTotals.reduce((s,v)=>s+(v-mean)**2,0)/allTotals.length);
-      statsRow.style.display='flex';
-      statsRow.innerHTML=`<span style="font-size:12px;color:var(--dim)">สถิติรายวัน/จังหวัด — ${MTH[OV_NAV_MONTH]} ${OV_NAV_YEAR}:</span>
-        <span>Mean = <b>${fmt(mean)}</b></span>
-        <span>SD = <b>${fmt(sd)}</b></span>
-        <span>Mean−SD = <b style="color:var(--forest)">${fmt(mean-sd)}</b></span>
-        <span>Mean+SD = <b style="color:var(--en)">${fmt(mean+sd)}</b></span>`;
-    }
+    if(!days.length)body.innerHTML=`<tr><td colspan="${11}" class="state-msg">ไม่พบข้อมูลในเดือนนี้</td></tr>`;
+    else makeStatRows(matrix);
   }
 }
 
@@ -997,8 +995,23 @@ function exportOvTable(){
 function renderOvTable(){ renderOvMainTable(); }
 
 // ============================================================
-// FOREST (แยกพื้นที่ป่า)
+// FOREST (แยกพื้นที่ป่า) — คอลัมน์จังหวัด × แถวเวลา
 // ============================================================
+let FR_NAV_YEAR=2024, FR_NAV_MONTH=3;
+
+function onFrGroupByChange(){
+  const gb=document.getElementById('fr-groupby').value;
+  const nav=document.getElementById('fr-nav');
+  if(nav)nav.style.display=gb==='daily'?'flex':'none';
+  renderForest();
+}
+function navMonthFr(dir){
+  FR_NAV_MONTH+=dir;
+  if(FR_NAV_MONTH>12){FR_NAV_MONTH=1;FR_NAV_YEAR++;}
+  if(FR_NAV_MONTH<1){FR_NAV_MONTH=12;FR_NAV_YEAR--;}
+  renderForest();
+}
+
 function renderForest(){
   if(!DB.loaded)return;
   const gb=document.getElementById('fr-groupby').value;
@@ -1006,41 +1019,118 @@ function renderForest(){
   const ms=+document.getElementById('fr-ms').value;
   const ye=+document.getElementById('fr-ye').value;
   const me=+document.getElementById('fr-me').value;
-  const prov=document.getElementById('fr-province').value;
-  const src=gb==='yearly'?DB.yearly:DB.monthly;
-  const fdata=fd(src,{province:prov,yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
-  const agg=aggF(fdata);const tot=agg.forest_reserve+agg.forest_conservation+agg.non_forest;
+
+  // set nav range
+  FR_NAV_YEAR=ys; FR_NAV_MONTH=ms;
+
+  document.getElementById('fr-title').textContent=`แยกพื้นที่ป่า — ${ys}/${MTH[ms]} ถึง ${ye}/${MTH[me]}`;
+
+  // Summary cards
+  const allFdata=fd(gb==='yearly'?DB.yearly:DB.monthly,{yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
+  const agg=aggF(allFdata);const tot=agg.forest_reserve+agg.forest_conservation+agg.non_forest;
   document.getElementById('fr-r').textContent=fmt(agg.forest_reserve);
   document.getElementById('fr-p').textContent=fmt(agg.forest_conservation);
   document.getElementById('fr-n').textContent=fmt(agg.non_forest);
   document.getElementById('fr-t').textContent=fmt(tot);
-  document.getElementById('fr-th-p').textContent=gb==='yearly'?'ปี':'เดือน/ปี';
-  document.getElementById('fr-title').textContent=`แยกพื้นที่ป่า — ${ys}/${MTH[ms]} ถึง ${ye}/${MTH[me]}`;
-  const grouped={};
-  fdata.forEach(d=>{
-    const period=gb==='yearly'?`${d.year}`:`${MTH[d.month||1]} ${d.year}`;
-    const key=`${period}__${d.province_en}`;
-    if(!grouped[key])grouped[key]={period,province:d.province_en,r:0,p:0,n:0};
-    if(d.forest_type==='forest_reserve')grouped[key].r+=d.count||0;
-    if(d.forest_type==='forest_conservation')grouped[key].p+=d.count||0;
-    if(d.forest_type==='non_forest')grouped[key].n+=d.count||0;
-  });
-  const body=document.getElementById('fr-body');body.innerHTML='';
-  Object.values(grouped).sort((a,b)=>a.period.localeCompare(b.period)||a.province.localeCompare(b.province)).forEach(r=>{
-    const t=r.r+r.p+r.n;
-    const pf=t>0?((r.r+r.p)/t*100).toFixed(1):'0.0';
-    const pr=t>0?(r.r/t*100).toFixed(1):'0.0';
-    const pp=t>0?(r.p/t*100).toFixed(1):'0.0';
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${r.period}</td><td class="prov">${P9_TH[r.province]||r.province}</td>
-      <td class="num"><span class="fb-r">${fmt(r.r)}</span></td><td class="num"><span class="fb-p">${fmt(r.p)}</span></td>
-      <td class="num"><span class="fb-n">${fmt(r.n)}</span></td><td class="num"><b>${fmt(t)}</b></td>
-      <td class="num" style="color:${+pf>50?'var(--forest)':'var(--dim)'}">${pf}%</td>
-      <td class="num" style="color:var(--fire)">${pr}%</td>
-      <td class="num" style="color:var(--prot)">${pp}%</td>`;
-    body.appendChild(tr);
-  });
-  if(!body.children.length)body.innerHTML='<tr><td colspan="9" class="state-msg">ไม่พบข้อมูล</td></tr>';
+
+  const head=document.getElementById('fr-head');
+  const body=document.getElementById('fr-body');
+  body.innerHTML='';
+
+  // Header: แต่ละจังหวัดมี 4 sub-col + รวม 8+9 จว แต่ละอัน 4 sub
+  // Row 1: ชื่อจังหวัด (colspan=4 แต่ละจังหวัด)
+  // Row 2: รวม / สงวน / อนุรักษ์ / นอกป่า
+  const provHeader1=P9.map(p=>`<th colspan="4" style="text-align:center;border-bottom:1px solid var(--border)">${P9_TH[p]||p}</th>`).join('');
+  const provHeader2=P9.map(()=>`<th style="text-align:right;font-size:10px">รวม</th><th style="text-align:right;font-size:10px;color:var(--fire)">สงวนฯ</th><th style="text-align:right;font-size:10px;color:var(--prot)">อนุรักษ์</th><th style="text-align:right;font-size:10px;color:var(--dim)">นอกป่า</th>`).join('');
+  const extra1=`<th colspan="4" style="text-align:center;background:rgba(123,63,160,.08);border-bottom:1px solid var(--border)">รวม 8 จว.</th>
+    <th colspan="4" style="text-align:center;background:rgba(26,92,138,.08);border-bottom:1px solid var(--border)">รวม 9 จว.</th>`;
+  const extra2=`<th style="text-align:right;font-size:10px;background:rgba(123,63,160,.05)">รวม</th><th style="text-align:right;font-size:10px;background:rgba(123,63,160,.05);color:var(--fire)">สงวนฯ</th><th style="text-align:right;font-size:10px;background:rgba(123,63,160,.05);color:var(--prot)">อนุรักษ์</th><th style="text-align:right;font-size:10px;background:rgba(123,63,160,.05);color:var(--dim)">นอกป่า</th>
+    <th style="text-align:right;font-size:10px;background:rgba(26,92,138,.05)">รวม</th><th style="text-align:right;font-size:10px;background:rgba(26,92,138,.05);color:var(--fire)">สงวนฯ</th><th style="text-align:right;font-size:10px;background:rgba(26,92,138,.05);color:var(--prot)">อนุรักษ์</th><th style="text-align:right;font-size:10px;background:rgba(26,92,138,.05);color:var(--dim)">นอกป่า</th>`;
+
+  head.innerHTML=`<tr><th rowspan="2" style="vertical-align:bottom">${gb==='yearly'?'ปี':gb==='monthly'?'เดือน':'วันที่'}</th>${provHeader1}${extra1}</tr>
+    <tr>${provHeader2}${extra2}</tr>`;
+
+  // ฟังก์ชันดึงข้อมูล forest สำหรับ 1 จังหวัด + period
+  function getFR(src, opts, prov){
+    const d=fd(src,{...opts,province:prov});
+    const a=aggF(d);
+    return{r:a.forest_reserve,p:a.forest_conservation,n:a.non_forest,t:a.forest_reserve+a.forest_conservation+a.non_forest};
+  }
+  function frCells(v,bg=''){
+    return `<td class="num"${bg?` style="background:${bg}"`:''}><b>${fmt(v.t)}</b></td>
+      <td class="num"${bg?` style="background:${bg}"`:''}><span class="fb-r">${fmt(v.r)}</span></td>
+      <td class="num"${bg?` style="background:${bg}"`:''}><span class="fb-p">${fmt(v.p)}</span></td>
+      <td class="num"${bg?` style="background:${bg}"`:''}><span class="fb-n">${fmt(v.n)}</span></td>`;
+  }
+  function makeStatRowsFR(matrix){
+    // matrix: array ของ array [{r,p,n,t} x P9] per row
+    if(!matrix.length)return;
+    const cols=P9.length+2; // 9 จว + 2 รวม
+    ['เฉลี่ย (Mean)','ส่วนเบี่ยงเบนมาตรฐาน (SD)'].forEach((label,idx)=>{
+      const tr=document.createElement('tr');
+      tr.style.cssText=`background:rgba(37,99,168,.0${idx?2:4});font-style:italic`;
+      let cells=`<td style="color:${idx?'var(--dim)':'var(--acc)'};font-size:12px;font-weight:${idx?400:600}">${label}</td>`;
+      for(let ci=0;ci<cols;ci++){
+        const vals=matrix.map(row=>row[ci]);
+        const stat=idx===0?vals.reduce((a,b)=>a+b,0)/vals.length:Math.sqrt(vals.reduce((s,v,_,a)=>s+(v-a.reduce((x,y)=>x+y,0)/a.length)**2,0)/vals.length);
+        const bg=ci>=P9.length?(ci===P9.length?'rgba(123,63,160,.05)':'rgba(26,92,138,.05)'):'';
+        cells+=`<td class="num" style="color:${idx?'var(--dim)':'var(--acc)'};${bg?'background:'+bg:''}">${fmt(stat)}</td>`;
+      }
+      tr.innerHTML=cells;
+      body.appendChild(tr);
+    });
+  }
+
+  const src2=gb==='yearly'?DB.yearly:DB.monthly;
+  const matrix=[];
+
+  if(gb==='daily'){
+    // รายวัน — เลื่อนได้
+    const navLabel=document.getElementById('fr-nav-label');
+    if(navLabel)navLabel.textContent=`${MTH[FR_NAV_MONTH]} ${FR_NAV_YEAR}`;
+    const days=[...new Set(
+      DB.daily.filter(d=>isVP(d.province_en)&&d.year===FR_NAV_YEAR&&d.month===FR_NAV_MONTH).map(d=>d.day)
+    )].sort((a,b)=>a-b);
+    days.forEach(day=>{
+      const src3=DB.daily.filter(d=>isVP(d.province_en)&&d.year===FR_NAV_YEAR&&d.month===FR_NAV_MONTH&&d.day===day&&isSensor(d.satellite,d.instrument,G_SENSOR));
+      const provVals=P9.map(p=>getFR(src3,{province:p},p));
+      const v8={r:0,p:0,n:0,t:0},v9={r:0,p:0,n:0,t:0};
+      P8.forEach(p=>{const v=provVals[P9.indexOf(p)];v8.r+=v.r;v8.p+=v.p;v8.n+=v.n;v8.t+=v.t;});
+      P9.forEach(p=>{const v=provVals[P9.indexOf(p)];v9.r+=v.r;v9.p+=v.p;v9.n+=v.n;v9.t+=v.t;});
+      const rowTotals=[...provVals.map(v=>v.t),v8.t,v9.t];
+      matrix.push(rowTotals);
+      const dateStr=`${FR_NAV_YEAR}-${String(FR_NAV_MONTH).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td style="font-family:var(--mono);font-size:12px">${dateStr}</td>
+        ${provVals.map(v=>frCells(v)).join('')}
+        ${frCells(v8,'rgba(123,63,160,.03)')}${frCells(v9,'rgba(26,92,138,.03)')}`;
+      body.appendChild(tr);
+    });
+    if(!days.length)body.innerHTML=`<tr><td colspan="38" class="state-msg">ไม่พบข้อมูลในเดือนนี้</td></tr>`;
+  } else {
+    const periods=gb==='yearly'
+      ?[...new Set(src2.filter(d=>isVP(d.province_en)).map(d=>d.year))].sort((a,b)=>a-b)
+      :Array.from({length:(ye-ys)*12+(me-ms)+1},(_,i)=>{const y=ys+Math.floor((ms-1+i)/12);const m=(ms-1+i)%12+1;return{y,m};}).filter(({y,m})=>y<ye||(y===ye&&m<=me));
+
+    periods.forEach(period=>{
+      const isYr=gb==='yearly';
+      const opts=isYr?{year:period,yearFrom:period,monthFrom:1,yearTo:period,monthTo:12}:{yearFrom:period.y,monthFrom:period.m,yearTo:period.y,monthTo:period.m};
+      const provVals=P9.map(p=>getFR(src2,opts,p));
+      const v8={r:0,p:0,n:0,t:0},v9={r:0,p:0,n:0,t:0};
+      P8.forEach(p=>{const v=provVals[P9.indexOf(p)];v8.r+=v.r;v8.p+=v.p;v8.n+=v.n;v8.t+=v.t;});
+      P9.forEach(p=>{const v=provVals[P9.indexOf(p)];v9.r+=v.r;v9.p+=v.p;v9.n+=v.n;v9.t+=v.t;});
+      const rowTotals=[...provVals.map(v=>v.t),v8.t,v9.t];
+      matrix.push(rowTotals);
+      const lbl=isYr?`<b>${period}</b>`:`${MTH[period.m]} ${period.y}`;
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${lbl}</td>
+        ${provVals.map(v=>frCells(v)).join('')}
+        ${frCells(v8,'rgba(123,63,160,.03)')}${frCells(v9,'rgba(26,92,138,.03)')}`;
+      body.appendChild(tr);
+    });
+    if(!body.children.length)body.innerHTML=`<tr><td colspan="38" class="state-msg">ไม่พบข้อมูล</td></tr>`;
+  }
+  makeStatRowsFR(matrix);
 }
 
 // ============================================================
