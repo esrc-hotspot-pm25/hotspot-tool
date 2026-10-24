@@ -434,21 +434,47 @@ td.prov{font-weight:600}
 <div class="page" id="page-compare">
   <div class="tw" style="margin-bottom:14px">
     <div class="th2"><div class="tt">ขั้นที่ 1 — เลือก Baseline ที่จะใช้เทียบ</div></div>
+
+    <!-- Controls -->
     <div style="padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid var(--border)">
       <span class="lsm">Scale</span>
-      <select id="cp-scale" style="height:32px;font-size:13px">
+      <select id="cp-scale" onchange="onCPScaleChange()" style="height:32px;font-size:13px">
         <optgroup label="ช่วงปี"><option value="all">ทุกปี</option><option value="11yr">11 ปี (2015–2025)</option><option value="5yr">5 ปี (2021–2025)</option></optgroup>
         <optgroup label="El Niño"><option value="en_all">El Niño ทั้งหมด</option><option value="en_weak">El Niño Weak</option><option value="en_mod">El Niño Moderate</option><option value="en_str">El Niño Strong</option></optgroup>
         <optgroup label="La Niña"><option value="ln_all">La Niña ทั้งหมด</option><option value="ln_weak">La Niña Weak</option><option value="ln_mod">La Niña Moderate</option><option value="ln_str">La Niña Strong</option></optgroup>
         <optgroup label="Neutral"><option value="neutral">Neutral</option></optgroup>
       </select>
       <span class="lsm">ENSO Period</span>
-      <select id="cp-period" style="height:32px;font-size:13px">
+      <select id="cp-period" onchange="onCPScaleChange()" style="height:32px;font-size:13px">
         <option value="smoke">Smoke Haze</option><option value="non_smoke">Non-Smoke</option><option value="annual">Annual</option>
       </select>
       <button class="btn bp" onclick="renderCPBaseline()">คำนวณ Baseline</button>
       <span id="cp-bl-info" style="font-size:11px;color:var(--dim)"></span>
     </div>
+
+    <!-- ENSO strip + year toggle -->
+    <div style="padding:10px 14px;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+        <span style="font-size:12px;font-weight:600;color:var(--dim)">ENSO รายปี — กดเลือก/ยกเลิกปีได้</span>
+        <div style="display:flex;gap:6px;font-size:10px;flex-wrap:wrap">
+          <span style="background:rgba(184,50,50,.28);color:var(--en);padding:1px 6px;border-radius:3px">Strong EN</span>
+          <span style="background:rgba(184,50,50,.15);color:var(--en);padding:1px 6px;border-radius:3px">Mod EN</span>
+          <span style="background:rgba(184,50,50,.07);color:var(--en);padding:1px 6px;border-radius:3px">Weak EN</span>
+          <span style="background:rgba(26,79,138,.07);color:var(--ln);padding:1px 6px;border-radius:3px">Weak LN</span>
+          <span style="background:rgba(26,79,138,.15);color:var(--ln);padding:1px 6px;border-radius:3px">Mod LN</span>
+          <span style="background:rgba(26,79,138,.28);color:var(--ln);padding:1px 6px;border-radius:3px">Strong LN</span>
+        </div>
+        <button class="btn bsm" onclick="cpSelectAll(true)" style="margin-left:auto">เลือกทั้งหมด</button>
+        <button class="btn bsm" onclick="cpSelectAll(false)">ล้าง</button>
+      </div>
+      <div class="estrip" id="cp-enso-strip"></div>
+      <div style="margin-top:6px;font-size:11px;color:var(--dim)">
+        ปีที่เลือกเป็น Baseline: <span id="cp-sel-count" style="font-family:var(--mono);color:var(--acc)">0</span> ปี —
+        <span id="cp-sel-list" style="font-family:var(--mono)"></span>
+      </div>
+    </div>
+
+    <!-- Summary cards -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 14px">
       <div class="card" style="border-left:4px solid #7B3FA0"><div class="card-lbl">8 จังหวัด Mean</div><div class="card-val" id="cp-bl8" style="color:#7B3FA0">—</div></div>
       <div class="card" style="border-left:4px solid #1A5C8A"><div class="card-lbl">9 จังหวัด Mean</div><div class="card-val" id="cp-bl9" style="color:#1A5C8A">—</div></div>
@@ -713,6 +739,9 @@ function init(){
   if(fp)provs.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=P9_TH[p]||p;fp.appendChild(o);});
   buildEnsoStrip();
   buildYearToggle(years);
+  // init CP_SEL = ทุกปี เป็น default
+  CP_SEL=new Set(years);
+  buildCPEnsoStrip();
   buildProvCards();
   buildProvChecks();
   // bl-cmp-year
@@ -1328,16 +1357,85 @@ function renderBLCompare(){
 }
 
 // ============================================================
-// COMPARE
+// COMPARE — year toggle + ENSO strip
 // ============================================================
-function renderCPBaseline(){
-  if(!DB.loaded)return;
+let CP_SEL=new Set(); // ปีที่เลือกสำหรับ baseline
+
+function buildCPEnsoStrip(){
+  const strip=document.getElementById('cp-enso-strip');
+  if(!strip||!DB.enso.length)return;
+  strip.innerHTML='';
+  const period=(document.getElementById('cp-period')||{}).value||'smoke';
+  DB.enso.forEach(row=>{
+    const{cat,type}=getEnso(+row.year,period);
+    const ec=eClass(cat);const str=eStrength(type);
+    const lbl=ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N';
+    const sub=str==='strong'?'S':str==='moderate'?'M':str==='weak'?'W':'';
+    const textColor=ec==='el-nino'?'var(--en)':ec==='la-nina'?'var(--ln)':'var(--dim)';
+    const d=document.createElement('div');
+    d.className='eyr';d.title=`${row.year}: ${type}`;
+    // ปุ่มกดได้ — style เหมือน yr-btn แต่เล็กกว่า
+    const selected=CP_SEL.has(+row.year);
+    d.innerHTML=`<div class="ebar ${str} ${ec}" id="cp-yr-${row.year}"
+      style="cursor:pointer;${selected?`outline:2px solid var(--acc);outline-offset:1px`:''}"
+      onclick="toggleCPYear(${row.year},this)">${lbl}${sub?'<span style="font-size:7px">'+sub+'</span>':''}</div>
+      <div class="eyr-lbl">${row.year}</div>
+      <div style="font-size:8px;color:${textColor};font-family:var(--mono);text-align:center;max-width:36px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${type}">${type}</div>`;
+    strip.appendChild(d);
+  });
+  updateCPSelInfo();
+}
+
+function toggleCPYear(yr,el){
+  if(CP_SEL.has(yr)){
+    CP_SEL.delete(yr);
+    el.style.outline='none';
+    el.style.opacity='0.6';
+  }else{
+    CP_SEL.add(yr);
+    el.style.outline='2px solid var(--acc)';
+    el.style.outlineOffset='1px';
+    el.style.opacity='1';
+  }
+  updateCPSelInfo();
+}
+
+function cpSelectAll(all){
+  CP_SEL.clear();
+  document.querySelectorAll('[id^="cp-yr-"]').forEach(el=>{
+    const yr=+el.id.replace('cp-yr-','');
+    if(all){CP_SEL.add(yr);el.style.outline='2px solid var(--acc)';el.style.outlineOffset='1px';el.style.opacity='1';}
+    else{el.style.outline='none';el.style.opacity='0.6';}
+  });
+  updateCPSelInfo();
+}
+
+function updateCPSelInfo(){
+  const sorted=[...CP_SEL].sort((a,b)=>a-b);
+  document.getElementById('cp-sel-count').textContent=sorted.length;
+  document.getElementById('cp-sel-list').textContent=sorted.join(', ');
+}
+
+function onCPScaleChange(){
+  // เปลี่ยน Scale/Period → อัปเดต default selection ตาม scale
   const scale=document.getElementById('cp-scale').value;
   const period=document.getElementById('cp-period').value;
+  const target=getYearsForScale(scale,period);
+  CP_SEL=new Set(target);
+  buildCPEnsoStrip(); // rebuild strip พร้อม selection ใหม่
+}
+
+function renderCPBaseline(){
+  if(!DB.loaded)return;
+  const period=document.getElementById('cp-period').value;
   const months=PM[period];
-  const years=getYearsForScale(scale,period);
+  // ใช้ปีจาก CP_SEL (ที่ผู้ใช้กดเลือก) แทน scale
+  const years=[...CP_SEL].sort((a,b)=>a-b);
   CP_BL={};
-  if(!years.length){document.getElementById('cp-bl-info').textContent='ไม่พบปีที่ตรงเกณฑ์';return;}
+  if(!years.length){
+    document.getElementById('cp-bl-info').textContent='กรุณาเลือกปีก่อน';
+    return;
+  }
   P9.forEach(p=>{
     CP_BL[p]={
       all:calcBL(years,months,p,'all'),
@@ -1355,7 +1453,7 @@ function renderCPBaseline(){
   document.getElementById('cp-bl9').textContent=fmt(bl9);
   document.getElementById('cp-blf').textContent=fmt(blf);
   document.getElementById('cp-bln').textContent=fmt(bln);
-  document.getElementById('cp-bl-info').textContent=`ปีที่ใช้ (${years.length} ปี): ${years.sort((a,b)=>a-b).join(', ')}`;
+  document.getElementById('cp-bl-info').textContent=`คำนวณจาก ${years.length} ปี: ${years.join(', ')}`;
 }
 
 function renderCompare(){
@@ -1484,7 +1582,7 @@ function showPage(name,el){
   document.querySelectorAll('.nt').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   el.classList.add('active');
-  if(name==='compare')renderCPBaseline();
+  if(name==='compare'){buildCPEnsoStrip();renderCPBaseline();}
   if(name==='ranking')renderRanking();
 }
 function exportTable(id,name){
