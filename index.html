@@ -360,73 +360,48 @@ td.prov{font-weight:600}
     </div>
   </div>
 
-  <!-- Baseline table (ข้อ 2) -->
+  <!-- ตาราง 1: ข้อมูลดิบรายปี + สรุป Baseline -->
   <div class="tw">
     <div class="th2">
       <div>
-        <div class="tt">Baseline รายจังหวัด</div>
+        <div class="tt">ข้อมูลจุดความร้อนรายปีที่ใช้คำนวณ Baseline</div>
         <div id="bl-subtitle" style="font-size:11px;color:var(--acc);margin-top:2px"></div>
       </div>
-      <span id="bl-years-used" style="font-size:11px;color:var(--dim)"></span>
-    </div>
-    <div class="ts2"><table id="bl-table">
-      <thead><tr>
-        <th>จังหวัด</th>
-        <th style="text-align:right">Baseline Mean</th>
-        <th style="text-align:right">SD</th>
-        <th style="text-align:right;font-weight:700">Mean − SD</th>
-        <th style="text-align:right;font-weight:700">Mean + SD</th>
-        <th style="text-align:right">Min</th>
-        <th style="text-align:right">Max</th>
-        <th style="text-align:right">Median</th>
-        <th style="text-align:right">จำนวนปี</th>
-      </tr></thead>
-      <tbody id="bl-body"><tr><td colspan="9" class="state-msg">เลือกปีแล้วกด "คำนวณ Baseline"</td></tr></tbody>
-    </table></div>
-  </div>
-
-  <!-- Compare vs Baseline (ข้อ 2) -->
-  <div class="tw">
-    <div class="th2">
-      <div class="tt">เปรียบเทียบปีที่เลือก vs Baseline</div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <!-- Legend สี -->
-        <div style="display:flex;gap:6px;font-size:11px">
-          <span style="background:rgba(184,50,50,.12);color:var(--en);padding:2px 7px;border-radius:3px;border:1px solid rgba(184,50,50,.3)">🔴 &gt; Mean+SD</span>
-          <span style="background:rgba(243,156,18,.12);color:#7A5A00;padding:2px 7px;border-radius:3px;border:1px solid rgba(243,156,18,.3)">🟡 ±SD</span>
-          <span style="background:rgba(26,107,60,.12);color:var(--forest);padding:2px 7px;border-radius:3px;border:1px solid rgba(26,107,60,.3)">🟢 &lt; Mean−SD</span>
-          <!-- ℹ️ สูตร -->
-          <span class="tooltip"><button class="info-btn">ℹ️</button>
-            <span class="tip">
-              <b>% Difference</b><br>
-              = (ค่าปีที่เลือก − Baseline Mean) ÷ Baseline Mean × 100<br><br>
-              <b>ความแตกต่าง</b><br>
-              = ค่าปีที่เลือก − Baseline Mean<br><br>
-              <b>เทียบ ±SD</b><br>
-              🔴 = ค่า &gt; Mean + SD<br>
-              🟡 = Mean−SD ≤ ค่า ≤ Mean+SD<br>
-              🟢 = ค่า &lt; Mean − SD
-            </span>
-          </span>
-        </div>
-        <span class="lsm">ปีที่เทียบ</span>
-        <select id="bl-cmp-year" style="height:28px;font-size:12px"></select>
-        <button class="btn bp bsm" onclick="renderBLCompare()">เปรียบเทียบ</button>
-        <button class="btn bsm" onclick="exportTable('bl-cmp-table','bl_compare')">⬇ Export</button>
+      <div style="display:flex;gap:6px">
+        <button class="btn bsm" onclick="exportBL()">⬇ Export</button>
       </div>
     </div>
-    <div class="ts2"><table id="bl-cmp-table">
-      <thead><tr>
-        <th>จังหวัด</th>
-        <th style="text-align:right">Baseline Mean</th>
-        <th style="text-align:right">SD</th>
-        <th style="text-align:right">ค่าปีที่เลือก</th>
-        <th style="text-align:right">ความแตกต่าง</th>
-        <th style="text-align:right">% Difference</th>
-        <th>เทียบ ±SD</th>
-      </tr></thead>
-      <tbody id="bl-cmp-body"><tr><td colspan="7" class="state-msg">คำนวณ Baseline ก่อน แล้วกด "เปรียบเทียบ"</td></tr></tbody>
-    </table></div>
+    <!-- Legend แถวสี -->
+    <div style="padding:8px 14px;background:var(--s2);border-bottom:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap;font-size:11px">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(37,99,168,.08);border:1px solid rgba(37,99,168,.3);border-radius:2px;display:inline-block"></span>ข้อมูลแต่ละปี</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(37,99,168,.18);border:1px solid var(--acc);border-radius:2px;display:inline-block"></span>Mean (ค่าเฉลี่ย)</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(26,107,60,.12);border:1px solid rgba(26,107,60,.4);border-radius:2px;display:inline-block"></span>Mean−SD</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(184,50,50,.12);border:1px solid rgba(184,50,50,.4);border-radius:2px;display:inline-block"></span>Mean+SD</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(138,92,16,.1);border:1px solid rgba(138,92,16,.3);border-radius:2px;display:inline-block"></span>Median</span>
+    </div>
+    <div class="ts2">
+      <table id="bl-raw-table">
+        <thead id="bl-raw-head"></thead>
+        <tbody id="bl-raw-body"><tr><td class="state-msg">เลือกปีแล้วกด "คำนวณ Baseline"</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ตาราง 2: แยกพื้นที่ป่า (รวม/สงวน/อนุรักษ์/นอกป่า) -->
+  <div class="tw">
+    <div class="th2">
+      <div>
+        <div class="tt">Baseline แยกพื้นที่ป่า — รายจังหวัด</div>
+        <div id="bl-forest-subtitle" style="font-size:11px;color:var(--acc);margin-top:2px"></div>
+      </div>
+      <button class="btn bsm" onclick="exportTable('bl-forest-table','baseline_forest')">⬇ Export</button>
+    </div>
+    <div class="ts2">
+      <table id="bl-forest-table">
+        <thead id="bl-forest-head"></thead>
+        <tbody id="bl-forest-body"><tr><td class="state-msg">เลือกปีแล้วกด "คำนวณ Baseline"</td></tr></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -1276,84 +1251,163 @@ function renderBaseline(){
   const period=document.getElementById('bl-period').value;
   const forest=document.getElementById('bl-forest').value;
   const months=PM[period];
-  const validYears=[...BL_SEL].sort();
+  const validYears=[...BL_SEL].sort((a,b)=>a-b);
   if(!validYears.length){
-    document.getElementById('bl-body').innerHTML='<tr><td colspan="9" class="state-msg">กรุณาเลือกปีอย่างน้อย 1 ปี</td></tr>';
+    document.getElementById('bl-raw-body').innerHTML='<tr><td class="state-msg">กรุณาเลือกปีอย่างน้อย 1 ปี</td></tr>';
     return;
   }
   const scale=document.getElementById('bl-scale').value;
   const periodLabels={'smoke':'Smoke Haze (JFM–AMJ)','non_smoke':'Non-Smoke Haze (JJA–SON)','annual':'Annual (JJA–MJJ)'};
   const forestLabels={'all':'ทั้งหมด','in_forest':'เขตป่า (สงวน+อนุรักษ์)','non_forest':'นอกเขตป่า'};
-  document.getElementById('bl-subtitle').textContent=`${periodLabels[period]} | ${forestLabels[forest]||forest} | ${validYears.length} ปี: ${validYears.join(', ')}`;
-  document.getElementById('bl-years-used').textContent='';
+  const subtitle=`${periodLabels[period]} | ${forestLabels[forest]||forest} | ปีที่ใช้: ${validYears.join(', ')}`;
+  document.getElementById('bl-subtitle').textContent=subtitle;
+  document.getElementById('bl-forest-subtitle').textContent=subtitle;
 
-  const provs=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
+  const provs=P9.filter(p=>[...new Set(DB.monthly.map(d=>d.province_en).filter(v=>isVP(v)))].includes(p));
   BL_DATA={};
-  const body=document.getElementById('bl-body');body.innerHTML='';
-  provs.forEach(prov=>{
-    const bl=calcBL(validYears,months,prov,forest);
-    if(!bl)return;
-    BL_DATA[prov]=bl;
+
+  // ====== ตาราง 1: ข้อมูลดิบรายปี × จังหวัด ======
+  const rawHead=document.getElementById('bl-raw-head');
+  const rawBody=document.getElementById('bl-raw-body');
+  // Header: แถว 1 = ปี+ENSO, แถว 2 = ชื่อจังหวัด + รวม
+  const provCols=provs.map(p=>`<th style="text-align:right">${P9_TH[p]||p}</th>`).join('');
+  rawHead.innerHTML=`<tr>
+    <th rowspan="2" style="vertical-align:bottom">ปี</th>
+    <th rowspan="2" style="vertical-align:bottom">ENSO</th>
+    ${provCols}
+    <th style="text-align:right">รวม 8 จว.</th>
+    <th style="text-align:right">รวม 9 จว.</th>
+  </tr>`;
+  rawBody.innerHTML='';
+
+  // เก็บค่าแต่ละปีเพื่อคำนวณ stats
+  const rawMatrix={}; // {prov: [val per year]}
+  provs.forEach(p=>rawMatrix[p]=[]);
+  const raw8=[],raw9=[];
+
+  validYears.forEach(yr=>{
+    const enso=getEnso(yr,period);
+    const vals=provs.map(p=>{
+      let data=fd(DB.monthly,{year:yr,months,province:p});
+      if(forest==='in_forest') data=data.filter(d=>d.forest_type!=='non_forest');
+      else if(forest&&forest!=='all') data=data.filter(d=>d.forest_type===forest);
+      return data.reduce((s,d)=>s+(d.count||0),0);
+    });
+    const t8=P8.map(p=>vals[provs.indexOf(p)]||0).reduce((a,b)=>a+b,0);
+    const t9=vals.reduce((a,b)=>a+b,0);
+    provs.forEach((p,i)=>rawMatrix[p].push(vals[i]));
+    raw8.push(t8); raw9.push(t9);
+
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="prov">${P9_TH[prov]||prov}</td>
-      <td class="num"><b>${fmt(bl.mean)}</b></td>
-      <td class="num">${fmt(bl.sd)}</td>
-      <td class="num" style="font-weight:700;color:var(--forest)"><b>${fmt(bl.mean-bl.sd)}</b></td>
-      <td class="num" style="font-weight:700;color:var(--en)"><b>${fmt(bl.mean+bl.sd)}</b></td>
-      <td class="num">${fmt(bl.min)}</td>
-      <td class="num">${fmt(bl.max)}</td>
-      <td class="num">${fmt(bl.median)}</td>
-      <td class="num">${bl.n}</td>`;
-    body.appendChild(tr);
+    tr.style.background='rgba(37,99,168,.04)';
+    tr.innerHTML=`<td><b>${yr}</b></td>
+      <td><span style="font-size:10px;padding:1px 6px;border-radius:3px;${eStyle(enso.cat)}">${enso.type}</span></td>
+      ${vals.map(v=>`<td class="num">${fmt(v)}</td>`).join('')}
+      <td class="num" style="background:rgba(123,63,160,.04)">${fmt(t8)}</td>
+      <td class="num" style="background:rgba(26,92,138,.04)">${fmt(t9)}</td>`;
+    rawBody.appendChild(tr);
   });
-  if(!body.children.length)body.innerHTML='<tr><td colspan="9" class="state-msg">ไม่พบข้อมูล</td></tr>';
+
+  // แถวสรุป Mean / SD / Mean-SD / Mean+SD / Median
+  const statsConfig=[
+    {label:'Mean',color:'rgba(37,99,168,.18)',border:'var(--acc)',fn:(arr)=>arr.reduce((a,b)=>a+b,0)/arr.length},
+    {label:'Median',color:'rgba(138,92,16,.1)',border:'rgba(138,92,16,.4)',fn:(arr)=>{const s=[...arr].sort((a,b)=>a-b);return s.length%2===0?(s[s.length/2-1]+s[s.length/2])/2:s[Math.floor(s.length/2)];}},
+    {label:'SD',color:'rgba(100,100,100,.06)',border:'var(--bs)',fn:(arr)=>{const m=arr.reduce((a,b)=>a+b,0)/arr.length;return Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length);}},
+    {label:'Mean − SD',color:'rgba(26,107,60,.12)',border:'rgba(26,107,60,.4)',fn:(arr)=>{const m=arr.reduce((a,b)=>a+b,0)/arr.length;const sd=Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length);return m-sd;}},
+    {label:'Mean + SD',color:'rgba(184,50,50,.12)',border:'rgba(184,50,50,.4)',fn:(arr)=>{const m=arr.reduce((a,b)=>a+b,0)/arr.length;const sd=Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length);return m+sd;}},
+  ];
+
+  // separator
+  const sep=document.createElement('tr');
+  sep.innerHTML=`<td colspan="${provs.length+4}" style="padding:2px;background:var(--border)"></td>`;
+  rawBody.appendChild(sep);
+
+  statsConfig.forEach(sc=>{
+    const provVals=provs.map(p=>sc.fn(rawMatrix[p]));
+    const v8=sc.fn(raw8), v9=sc.fn(raw9);
+    // store Mean+SD values for BL_DATA
+    if(sc.label==='Mean'){
+      provs.forEach((p,i)=>{
+        if(!BL_DATA[p]) BL_DATA[p]={mean:0,sd:0,median:0};
+        BL_DATA[p].mean=provVals[i];
+      });
+    }
+    if(sc.label==='SD') provs.forEach((p,i)=>{ if(BL_DATA[p]) BL_DATA[p].sd=provVals[i]; });
+    if(sc.label==='Median') provs.forEach((p,i)=>{ if(BL_DATA[p]) BL_DATA[p].median=provVals[i]; });
+
+    const tr=document.createElement('tr');
+    tr.style.cssText=`background:${sc.color};border-top:1.5px solid ${sc.border}`;
+    tr.innerHTML=`<td colspan="2" style="font-weight:700;font-size:12px;color:var(--text);padding:7px 10px">${sc.label}</td>
+      ${provVals.map(v=>`<td class="num" style="font-weight:600">${fmt(v)}</td>`).join('')}
+      <td class="num" style="font-weight:700;background:rgba(123,63,160,.08)">${fmt(v8)}</td>
+      <td class="num" style="font-weight:700;background:rgba(26,92,138,.08)">${fmt(v9)}</td>`;
+    rawBody.appendChild(tr);
+  });
+
+  // ====== ตาราง 2: แยกพื้นที่ป่า ======
+  const fHead=document.getElementById('bl-forest-head');
+  const fBody=document.getElementById('bl-forest-body');
+  // header: จังหวัด × 4 sub-col
+  const fProvH1=provs.map(p=>`<th colspan="4" style="text-align:center;border-bottom:1px solid var(--border)">${P9_TH[p]||p}</th>`).join('');
+  const fProvH2=provs.map(()=>`<th style="text-align:right;font-size:10px">รวม</th><th style="text-align:right;font-size:10px;color:var(--fire)">สงวนฯ</th><th style="text-align:right;font-size:10px;color:var(--prot)">อนุรักษ์</th><th style="text-align:right;font-size:10px;color:var(--dim)">นอกป่า</th>`).join('');
+  fHead.innerHTML=`<tr><th rowspan="2" style="vertical-align:bottom">ปี</th><th rowspan="2" style="vertical-align:bottom">ENSO</th>${fProvH1}</tr><tr>${fProvH2}</tr>`;
+  fBody.innerHTML='';
+
+  // raw forest matrix per province per year
+  const fMatrix={}; // {prov: [{r,p,n,t} per year]}
+  provs.forEach(p=>fMatrix[p]=[]);
+
+  validYears.forEach(yr=>{
+    const enso=getEnso(yr,period);
+    const pVals=provs.map(p=>{
+      const a=aggF(fd(DB.monthly,{year:yr,months,province:p}));
+      return{r:a.forest_reserve,p:a.forest_conservation,n:a.non_forest,t:a.forest_reserve+a.forest_conservation+a.non_forest};
+    });
+    provs.forEach((p,i)=>fMatrix[p].push(pVals[i]));
+    const tr=document.createElement('tr');
+    tr.style.background='rgba(37,99,168,.04)';
+    const cells=pVals.map(v=>`<td class="num">${fmt(v.t)}</td><td class="num"><span class="fb-r">${fmt(v.r)}</span></td><td class="num"><span class="fb-p">${fmt(v.p)}</span></td><td class="num"><span class="fb-n">${fmt(v.n)}</span></td>`).join('');
+    tr.innerHTML=`<td><b>${yr}</b></td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;${eStyle(enso.cat)}">${enso.type}</span></td>${cells}`;
+    fBody.appendChild(tr);
+  });
+
+  // separator
+  const sep2=document.createElement('tr');
+  sep2.innerHTML=`<td colspan="${provs.length*4+2}" style="padding:2px;background:var(--border)"></td>`;
+  fBody.appendChild(sep2);
+
+  // สรุป stats แยกป่า
+  const fKeys=['t','r','p','n'];
+  const fLabels={t:'รวม',r:'สงวนฯ',p:'อนุรักษ์',n:'นอกป่า'};
+  statsConfig.forEach(sc=>{
+    const tr=document.createElement('tr');
+    tr.style.cssText=`background:${sc.color};border-top:1.5px solid ${sc.border}`;
+    let cells=`<td colspan="2" style="font-weight:700;font-size:12px;color:var(--text);padding:7px 10px">${sc.label}</td>`;
+    provs.forEach(p=>{
+      fKeys.forEach(k=>{
+        const arr=fMatrix[p].map(v=>v[k]||0);
+        cells+=`<td class="num" style="font-weight:600">${fmt(sc.fn(arr))}</td>`;
+      });
+    });
+    tr.innerHTML=cells;
+    fBody.appendChild(tr);
+  });
 }
 
 function exportBL(){
-  // Export พร้อม metadata
   if(!Object.keys(BL_DATA).length){alert('กรุณาคำนวณ Baseline ก่อน');return;}
   const period=document.getElementById('bl-period').value;
   const forest=document.getElementById('bl-forest').value;
-  const validYears=[...BL_SEL].sort();
+  const validYears=[...BL_SEL].sort((a,b)=>a-b);
   const scale=document.getElementById('bl-scale').value;
   let rows=`"Baseline Export"\n"Scale","${scale}"\n"Period","${period}"\n"Forest","${forest}"\n"Years","${validYears.join(', ')}"\n\n`;
-  rows+='"Province","Baseline Mean","SD","Mean-SD","Mean+SD","Min","Max","Median","N"\n';
+  rows+='"Province","Mean","SD","Mean-SD","Mean+SD","Median"\n';
   Object.entries(BL_DATA).forEach(([p,bl])=>{
-    rows+=`"${P9_TH[p]||p}",${Math.round(bl.mean)},${Math.round(bl.sd)},${Math.round(bl.mean-bl.sd)},${Math.round(bl.mean+bl.sd)},${bl.min},${bl.max},${Math.round(bl.median)},${bl.n}\n`;
+    rows+=`"${P9_TH[p]||p}",${Math.round(bl.mean)},${Math.round(bl.sd)},${Math.round(bl.mean-bl.sd)},${Math.round(bl.mean+bl.sd)},${Math.round(bl.median)}\n`;
   });
   const blob=new Blob(['\uFEFF'+rows],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download=`baseline_${scale}_${period}_${new Date().toISOString().slice(0,10)}.csv`;a.click();
-}
-
-function renderBLCompare(){
-  if(!Object.keys(BL_DATA).length){alert('กรุณาคำนวณ Baseline ก่อน');return;}
-  const year=+document.getElementById('bl-cmp-year').value;
-  const period=document.getElementById('bl-period').value;
-  const forest=document.getElementById('bl-forest').value;
-  const months=PM[period];
-  const body=document.getElementById('bl-cmp-body');body.innerHTML='';
-  Object.entries(BL_DATA).forEach(([prov,bl])=>{
-    let data=fd(DB.monthly,{year,months,province:prov});
-    if(forest==='in_forest')data=data.filter(d=>d.forest_type!=='non_forest');
-    else if(forest&&forest!=='all')data=data.filter(d=>d.forest_type===forest);
-    const cur=data.reduce((s,d)=>s+(d.count||0),0);
-    const diff=cur-bl.mean;
-    const diffP=bl.mean>0?((cur-bl.mean)/bl.mean*100):null;
-    const sdS=cur>bl.mean+bl.sd?'🔴':cur<bl.mean-bl.sd?'🟢':'🟡';
-    const sdLbl=cur>bl.mean+bl.sd?'สูงกว่า Mean+SD':cur<bl.mean-bl.sd?'ต่ำกว่า Mean−SD':'อยู่ในช่วง ±SD';
-    const dc=d=>d===null?'dz':d>10?'dp':d<-10?'dn':'dz';
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="prov">${P9_TH[prov]||prov}</td>
-      <td class="num">${fmt(bl.mean)}</td>
-      <td class="num">${fmt(bl.sd)}</td>
-      <td class="num"><b>${fmt(cur)}</b></td>
-      <td class="num ${diff>=0?'dp':'dn'}">${diff>=0?'+':''}${fmt(Math.abs(diff))}</td>
-      <td class="num ${dc(diffP)}">${diffP!==null?fmtP(diffP):'—'}</td>
-      <td style="font-size:12px">${sdS} ${sdLbl}</td>`;
-    body.appendChild(tr);
-  });
-  if(!body.children.length)body.innerHTML='<tr><td colspan="7" class="state-msg">ไม่พบข้อมูล</td></tr>';
 }
 
 // ============================================================
