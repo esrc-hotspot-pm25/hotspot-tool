@@ -105,10 +105,11 @@ td.prov{font-weight:600}
 .dz{color:var(--dim);font-family:var(--mono);font-size:12px}
 /* ===MISC=== */
 .state-msg{text-align:center;padding:40px;color:var(--dim);font-size:13px}
-.info-btn{background:none;border:none;color:var(--acc);cursor:pointer;font-size:14px;padding:0 4px}
-.tooltip{position:relative;display:inline-block}
-.tooltip .tip{visibility:hidden;background:var(--text);color:var(--bg);font-size:11px;padding:6px 10px;border-radius:4px;position:absolute;z-index:10;bottom:125%;left:50%;transform:translateX(-50%);min-width:200px;line-height:1.6;white-space:normal}
-.tooltip:hover .tip{visibility:visible}
+.info-btn{background:none;border:1px solid var(--acc);border-radius:50%;color:var(--acc);cursor:pointer;font-size:12px;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;padding:0;flex-shrink:0}
+.info-btn:hover{background:var(--acc);color:#fff}
+/* Popup overlay */
+#tip-overlay{display:none;position:fixed;inset:0;z-index:999}
+#tip-popup{display:none;position:fixed;z-index:1000;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:12px;line-height:1.8;box-shadow:0 4px 20px rgba(0,0,0,.2);max-width:320px;min-width:220px}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--bs);border-radius:3px}
@@ -375,12 +376,14 @@ td.prov{font-weight:600}
       </div>
     </div>
     <!-- Legend แถวสี -->
-    <div style="padding:8px 14px;background:var(--s2);border-bottom:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap;font-size:11px">
+    <div style="padding:8px 14px;background:var(--s2);border-bottom:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap;font-size:11px;align-items:center">
       <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(37,99,168,.08);border:1px solid rgba(37,99,168,.3);border-radius:2px;display:inline-block"></span>ข้อมูลแต่ละปี</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(37,99,168,.18);border:1px solid var(--acc);border-radius:2px;display:inline-block"></span>Mean (ค่าเฉลี่ย)</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(37,99,168,.18);border:1px solid var(--acc);border-radius:2px;display:inline-block"></span>Mean</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(138,92,16,.1);border:1px solid rgba(138,92,16,.3);border-radius:2px;display:inline-block"></span>Median</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(100,100,100,.06);border:1px solid var(--bs);border-radius:2px;display:inline-block"></span>SD</span>
       <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(26,107,60,.12);border:1px solid rgba(26,107,60,.4);border-radius:2px;display:inline-block"></span>Mean−SD</span>
       <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(184,50,50,.12);border:1px solid rgba(184,50,50,.4);border-radius:2px;display:inline-block"></span>Mean+SD</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(138,92,16,.1);border:1px solid rgba(138,92,16,.3);border-radius:2px;display:inline-block"></span>Median</span>
+      <button class="info-btn" onclick="showTip(this,'<b>สูตรคำนวณ Baseline</b><br><br>Mean = ผลรวมทุกปี ÷ จำนวนปี<br>Median = ค่ากลาง (เรียงจากน้อยไปมาก)<br>SD = ส่วนเบี่ยงเบนมาตรฐาน<br>Mean−SD = ขีดล่าง (ค่าต่ำผิดปกติถ้าต่ำกว่านี้)<br>Mean+SD = ขีดบน (ค่าสูงผิดปกติถ้าสูงกว่านี้)')" style="margin-left:auto">i</button>
     </div>
     <div class="ts2">
       <table id="bl-raw-table">
@@ -481,9 +484,7 @@ td.prov{font-weight:600}
         <span style="background:rgba(184,50,50,.12);color:var(--en);padding:2px 7px;border-radius:3px;border:1px solid rgba(184,50,50,.3)">🔴 &gt; Mean+SD</span>
         <span style="background:rgba(243,156,18,.12);color:#7A5A00;padding:2px 7px;border-radius:3px;border:1px solid rgba(243,156,18,.3)">🟡 ±SD</span>
         <span style="background:rgba(26,107,60,.12);color:var(--forest);padding:2px 7px;border-radius:3px;border:1px solid rgba(26,107,60,.3)">🟢 &lt; Mean−SD</span>
-        <span class="tooltip"><button class="info-btn">ℹ️</button>
-          <span class="tip">% Diff = (ปีที่เลือก − Mean) ÷ Mean × 100<br>ความแตกต่าง = ปีที่เลือก − Mean</span>
-        </span>
+        <button class="info-btn" onclick="showTip(this,'<b>สูตรคำนวณ</b><br><br>% Difference<br>= (ค่าปีที่เลือก − Baseline Mean) ÷ Baseline Mean × 100<br><br>ความแตกต่าง<br>= ค่าปีที่เลือก − Baseline Mean<br><br><b>เทียบ ±SD</b><br>🔴 = ค่า &gt; Mean + SD (สูงผิดปกติ)<br>🟡 = อยู่ในช่วง Mean ± SD (ปกติ)<br>🟢 = ค่า &lt; Mean − SD (ต่ำผิดปกติ)')">i</button>
       </div>
     </div>
     <div class="ts2"><table id="cp-table">
@@ -1668,6 +1669,34 @@ function toggleTheme(){
 })();
 
 loadAll();
+
+// ============================================================
+// INFO POPUP (กดปุ่ม ℹ แล้วขึ้น popup)
+// ============================================================
+function showTip(btn, html){
+  const popup=document.getElementById('tip-popup');
+  const overlay=document.getElementById('tip-overlay');
+  if(!popup||!overlay)return;
+  popup.innerHTML=html+`<div style="margin-top:10px;text-align:right"><button onclick="hideTip()" style="background:var(--acc);color:#fff;border:none;border-radius:4px;padding:4px 12px;cursor:pointer;font-size:12px">ปิด</button></div>`;
+  popup.style.display='block';
+  overlay.style.display='block';
+  // วาง popup ใกล้ปุ่ม
+  const r=btn.getBoundingClientRect();
+  let top=r.bottom+6, left=r.left;
+  if(top+200>window.innerHeight) top=r.top-210;
+  if(left+320>window.innerWidth) left=window.innerWidth-330;
+  popup.style.top=Math.max(10,top)+'px';
+  popup.style.left=Math.max(10,left)+'px';
+}
+function hideTip(){
+  const p=document.getElementById('tip-popup');
+  const o=document.getElementById('tip-overlay');
+  if(p)p.style.display='none';
+  if(o)o.style.display='none';
+}
 </script>
+<!-- Popup elements -->
+<div id="tip-overlay" onclick="hideTip()"></div>
+<div id="tip-popup"></div>
 </body>
 </html>
