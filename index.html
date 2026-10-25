@@ -75,7 +75,7 @@ td.prov{font-weight:600}
 .fb-n{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:var(--s2);color:var(--dim);border:1px solid var(--border)}
 /* ===ENSO STRIP=== */
 .estrip{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px}
-.eyr{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex-shrink:0;width:44px;overflow:hidden}
+.eyr{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex-shrink:0;width:44px}
 .ebar{width:44px;height:40px;border-radius:5px;border:1.5px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);transition:all .12s;gap:2px;flex-shrink:0}
 .ebar.el-nino{background:rgba(184,50,50,.15);color:var(--en);border-color:rgba(184,50,50,.5)}
 .ebar.la-nina{background:rgba(26,79,138,.15);color:var(--ln);border-color:rgba(26,79,138,.5)}
@@ -88,10 +88,10 @@ td.prov{font-weight:600}
 .ebar.strong.la-nina{background:rgba(26,79,138,.32)}
 .ebar-main{font-size:13px;font-weight:800;line-height:1}
 .ebar-sub{font-size:9px;font-weight:600;opacity:.9;line-height:1}
-.eyr-lbl{font-size:9px;color:var(--dim);font-family:var(--mono);text-align:center;width:44px;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.eyr-lbl{font-size:9px;color:var(--dim);font-family:var(--mono);text-align:center;width:44px}
 .eyr:hover .ebar{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.2)}
 /* ===YEAR TOGGLE=== */
-.yr-btn{padding:5px 8px;border-radius:4px;border:2px solid var(--border);background:var(--s2);color:var(--text);font-size:12px;font-weight:700;font-family:var(--mono);cursor:pointer;transition:all .12s;min-width:50px;text-align:center;line-height:1.3}
+.yr-btn{width:58px;height:48px;border-radius:5px;border:2px solid var(--border);background:var(--s2);color:var(--text);font-size:13px;font-weight:700;font-family:var(--mono);cursor:pointer;transition:all .12s;text-align:center;line-height:1.2;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex-shrink:0}
 .yr-btn:hover{border-color:var(--acc);color:var(--acc)}
 .yr-btn.el-nino{border-color:rgba(184,50,50,.4);color:var(--en)}
 .yr-btn.la-nina{border-color:rgba(26,79,138,.4);color:var(--ln)}
@@ -357,7 +357,7 @@ td.prov{font-weight:600}
         <button class="btn bsm" onclick="selectAllYears(false)">ล้าง</button>
       </div>
     </div>
-    <div id="bl-toggle" style="display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px"></div>
+    <div id="bl-toggle" style="display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px;align-items:flex-start"></div>
     <div style="padding:0 14px 10px;font-size:11px;color:var(--dim)">
       ปีที่เลือก: <span id="bl-count" style="font-family:var(--mono);color:var(--acc)">0</span> ปี —
       <span id="bl-list" style="font-family:var(--mono)"></span>
@@ -383,7 +383,7 @@ td.prov{font-weight:600}
       <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(100,100,100,.06);border:1px solid var(--bs);border-radius:2px;display:inline-block"></span>SD</span>
       <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(26,107,60,.12);border:1px solid rgba(26,107,60,.4);border-radius:2px;display:inline-block"></span>Mean−SD</span>
       <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(184,50,50,.12);border:1px solid rgba(184,50,50,.4);border-radius:2px;display:inline-block"></span>Mean+SD</span>
-      <button class="info-btn" onclick="showTip(this,'<b>สูตรคำนวณ Baseline</b><br><br>Mean = ผลรวมทุกปี ÷ จำนวนปี<br>Median = ค่ากลาง (เรียงจากน้อยไปมาก)<br>SD = ส่วนเบี่ยงเบนมาตรฐาน<br>Mean−SD = ขีดล่าง (ค่าต่ำผิดปกติถ้าต่ำกว่านี้)<br>Mean+SD = ขีดบน (ค่าสูงผิดปกติถ้าสูงกว่านี้)')" style="margin-left:auto">i</button>
+      <button class="info-btn" data-tip="<b>สูตรคำนวณ Baseline</b><br><br>Mean = ผลรวมทุกปี ÷ จำนวนปี<br>Median = ค่ากลาง (เรียงจากน้อยไปมาก)<br>SD = ส่วนเบี่ยงเบนมาตรฐาน<br>Mean−SD = ขีดล่าง (ค่าต่ำผิดปกติถ้าต่ำกว่านี้)<br>Mean+SD = ขีดบน (ค่าสูงผิดปกติถ้าสูงกว่านี้)" onclick="showTip(this)"" style="margin-left:auto">i</button>
     </div>
     <div class="ts2">
       <table id="bl-raw-table">
@@ -484,7 +484,7 @@ td.prov{font-weight:600}
         <span style="background:rgba(184,50,50,.12);color:var(--en);padding:2px 7px;border-radius:3px;border:1px solid rgba(184,50,50,.3)">🔴 &gt; Mean+SD</span>
         <span style="background:rgba(243,156,18,.12);color:#7A5A00;padding:2px 7px;border-radius:3px;border:1px solid rgba(243,156,18,.3)">🟡 ±SD</span>
         <span style="background:rgba(26,107,60,.12);color:var(--forest);padding:2px 7px;border-radius:3px;border:1px solid rgba(26,107,60,.3)">🟢 &lt; Mean−SD</span>
-        <button class="info-btn" onclick="showTip(this,'<b>สูตรคำนวณ</b><br><br>% Difference<br>= (ค่าปีที่เลือก − Baseline Mean) ÷ Baseline Mean × 100<br><br>ความแตกต่าง<br>= ค่าปีที่เลือก − Baseline Mean<br><br><b>เทียบ ±SD</b><br>🔴 = ค่า &gt; Mean + SD (สูงผิดปกติ)<br>🟡 = อยู่ในช่วง Mean ± SD (ปกติ)<br>🟢 = ค่า &lt; Mean − SD (ต่ำผิดปกติ)')">i</button>
+        <button class="info-btn" data-tip="<b>สูตรคำนวณ</b><br><br>% Difference<br>= (ค่าปีที่เลือก − Baseline Mean) ÷ Baseline Mean × 100<br><br>ความแตกต่าง<br>= ค่าปีที่เลือก − Baseline Mean<br><br><b>เทียบ ±SD</b><br>🔴 = ค่า &gt; Mean + SD (สูงผิดปกติ)<br>🟡 = อยู่ในช่วง Mean ± SD (ปกติ)<br>🟢 = ค่า &lt; Mean − SD (ต่ำผิดปกติ)" onclick="showTip(this)"">i</button>
       </div>
     </div>
     <div class="ts2"><table id="cp-table">
@@ -1212,11 +1212,10 @@ function buildYearToggle(years){
     const ec=eClass(cat);const str=eStrength(type);
     const btn=document.createElement('button');
     btn.className=`yr-btn ${ec}`;btn.dataset.year=yr;
-    btn.title=`${yr}: ${type}`;  // tooltip = ชื่อเต็ม
-    // ในปุ่ม: ปี + ย่อ ENSO
+    btn.title=`${yr}: ${type}`;
     const lbl=ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N';
     const sub=str==='strong'?'Str':str==='moderate'?'Mod':str==='weak'?'Wk':'';
-    btn.innerHTML=`${yr}<br><span style="font-size:9px;opacity:.9;font-weight:500">${lbl}${sub?' '+sub:''}</span>`;
+    btn.innerHTML=`<span style="font-size:13px;font-weight:800">${yr}</span><span style="font-size:9px;font-weight:600;opacity:.9">${lbl}${sub?' '+sub:''}</span>`;
     btn.onclick=()=>toggleYear(yr,btn);
     c.appendChild(btn);
   });
@@ -1673,18 +1672,18 @@ loadAll();
 // ============================================================
 // INFO POPUP (กดปุ่ม ℹ แล้วขึ้น popup)
 // ============================================================
-function showTip(btn, html){
+function showTip(btn){
+  const html=btn.getAttribute('data-tip')||'';
   const popup=document.getElementById('tip-popup');
   const overlay=document.getElementById('tip-overlay');
   if(!popup||!overlay)return;
-  popup.innerHTML=html+`<div style="margin-top:10px;text-align:right"><button onclick="hideTip()" style="background:var(--acc);color:#fff;border:none;border-radius:4px;padding:4px 12px;cursor:pointer;font-size:12px">ปิด</button></div>`;
+  popup.innerHTML=html+'<div style="margin-top:12px;text-align:right"><button onclick="hideTip()" style="background:var(--acc);color:#fff;border:none;border-radius:4px;padding:4px 14px;cursor:pointer;font-size:12px">ปิด ✕</button></div>';
   popup.style.display='block';
   overlay.style.display='block';
-  // วาง popup ใกล้ปุ่ม
   const r=btn.getBoundingClientRect();
-  let top=r.bottom+6, left=r.left;
-  if(top+200>window.innerHeight) top=r.top-210;
-  if(left+320>window.innerWidth) left=window.innerWidth-330;
+  let top=r.bottom+8, left=r.left-10;
+  if(top+250>window.innerHeight) top=r.top-260;
+  if(left+340>window.innerWidth) left=window.innerWidth-350;
   popup.style.top=Math.max(10,top)+'px';
   popup.style.left=Math.max(10,left)+'px';
 }
