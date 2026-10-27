@@ -1243,12 +1243,31 @@ function onScaleChange(){
   const scale=document.getElementById('bl-scale').value;
   const period=document.getElementById('bl-period').value;
   const target=getYearsForScale(scale,period);
-  BL_SEL.clear();
-  document.querySelectorAll('.yr-btn').forEach(btn=>{
-    const yr=+btn.dataset.year;
-    if(target.includes(yr)){BL_SEL.add(yr);btn.classList.add('selected');}
-    else btn.classList.remove('selected');
-  });
+  // เก็บปีที่เลือกไว้ก่อน rebuild
+  const prevSel=new Set(BL_SEL);
+  // rebuild toggle ด้วย period ใหม่ (สีและ label เปลี่ยนตาม period)
+  const years=[...new Set([...DB.monthly.map(d=>d.year),...DB.yearly.map(d=>d.year)])].filter(y=>y&&!isNaN(y)).sort((a,b)=>a-b);
+  const c=document.getElementById('bl-toggle');
+  if(c){
+    c.innerHTML='';
+    years.forEach(yr=>{
+      const{cat,type}=getEnso(yr,period);
+      const ec=eClass(cat);const str=eStrength(type);
+      const btn=document.createElement('button');
+      btn.className=`yr-btn ${ec}`;btn.dataset.year=yr;
+      btn.title=`${yr}: ${type}`;
+      const lbl=ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N';
+      const sub=str==='strong'?'Str':str==='moderate'?'Mod':str==='weak'?'Wk':'';
+      btn.innerHTML=`<span style="font-size:13px;font-weight:800">${yr}</span><span style="font-size:9px;font-weight:600;opacity:.9">${lbl}${sub?' '+sub:''}</span>`;
+      btn.onclick=()=>toggleYear(yr,btn);
+      // ใช้ target จาก scale ใหม่ แต่ถ้าผู้ใช้เคยปรับเองไว้ ให้คง prevSel
+      const useTarget = scale !== 'all' || prevSel.size === years.length;
+      const selected = useTarget ? target.includes(yr) : prevSel.has(yr);
+      if(selected){BL_SEL.add(yr);btn.classList.add('selected');}
+      else{BL_SEL.delete(yr);}
+      c.appendChild(btn);
+    });
+  }
   updateSelInfo();
 }
 
