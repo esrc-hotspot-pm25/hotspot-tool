@@ -74,27 +74,16 @@ td.prov{font-weight:600}
 .fb-p{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:rgba(138,92,16,.1);color:var(--prot);border:1px solid rgba(138,92,16,.2)}
 .fb-n{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:var(--s2);color:var(--dim);border:1px solid var(--border)}
 /* ===ENSO STRIP=== */
-.estrip{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;flex-wrap:wrap}
-.eyr{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex-shrink:0;width:44px}
-.ebar{width:44px;height:40px;border-radius:5px;border:1.5px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);transition:all .12s;gap:2px;flex-shrink:0}
-.ebar.el-nino{background:rgba(184,50,50,.15);color:var(--en);border-color:rgba(184,50,50,.5)}
-.ebar.la-nina{background:rgba(26,79,138,.15);color:var(--ln);border-color:rgba(26,79,138,.5)}
-.ebar.neutral{background:var(--s2);color:var(--dim);border-color:var(--border)}
-.ebar.weak.el-nino{background:rgba(184,50,50,.08)}
-.ebar.moderate.el-nino{background:rgba(184,50,50,.18)}
-.ebar.strong.el-nino{background:rgba(184,50,50,.32)}
-.ebar.weak.la-nina{background:rgba(26,79,138,.08)}
-.ebar.moderate.la-nina{background:rgba(26,79,138,.18)}
-.ebar.strong.la-nina{background:rgba(26,79,138,.32)}
-.ebar-main{font-size:13px;font-weight:800;line-height:1}
-.ebar-sub{font-size:9px;font-weight:600;opacity:.9;line-height:1}
-.eyr-lbl{font-size:9px;color:var(--dim);font-family:var(--mono);text-align:center;width:44px}
-.eyr:hover .ebar{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.2)}
+.estrip{display:flex;gap:6px;padding:4px 0 8px;flex-wrap:wrap}
+/* ===YEAR BUTTONS (ใช้ทุก strip เหมือนกันหมด)=== */
 /* ===YEAR TOGGLE=== */
 .yr-btn{width:58px;height:48px;border-radius:5px;border:2px solid var(--border);background:var(--s2);color:var(--text);font-size:13px;font-weight:700;font-family:var(--mono);cursor:pointer;transition:all .12s;text-align:center;line-height:1.2;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex-shrink:0}
-.yr-btn:hover{border-color:var(--acc);color:var(--acc)}
-.yr-btn.el-nino{border-color:rgba(184,50,50,.4);color:var(--en)}
-.yr-btn.la-nina{border-color:rgba(26,79,138,.4);color:var(--ln)}
+.yr-btn:hover{border-color:var(--acc)}
+/* ไม่ selected: ขอบสี ตัวหนังสือสี */
+.yr-btn.el-nino{border-color:var(--en);color:var(--en)}
+.yr-btn.la-nina{border-color:var(--ln);color:var(--ln)}
+.yr-btn.neutral{border-color:var(--dim);color:var(--dim)}
+/* selected: พื้นสีเต็ม ตัวขาว */
 .yr-btn.selected{color:#fff!important;font-weight:700}
 .yr-btn.el-nino.selected{background:var(--en);border-color:var(--en)}
 .yr-btn.la-nina.selected{background:var(--ln);border-color:var(--ln)}
@@ -749,11 +738,12 @@ function buildEnsoStrip(){
     const str=eStrength(type);
     const lbl=ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N';
     const sub=str==='strong'?'Str':str==='moderate'?'Mod':str==='weak'?'Wk':'';
-    // ใช้ yr-btn style เหมือนหน้า Baseline
+    // สีตาม ENSO: El Niño = แดง, La Niña = น้ำเงิน, Neutral = เทา — เหมือน Baseline ทุกอย่าง
     const btn=document.createElement('button');
-    btn.className=`yr-btn ${ec} selected`;  // selected เพื่อแสดงสี
+    btn.className=`yr-btn ${ec} selected`;
     btn.title=`${row.year}: ${type}`;
-    btn.style.cursor='default';  // ไม่ clickable บนหน้า overview
+    btn.style.cursor='default';
+    btn.style.pointerEvents='none';
     btn.innerHTML=`<span style="font-size:13px;font-weight:800">${row.year}</span><span style="font-size:9px;font-weight:600;opacity:.9">${lbl}${sub?' '+sub:''}</span>`;
     strip.appendChild(btn);
   });
@@ -1453,10 +1443,12 @@ function buildCPEnsoStrip(){
     // ใช้ yr-btn style เหมือนหน้า Baseline
     const btn=document.createElement('button');
     btn.id=`cp-yr-${row.year}`;
-    btn.className=`yr-btn ${ec}${selected?' selected':''}`;
+    // เพิ่ม neutral class เสมอเพื่อให้ neutral.selected มีสีเทา
+    const ecClass=ec||'neutral';
+    btn.className=`yr-btn ${ecClass}${selected?' selected':''}`;
     btn.dataset.year=row.year;
     btn.title=`${row.year}: ${type}`;
-    if(!selected) btn.style.opacity='0.5';
+    btn.style.opacity=selected?'1':'0.45';
     btn.innerHTML=`<span style="font-size:13px;font-weight:800">${row.year}</span><span style="font-size:9px;font-weight:600;opacity:.9">${lbl}${sub?' '+sub:''}</span>`;
     btn.onclick=()=>toggleCPYear(+row.year,btn);
     strip.appendChild(btn);
@@ -1468,7 +1460,7 @@ function toggleCPYear(yr,btn){
   if(CP_SEL.has(yr)){
     CP_SEL.delete(yr);
     btn.classList.remove('selected');
-    btn.style.opacity='0.5';
+    btn.style.opacity='0.45';
   }else{
     CP_SEL.add(yr);
     btn.classList.add('selected');
@@ -1482,7 +1474,7 @@ function cpSelectAll(all){
   document.querySelectorAll('[id^="cp-yr-"]').forEach(btn=>{
     const yr=+btn.dataset.year;
     if(all){CP_SEL.add(yr);btn.classList.add('selected');btn.style.opacity='1';}
-    else{btn.classList.remove('selected');btn.style.opacity='0.5';}
+    else{btn.classList.remove('selected');btn.style.opacity='0.45';}
   });
   updateCPSelInfo();
 }
