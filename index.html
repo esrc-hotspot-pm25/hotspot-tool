@@ -286,7 +286,7 @@ td.prov{font-weight:600}
           <button class="btn bsm" onclick="navMonthFr(1)">ถัดไป →</button>
         </div>
       </div>
-      <button class="btn bsm" onclick="exportTable('fr-table','forest')">⬇ Export</button>
+      <button class="btn bsm" onclick="exportForestTable()">⬇ Export</button>
     </div>
     <div class="ts2"><table id="fr-table">
       <thead id="fr-head"></thead>
@@ -1052,26 +1052,27 @@ function renderForest(){
   const frYrLbl=document.getElementById('fr-year-lbl');
   if(frYrLbl)frYrLbl.textContent=`ปี ${year} (${MTH[ms]}–${MTH[me]})`;
 
-  // Province cards รายจังหวัด (รวมทั้งหมด)
+  // Province cards รายจังหวัด — rebuild ทุกครั้ง
   const frPC=document.getElementById('fr-prov-cards');
-  if(frPC&&frPC.children.length===0){
+  if(frPC){
+    frPC.innerHTML='';
+    const months2=[];for(let m=ms;m<=me;m++)months2.push(m);
     P9.forEach(p=>{
+      const total=sC(fd(DB.monthly,{year,months:months2,province:p}));
       const div=document.createElement('div');
-      div.className='card';div.style.borderTop='3px solid var(--fire)';div.style.textAlign='center';
-      div.innerHTML=`<div style="font-size:10px;color:var(--dim);margin-bottom:3px">${P9_TH[p]||p}</div>
-        <div style="font-size:16px;font-weight:600;font-family:var(--mono);color:var(--fire)" id="frpc-${p.replace(/ /g,'_')}">—</div>`;
+      div.className='card';
+      div.style.cssText='border-top:3px solid var(--fire);text-align:center;padding:10px 8px';
+      div.innerHTML=`<div style="font-size:10px;color:var(--dim);margin-bottom:4px">${P9_TH[p]||p}</div>
+        <div style="font-size:16px;font-weight:600;font-family:var(--mono);color:var(--fire)">${fmt(total)}</div>`;
       frPC.appendChild(div);
     });
   }
-  const months2=[];for(let m=ms;m<=me;m++)months2.push(m);
-  P9.forEach(p=>{
-    const el=document.getElementById(`frpc-${p.replace(/ /g,'_')}`);
-    if(el)el.textContent=fmt(sC(fd(DB.monthly,{year,months:months2,province:p})));
-  });
 
-  // Summary cards
-  const allFdata=fd(gb==='yearly'?DB.yearly:DB.monthly,{yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
-  const agg=aggF(allFdata);const tot=agg.forest_reserve+agg.forest_conservation+agg.non_forest;
+  // Summary cards — ใช้ monthly เสมอ ไม่ว่า groupby จะเป็นอะไร
+  const months3=[];for(let m=ms;m<=me;m++)months3.push(m);
+  const summaryData=fd(DB.monthly,{yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
+  const agg=aggF(summaryData);
+  const tot=agg.forest_reserve+agg.forest_conservation+agg.non_forest;
   document.getElementById('fr-r').textContent=fmt(agg.forest_reserve);
   document.getElementById('fr-p').textContent=fmt(agg.forest_conservation);
   document.getElementById('fr-n').textContent=fmt(agg.non_forest);
@@ -1623,7 +1624,84 @@ function downloadDailyForest(format){
   const ms=+document.getElementById('frdl-ms').value;
   const ye=+document.getElementById('frdl-ye').value;
   const me=+document.getElementById('frdl-me').value;
-  doDownload(ys,ms,ye,me,format,'frdl-status','hotspot_daily_forest');
+  // Download รายวัน พร้อม column พื้นที่ป่า (แยก forest_type แต่ละแถว)
+  const raw=fd(DB.daily,{yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
+  if(!raw.length){alert('ไม่พบข้อมูล');return;}
+  const forestLabels={'forest_reserve':'ป่าสงวนแห่งชาติ','forest_conservation':'ป่าอนุรักษ์','non_forest':'นอกเขตป่า'};
+  // group by date × province × forest_type
+  const grouped={};
+  raw.forEach(d=>{
+    const ft=d.forest_type||'non_forest';
+    const key=`${d.year}-${String(d.month).padStart(2,'0')}-${String(d.day).padStart(2,'0')}__${d.province_en}__${ft}`;
+    if(!grouped[key])grouped[key]={
+      year:d.year,month:d.month,day:d.day,
+      province_th:d.province_th||'',province_en:d.province_en,
+      satellite:d.satellite,instrument:d.instrument,
+      forest_type:ft,forest_type_th:forestLabels[ft]||ft,
+      count:0,frp_sum:0
+    };
+    grouped[key].count+=(d.count||0);
+    grouped[key].frp_sum+=parseFloat(d.frp_sum||0);
+  });
+  const rows=Object.values(grouped).sort((a,b)=>
+    a.year-b.year||a.month-b.month||a.day-b.day||
+    a.province_en.localeCompare(b.province_en)||a.forest_type.localeCompare(b.forest_type)
+  );
+  const keys=['year','month','day','province_th','province_en','satellite','instrument','forest_type','forest_type_th','count','frp_sum'];
+  const keyLabels={'year':'ปี','month':'เดือน','day':'วัน','province_th':'จังหวัด (ไทย)','province_en':'จังหวัด (EN)','satellite':'ดาวเทียม','instrument':'เซนเซอร์','forest_type':'ประเภทพื้นที่ (EN)','forest_type_th':'ประเภทพื้นที่','count':'จำนวนจุด','frp_sum':'FRP รวม'};
+  const filename=`hotspot_daily_forest_${ys}${String(ms).padStart(2,'0')}-${ye}${String(me).padStart(2,'0')}`;
+  if(format==='csv'){
+    const csv=[keys.map(k=>keyLabels[k]).join(','),...rows.map(r=>keys.map(k=>`"${r[k]??''}"`).join(','))].join('\n');
+    const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename+'.csv';a.click();
+  }else{
+    const hdr=keys.map(k=>`<th>${keyLabels[k]}</th>`).join('');
+    const bdy=rows.map(r=>'<tr>'+keys.map(k=>`<td>${r[k]??''}</td>`).join('')+'</tr>').join('');
+    const html=`<html><head><meta charset="utf-8"></head><body><table><thead><tr>${hdr}</tr></thead><tbody>${bdy}</tbody></table></body></html>`;
+    const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename+'.xls';a.click();
+  }
+  document.getElementById('frdl-status').textContent=`✓ ${rows.length.toLocaleString('th-TH')} rows`;
+  document.getElementById('frdl-status').style.color='var(--forest)';
+}
+
+// Export ตารางแยกพื้นที่ป่า — สร้าง CSV flat จากข้อมูลจริง (ไม่จาก DOM)
+function exportForestTable(){
+  if(!DB.loaded){alert('ยังไม่โหลดข้อมูล');return;}
+  const gb=document.getElementById('fr-groupby').value;
+  const year=+document.getElementById('fr-year').value;
+  const ms=+document.getElementById('fr-ms').value;
+  const me=+document.getElementById('fr-me').value;
+
+  // ดึงข้อมูลจริงแทนการอ่านจาก DOM
+  const src=gb==='yearly'?DB.yearly:DB.monthly;
+  const data=fd(src,{yearFrom:year,monthFrom:ms,yearTo:year,monthTo:me});
+
+  // group by period × province × forest_type
+  const grouped={};
+  const forestTH={'forest_reserve':'ป่าสงวนแห่งชาติ','forest_conservation':'ป่าอนุรักษ์','non_forest':'นอกเขตป่า'};
+  data.forEach(d=>{
+    const period=gb==='yearly'?`${d.year}`:`${d.year}-${String(d.month).padStart(2,'0')}`;
+    const ft=d.forest_type||'non_forest';
+    const key=`${period}__${d.province_en}__${ft}`;
+    if(!grouped[key])grouped[key]={
+      period,province_en:d.province_en,province_th:d.province_th||P9_TH[d.province_en]||'',
+      forest_type:ft,forest_type_th:forestTH[ft]||ft,count:0
+    };
+    grouped[key].count+=(d.count||0);
+  });
+
+  const rows=Object.values(grouped).sort((a,b)=>
+    a.period.localeCompare(b.period)||a.province_en.localeCompare(b.province_en)||a.forest_type.localeCompare(b.forest_type)
+  );
+  if(!rows.length){alert('ไม่พบข้อมูล');return;}
+
+  const keys=['period','province_th','province_en','forest_type','forest_type_th','count'];
+  const labels={'period':'ช่วงเวลา','province_th':'จังหวัด (ไทย)','province_en':'จังหวัด (EN)','forest_type':'ประเภทพื้นที่ (EN)','forest_type_th':'ประเภทพื้นที่','count':'จำนวนจุด'};
+  const csv=[keys.map(k=>labels[k]).join(','),...rows.map(r=>keys.map(k=>`"${r[k]??''}"`).join(','))].join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`forest_area_${year}_${new Date().toISOString().slice(0,10)}.csv`;a.click();
 }
 function doDownload(ys,ms,ye,me,format,statusId,fname){
   const raw=fd(DB.daily,{yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
