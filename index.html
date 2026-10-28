@@ -74,7 +74,7 @@ td.prov{font-weight:600}
 .fb-p{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:rgba(138,92,16,.1);color:var(--prot);border:1px solid rgba(138,92,16,.2)}
 .fb-n{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:var(--s2);color:var(--dim);border:1px solid var(--border)}
 /* ===ENSO STRIP=== */
-.estrip{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px}
+.estrip{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;flex-wrap:wrap}
 .eyr{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;flex-shrink:0;width:44px}
 .ebar{width:44px;height:40px;border-radius:5px;border:1.5px solid transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);transition:all .12s;gap:2px;flex-shrink:0}
 .ebar.el-nino{background:rgba(184,50,50,.15);color:var(--en);border-color:rgba(184,50,50,.5)}
@@ -749,15 +749,13 @@ function buildEnsoStrip(){
     const str=eStrength(type);
     const lbl=ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N';
     const sub=str==='strong'?'Str':str==='moderate'?'Mod':str==='weak'?'Wk':'';
-    const d=document.createElement('div');
-    d.className='eyr';
-    d.title=`${row.year}: ${type}`;
-    d.innerHTML=`<div class="ebar ${str} ${ec}">
-        <span class="ebar-main">${lbl}</span>
-        ${sub?`<span class="ebar-sub">${sub}</span>`:''}
-      </div>
-      <div class="eyr-lbl">${row.year}</div>`;
-    strip.appendChild(d);
+    // ใช้ yr-btn style เหมือนหน้า Baseline
+    const btn=document.createElement('button');
+    btn.className=`yr-btn ${ec} selected`;  // selected เพื่อแสดงสี
+    btn.title=`${row.year}: ${type}`;
+    btn.style.cursor='default';  // ไม่ clickable บนหน้า overview
+    btn.innerHTML=`<span style="font-size:13px;font-weight:800">${row.year}</span><span style="font-size:9px;font-weight:600;opacity:.9">${lbl}${sub?' '+sub:''}</span>`;
+    strip.appendChild(btn);
   });
 
   // sync ตาราง ENSO column
@@ -1452,40 +1450,39 @@ function buildCPEnsoStrip(){
     const lbl=ec==='el-nino'?'EN':ec==='la-nina'?'LN':'N';
     const sub=str==='strong'?'Str':str==='moderate'?'Mod':str==='weak'?'Wk':'';
     const selected=CP_SEL.has(+row.year);
-    const d=document.createElement('div');
-    d.className='eyr';d.title=`${row.year}: ${type}`;
-    d.innerHTML=`<div class="ebar ${str} ${ec}" id="cp-yr-${row.year}"
-      style="cursor:pointer;${selected?`outline:2px solid var(--acc);outline-offset:2px`:''}"
-      onclick="toggleCPYear(${row.year},this)">
-        <span class="ebar-main">${lbl}</span>
-        ${sub?`<span class="ebar-sub">${sub}</span>`:''}
-      </div>
-      <div class="eyr-lbl">${row.year}</div>`;
-    strip.appendChild(d);
+    // ใช้ yr-btn style เหมือนหน้า Baseline
+    const btn=document.createElement('button');
+    btn.id=`cp-yr-${row.year}`;
+    btn.className=`yr-btn ${ec}${selected?' selected':''}`;
+    btn.dataset.year=row.year;
+    btn.title=`${row.year}: ${type}`;
+    if(!selected) btn.style.opacity='0.5';
+    btn.innerHTML=`<span style="font-size:13px;font-weight:800">${row.year}</span><span style="font-size:9px;font-weight:600;opacity:.9">${lbl}${sub?' '+sub:''}</span>`;
+    btn.onclick=()=>toggleCPYear(+row.year,btn);
+    strip.appendChild(btn);
   });
   updateCPSelInfo();
 }
 
-function toggleCPYear(yr,el){
+function toggleCPYear(yr,btn){
   if(CP_SEL.has(yr)){
     CP_SEL.delete(yr);
-    el.style.outline='none';
-    el.style.opacity='0.6';
+    btn.classList.remove('selected');
+    btn.style.opacity='0.5';
   }else{
     CP_SEL.add(yr);
-    el.style.outline='2px solid var(--acc)';
-    el.style.outlineOffset='1px';
-    el.style.opacity='1';
+    btn.classList.add('selected');
+    btn.style.opacity='1';
   }
   updateCPSelInfo();
 }
 
 function cpSelectAll(all){
   CP_SEL.clear();
-  document.querySelectorAll('[id^="cp-yr-"]').forEach(el=>{
-    const yr=+el.id.replace('cp-yr-','');
-    if(all){CP_SEL.add(yr);el.style.outline='2px solid var(--acc)';el.style.outlineOffset='1px';el.style.opacity='1';}
-    else{el.style.outline='none';el.style.opacity='0.6';}
+  document.querySelectorAll('[id^="cp-yr-"]').forEach(btn=>{
+    const yr=+btn.dataset.year;
+    if(all){CP_SEL.add(yr);btn.classList.add('selected');btn.style.opacity='1';}
+    else{btn.classList.remove('selected');btn.style.opacity='0.5';}
   });
   updateCPSelInfo();
 }
