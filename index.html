@@ -1669,39 +1669,62 @@ function downloadDailyForest(format){
 function exportForestTable(){
   if(!DB.loaded){alert('ยังไม่โหลดข้อมูล');return;}
   const gb=document.getElementById('fr-groupby').value;
-  const year=+document.getElementById('fr-year').value;
+  const yearEl=document.getElementById('fr-year');
+  const year=yearEl?+yearEl.value:0;
   const ms=+document.getElementById('fr-ms').value;
   const me=+document.getElementById('fr-me').value;
 
-  // ดึงข้อมูลจริงแทนการอ่านจาก DOM
-  const src=gb==='yearly'?DB.yearly:DB.monthly;
-  const data=fd(src,{yearFrom:year,monthFrom:ms,yearTo:year,monthTo:me});
+  if(!year){alert('กรุณากด "แสดงผล" ก่อน');return;}
 
-  // group by period × province × forest_type
-  const grouped={};
   const forestTH={'forest_reserve':'ป่าสงวนแห่งชาติ','forest_conservation':'ป่าอนุรักษ์','non_forest':'นอกเขตป่า'};
-  data.forEach(d=>{
-    const period=gb==='yearly'?`${d.year}`:`${d.year}-${String(d.month).padStart(2,'0')}`;
-    const ft=d.forest_type||'non_forest';
-    const key=`${period}__${d.province_en}__${ft}`;
-    if(!grouped[key])grouped[key]={
-      period,province_en:d.province_en,province_th:d.province_th||P9_TH[d.province_en]||'',
-      forest_type:ft,forest_type_th:forestTH[ft]||ft,count:0
-    };
-    grouped[key].count+=(d.count||0);
-  });
+  const grouped={};
+
+  if(gb==='daily'){
+    // รายวัน — ใช้ FR_NAV_YEAR/MONTH ที่กำลังแสดงอยู่
+    const rawD=DB.daily.filter(d=>
+      isVP(d.province_en)&&d.year===FR_NAV_YEAR&&d.month===FR_NAV_MONTH&&isSensor(d.satellite,d.instrument,G_SENSOR)
+    );
+    rawD.forEach(d=>{
+      const ft=d.forest_type||'non_forest';
+      const key=`${d.year}-${String(d.month).padStart(2,'0')}-${String(d.day).padStart(2,'0')}__${d.province_en}__${ft}`;
+      if(!grouped[key])grouped[key]={
+        period:`${d.year}-${String(d.month).padStart(2,'0')}-${String(d.day).padStart(2,'0')}`,
+        province_en:d.province_en,province_th:d.province_th||P9_TH[d.province_en]||'',
+        forest_type:ft,forest_type_th:forestTH[ft]||ft,count:0
+      };
+      grouped[key].count+=(d.count||0);
+    });
+  } else {
+    // รายเดือน หรือ รายปี — ใช้ DB.monthly เสมอ (yearly ไม่มี month)
+    const months=[];
+    for(let m=ms;m<=me;m++) months.push(m);
+    const rawM=DB.monthly.filter(d=>
+      isVP(d.province_en)&&d.year===year&&months.includes(d.month)&&isSensor(d.satellite,d.instrument,G_SENSOR)
+    );
+    rawM.forEach(d=>{
+      const ft=d.forest_type||'non_forest';
+      const period=gb==='yearly'?`${d.year}`:`${d.year}-${String(d.month).padStart(2,'0')}`;
+      const key=`${period}__${d.province_en}__${ft}`;
+      if(!grouped[key])grouped[key]={
+        period,province_en:d.province_en,province_th:d.province_th||P9_TH[d.province_en]||'',
+        forest_type:ft,forest_type_th:forestTH[ft]||ft,count:0
+      };
+      grouped[key].count+=(d.count||0);
+    });
+  }
 
   const rows=Object.values(grouped).sort((a,b)=>
     a.period.localeCompare(b.period)||a.province_en.localeCompare(b.province_en)||a.forest_type.localeCompare(b.forest_type)
   );
-  if(!rows.length){alert('ไม่พบข้อมูล');return;}
+  if(!rows.length){alert('ไม่พบข้อมูล — กรุณากด "แสดงผล" ก่อน');return;}
 
   const keys=['period','province_th','province_en','forest_type','forest_type_th','count'];
-  const labels={'period':'ช่วงเวลา','province_th':'จังหวัด (ไทย)','province_en':'จังหวัด (EN)','forest_type':'ประเภทพื้นที่ (EN)','forest_type_th':'ประเภทพื้นที่','count':'จำนวนจุด'};
+  const labels={period:'ช่วงเวลา',province_th:'จังหวัด (ไทย)',province_en:'จังหวัด (EN)',forest_type:'ประเภทพื้นที่ (EN)',forest_type_th:'ประเภทพื้นที่',count:'จำนวนจุด'};
   const csv=[keys.map(k=>labels[k]).join(','),...rows.map(r=>keys.map(k=>`"${r[k]??''}"`).join(','))].join('\n');
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=`forest_area_${year}_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+  a.download=`forest_area_${year}_${gb}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
 }
 function doDownload(ys,ms,ye,me,format,statusId,fname){
   const raw=fd(DB.daily,{yearFrom:ys,monthFrom:ms,yearTo:ye,monthTo:me});
