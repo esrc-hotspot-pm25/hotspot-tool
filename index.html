@@ -598,7 +598,7 @@ function aggF(data){
   return r;
 }
 function sC(data){return data.reduce((s,d)=>s+(d.count||0),0);}
-function fmt(n){return(n===null||n===undefined||isNaN(n))?'—':Math.round(n).toLocaleString('th-TH');}
+function fmt(n){return(n===null||n===undefined||typeof n!=='number'||isNaN(n)||!isFinite(n))?'—':Math.round(n).toLocaleString('th-TH');}
 function fmtP(n){if(!isFinite(n))return'—';return(n>=0?'+':'')+n.toFixed(1)+'%';}
 
 function getEnso(yr,period='smoke'){
@@ -1097,36 +1097,30 @@ function renderForest(){
       <td class="num"${bg?` style="background:${bg}"`:''}><span class="fb-p">${fmt(v.p)}</span></td>
       <td class="num"${bg?` style="background:${bg}"`:''}><span class="fb-n">${fmt(v.n)}</span></td>`;
   }
+  function _sm(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:null;}
+  function _ssd(arr){const m=_sm(arr);return m===null?null:Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length);}
+  function _stat(arr,idx){return idx===0?_sm(arr):_ssd(arr);}
+
   function makeStatRowsFR(matrix){
-    // matrix: array ของ {provVals:[{r,p,n,t}×9], v8:{r,p,n,t}, v9:{r,p,n,t}} per row
     if(!matrix.length)return;
     const keys=['t','r','p','n'];
     ['เฉลี่ย (Mean)','ส่วนเบี่ยงเบนมาตรฐาน (SD)'].forEach((label,idx)=>{
       const tr=document.createElement('tr');
       tr.style.cssText=`background:rgba(37,99,168,.0${idx?2:4});font-style:italic`;
       let cells=`<td style="color:${idx?'var(--dim)':'var(--acc)'};font-size:12px;font-weight:${idx?400:600}">${label}</td>`;
-      // แต่ละจังหวัด 4 sub-col
       P9.forEach((_,pi)=>{
         keys.forEach(k=>{
           const vals=matrix.map(row=>row.provVals[pi][k]||0);
-          const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
-          const stat=idx===0?mean:Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
-          cells+=`<td class="num" style="color:${idx?'var(--dim)':'var(--acc)'}">${fmt(stat)}</td>`;
+          cells+=`<td class="num" style="color:${idx?'var(--dim)':'var(--acc)'}">${fmt(_stat(vals,idx))}</td>`;
         });
       });
-      // รวม 8 จว
       keys.forEach(k=>{
         const vals=matrix.map(row=>row.v8[k]||0);
-        const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
-        const stat=idx===0?mean:Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
-        cells+=`<td class="num" style="color:${idx?'var(--dim)':'#7B3FA0'};background:rgba(123,63,160,.05)">${fmt(stat)}</td>`;
+        cells+=`<td class="num" style="color:${idx?'var(--dim)':'#7B3FA0'};background:rgba(123,63,160,.05)">${fmt(_stat(vals,idx))}</td>`;
       });
-      // รวม 9 จว
       keys.forEach(k=>{
         const vals=matrix.map(row=>row.v9[k]||0);
-        const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
-        const stat=idx===0?mean:Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
-        cells+=`<td class="num" style="color:${idx?'var(--dim)':'#1A5C8A'};background:rgba(26,92,138,.05)">${fmt(stat)}</td>`;
+        cells+=`<td class="num" style="color:${idx?'var(--dim)':'#1A5C8A'};background:rgba(26,92,138,.05)">${fmt(_stat(vals,idx))}</td>`;
       });
       tr.innerHTML=cells;
       body.appendChild(tr);
@@ -1325,12 +1319,15 @@ function renderBaseline(){
   });
 
   // แถวสรุป Mean / SD / Mean-SD / Mean+SD / Median
+  function safeMean(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:null;}
+  function safeSd(arr){const m=safeMean(arr);return m===null?null:Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length);}
+  function safeMedian(arr){if(!arr.length)return null;const s=[...arr].sort((a,b)=>a-b);return s.length%2===0?(s[s.length/2-1]+s[s.length/2])/2:s[Math.floor(s.length/2)];}
   const statsConfig=[
-    {label:'Mean',color:'rgba(37,99,168,.18)',border:'var(--acc)',fn:(arr)=>arr.reduce((a,b)=>a+b,0)/arr.length},
-    {label:'Median',color:'rgba(138,92,16,.1)',border:'rgba(138,92,16,.4)',fn:(arr)=>{const s=[...arr].sort((a,b)=>a-b);return s.length%2===0?(s[s.length/2-1]+s[s.length/2])/2:s[Math.floor(s.length/2)];}},
-    {label:'SD',color:'rgba(100,100,100,.06)',border:'var(--bs)',fn:(arr)=>{const m=arr.reduce((a,b)=>a+b,0)/arr.length;return Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length);}},
-    {label:'Mean − SD',color:'rgba(26,107,60,.12)',border:'rgba(26,107,60,.4)',fn:(arr)=>{const m=arr.reduce((a,b)=>a+b,0)/arr.length;const sd=Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length);return m-sd;}},
-    {label:'Mean + SD',color:'rgba(184,50,50,.12)',border:'rgba(184,50,50,.4)',fn:(arr)=>{const m=arr.reduce((a,b)=>a+b,0)/arr.length;const sd=Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length);return m+sd;}},
+    {label:'Mean',      color:'rgba(37,99,168,.18)', border:'var(--acc)',            fn:(arr)=>safeMean(arr)},
+    {label:'Median',    color:'rgba(138,92,16,.1)',   border:'rgba(138,92,16,.4)',   fn:(arr)=>safeMedian(arr)},
+    {label:'SD',        color:'rgba(100,100,100,.06)',border:'var(--bs)',             fn:(arr)=>safeSd(arr)},
+    {label:'Mean − SD', color:'rgba(26,107,60,.12)', border:'rgba(26,107,60,.4)',   fn:(arr)=>{const m=safeMean(arr),sd=safeSd(arr);return m===null?null:m-sd;}},
+    {label:'Mean + SD', color:'rgba(184,50,50,.12)', border:'rgba(184,50,50,.4)',   fn:(arr)=>{const m=safeMean(arr),sd=safeSd(arr);return m===null?null:m+sd;}},
   ];
 
   // separator
