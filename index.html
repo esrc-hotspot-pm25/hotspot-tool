@@ -564,7 +564,9 @@ async function loadAll(){
 // ============================================================
 // HELPERS
 // ============================================================
-function isVP(p){if(!p)return false;const v=String(p).trim().toUpperCase();return v&&v!=='NA'&&v!=='NULL'&&v!=='UNDEFINED';}
+// กรองเฉพาะ 9 จังหวัดภาคเหนือที่กำหนดไว้ เท่านั้น
+const P9_SET=new Set(['CHIANG MAI','CHIANG RAI','MAE HONG SON','LAMPANG','LAMPHUN','NAN','PHAYAO','PHRAE','TAK']);
+function isVP(p){if(!p)return false;return P9_SET.has(String(p).trim().toUpperCase());}
 function isSensor(sat,inst,sf){
   if(!sf||sf==='all')return true;
   const s=(sat||'').toUpperCase(),i=(inst||'').toUpperCase();
