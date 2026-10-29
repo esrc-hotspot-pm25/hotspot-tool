@@ -534,7 +534,13 @@ async function tryCSV(url){
     const L=t.trim().split('\n');
     if(L.length<2) return[];
     const H=L[0].split(',').map(h=>h.trim());
-    return L.slice(1).map(l=>{const v=l.split(',');const o={};H.forEach((h,i)=>{const x=(v[i]||'').trim();o[h]=isNaN(x)||x===''?x:+x;});return o;}).filter(o=>o.year&&!isNaN(+o.year)&&+o.year>2000);
+    return L.slice(1).map(l=>{
+      const v=l.split(',');const o={};
+      H.forEach((h,i)=>{const x=(v[i]||'').trim();o[h]=isNaN(x)||x===''?x:+x;});
+      // บังคับ year เป็น integer
+      o.year=parseInt(o.year,10);
+      return o;
+    }).filter(o=>Number.isInteger(o.year)&&o.year>2000&&o.year<2100);
   }catch(e){return[];}
 }
 async function loadEnso(){
@@ -554,7 +560,7 @@ async function loadAll(){
     loadEnso(),
   ]);
   // กรองเฉพาะ 9 จังหวัดและปีที่ valid ก่อนเข้า DB ทุก dataset
-  const cleanRow=d=>d.year&&!isNaN(+d.year)&&+d.year>2000&&P9_SET.has(String(d.province_en||'').trim().toUpperCase());
+  const cleanRow=d=>Number.isInteger(d.year)&&d.year>2000&&d.year<2100&&P9_SET.has(String(d.province_en||'').trim().toUpperCase());
   DB.daily  =[...mD,...vD].filter(cleanRow);
   DB.monthly=[...mM,...vM].filter(cleanRow);
   DB.yearly =[...mY,...vY].filter(cleanRow);
@@ -631,7 +637,7 @@ function eStyle(cat){
         :`background:var(--s2);color:var(--dim);border:1px solid var(--border)`;
 }
 function getYearsForScale(scale,period='smoke'){
-  const all=[...new Set(DB.monthly.map(d=>d.year))].filter(y=>y&&!isNaN(y)).sort((a,b)=>a-b);
+  const all=[...new Set(DB.monthly.map(d=>d.year))].filter(y=>Number.isInteger(y)&&y>2000&&y<2100).sort((a,b)=>a-b);
   if(scale==='all')return all;
   if(scale==='11yr')return all.filter(y=>y>=2015&&y<=2025);
   if(scale==='5yr')return all.filter(y=>y>=2021&&y<=2025);
@@ -698,7 +704,7 @@ function setSensor(sensor,el){
 // INIT
 // ============================================================
 function init(){
-  const years=[...new Set([...DB.monthly.map(d=>d.year),...DB.yearly.map(d=>d.year)])].filter(y=>y&&!isNaN(y)).sort((a,b)=>a-b);
+  const years=[...new Set([...DB.monthly.map(d=>d.year),...DB.yearly.map(d=>d.year)])].filter(y=>Number.isInteger(y)&&y>2000&&y<2100).sort((a,b)=>a-b);
   const provs=[...new Set(DB.monthly.map(d=>d.province_en).filter(p=>isVP(p)))].sort();
   ['ov-year','fr-year','rk-year','cp-year'].forEach(id=>{
     const s=document.getElementById(id);if(!s)return;
@@ -943,7 +949,7 @@ function renderOvMainTable(){
   // ============ รายปี ============
   if(gb==='yearly'){
     document.getElementById('ov-tbl-title').textContent='สรุปรายปี — แยกจังหวัด';
-    const years=[...new Set(DB.monthly.map(d=>d.year).filter(y=>y&&!isNaN(y)))].sort((a,b)=>a-b);
+    const years=[...new Set(DB.monthly.map(d=>d.year).filter(y=>Number.isInteger(y)&&y>2000))].sort((a,b)=>a-b);
     const matrix=[];
     years.forEach(yr=>{
       const enso=getEnso(yr,ep);
@@ -1236,7 +1242,7 @@ function onScaleChange(){
   // เก็บปีที่เลือกไว้ก่อน rebuild
   const prevSel=new Set(BL_SEL);
   // rebuild toggle ด้วย period ใหม่ (สีและ label เปลี่ยนตาม period)
-  const years=[...new Set([...DB.monthly.map(d=>d.year),...DB.yearly.map(d=>d.year)])].filter(y=>y&&!isNaN(y)).sort((a,b)=>a-b);
+  const years=[...new Set([...DB.monthly.map(d=>d.year),...DB.yearly.map(d=>d.year)])].filter(y=>Number.isInteger(y)&&y>2000&&y<2100).sort((a,b)=>a-b);
   const c=document.getElementById('bl-toggle');
   if(c){
     c.innerHTML='';
