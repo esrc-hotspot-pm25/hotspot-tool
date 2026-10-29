@@ -282,6 +282,26 @@ td.prov{font-weight:600}
       <tbody id="fr-body"><tr><td colspan="38" class="state-msg">กรุณากด "แสดงผล"</td></tr></tbody>
     </table></div>
   </div>
+  <!-- ตาราง % สัดส่วนพื้นที่ป่า -->
+  <div class="tw">
+    <div class="th2">
+      <div>
+        <div class="tt">% สัดส่วนพื้นที่ป่า — รายจังหวัด</div>
+        <div style="font-size:11px;color:var(--dim);margin-top:2px">คำนวณจากจุดความร้อนในแต่ละช่วงเวลา</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;font-size:11px;flex-wrap:wrap">
+        <span style="background:rgba(26,107,60,.1);color:var(--forest);padding:2px 8px;border-radius:3px;border:1px solid rgba(26,107,60,.3)">% ป่ารวม/ทั้งหมด</span>
+        <span style="background:rgba(192,68,14,.1);color:var(--fire);padding:2px 8px;border-radius:3px;border:1px solid rgba(192,68,14,.3)">% สงวนฯ/ป่ารวม</span>
+        <span style="background:rgba(138,92,16,.1);color:var(--prot);padding:2px 8px;border-radius:3px;border:1px solid rgba(138,92,16,.3)">% อนุรักษ์/ป่ารวม</span>
+        <button class="btn bsm" onclick="exportTable('fr-pct-table','forest_percent')">⬇ Export</button>
+      </div>
+    </div>
+    <div class="ts2"><table id="fr-pct-table">
+      <thead id="fr-pct-head"></thead>
+      <tbody id="fr-pct-body"><tr><td colspan="38" class="state-msg">กรุณากด "แสดงผล"</td></tr></tbody>
+    </table></div>
+  </div>
+
   <!-- Download รายวัน (ข้อ 3) -->
   <div class="tw">
     <div class="th2"><div class="tt">⬇ Download ข้อมูลรายวัน</div></div>
@@ -1194,6 +1214,119 @@ function renderForest(){
     if(!body.children.length)body.innerHTML=`<tr><td colspan="38" class="state-msg">ไม่พบข้อมูล</td></tr>`;
   }
   makeStatRowsFR(matrix);
+  renderForestPct(matrix);
+}
+
+// ============================================================
+// FOREST PCT TABLE
+// ============================================================
+function renderForestPct(matrix){
+  const pHead=document.getElementById('fr-pct-head');
+  const pBody=document.getElementById('fr-pct-body');
+  if(!pHead||!pBody)return;
+
+  // Header เหมือน fr-table แต่แต่ละจังหวัด 3 sub-col: %ป่า/%สงวน/%อนุรักษ์
+  const pProvH1=P9.map(p=>`<th colspan="3" style="text-align:center;border-bottom:1px solid var(--border)">${P9_TH[p]||p}</th>`).join('');
+  const pProvH2=P9.map(()=>`
+    <th style="text-align:right;font-size:10px;color:var(--forest)">%ป่า/รวม</th>
+    <th style="text-align:right;font-size:10px;color:var(--fire)">%สงวน/ป่า</th>
+    <th style="text-align:right;font-size:10px;color:var(--prot)">%อนุรักษ์/ป่า</th>`).join('');
+  const extra1=`
+    <th colspan="3" style="text-align:center;background:rgba(123,63,160,.08);border-bottom:1px solid var(--border)">รวม 8 จว.</th>
+    <th colspan="3" style="text-align:center;background:rgba(26,92,138,.08);border-bottom:1px solid var(--border)">รวม 9 จว.</th>`;
+  const extra2=`
+    <th style="text-align:right;font-size:10px;background:rgba(123,63,160,.05);color:var(--forest)">%ป่า/รวม</th>
+    <th style="text-align:right;font-size:10px;background:rgba(123,63,160,.05);color:var(--fire)">%สงวน/ป่า</th>
+    <th style="text-align:right;font-size:10px;background:rgba(123,63,160,.05);color:var(--prot)">%อนุรักษ์/ป่า</th>
+    <th style="text-align:right;font-size:10px;background:rgba(26,92,138,.05);color:var(--forest)">%ป่า/รวม</th>
+    <th style="text-align:right;font-size:10px;background:rgba(26,92,138,.05);color:var(--fire)">%สงวน/ป่า</th>
+    <th style="text-align:right;font-size:10px;background:rgba(26,92,138,.05);color:var(--prot)">%อนุรักษ์/ป่า</th>`;
+
+  // ดึง period label จากตาราง fr-head บรรทัดแรก
+  const gb=document.getElementById('fr-groupby').value;
+  pHead.innerHTML=`<tr><th rowspan="2" style="vertical-align:bottom">${gb==='yearly'?'ปี':gb==='monthly'?'เดือน':'วันที่'}</th>${pProvH1}${extra1}</tr><tr>${pProvH2}${extra2}</tr>`;
+  pBody.innerHTML='';
+
+  // ฟังก์ชัน % คำนวณ
+  function pct(a,b){return b>0?((a/b)*100).toFixed(1)+'%':'—';}
+  function pctCell(v,color,bg=''){
+    return `<td class="num" style="color:${color};font-size:12px${bg?';background:'+bg:''}">${v}</td>`;
+  }
+  function provPctCells(vals,bg8='',bg9=''){
+    // vals: {r,p,n,t} ต่อจังหวัด
+    return vals.map(v=>{
+      const forest=v.r+v.p;
+      return pctCell(pct(forest,v.t),'var(--forest)')+
+             pctCell(pct(v.r,forest),'var(--fire)')+
+             pctCell(pct(v.p,forest),'var(--prot)');
+    }).join('');
+  }
+
+  // สร้างแถวจาก matrix
+  matrix.forEach((row,idx)=>{
+    // ดึง period label จาก fr-body แถวที่ idx
+    const srcRow=document.getElementById('fr-body')?.children[idx];
+    const periodLbl=srcRow?.children[0]?.textContent||'';
+
+    const forest8=row.v8.r+row.v8.p;
+    const forest9=row.v9.r+row.v9.p;
+    const tr=document.createElement('tr');
+    tr.style.background='rgba(37,99,168,.04)';
+    tr.innerHTML=`<td>${periodLbl}</td>
+      ${row.provVals.map(v=>{
+        const f=v.r+v.p;
+        return pctCell(pct(f,v.t),'var(--forest)')+
+               pctCell(pct(v.r,f),'var(--fire)')+
+               pctCell(pct(v.p,f),'var(--prot)');
+      }).join('')}
+      ${pctCell(pct(forest8,row.v8.t),'var(--forest)','rgba(123,63,160,.04)')}
+      ${pctCell(pct(row.v8.r,forest8),'var(--fire)','rgba(123,63,160,.04)')}
+      ${pctCell(pct(row.v8.p,forest8),'var(--prot)','rgba(123,63,160,.04)')}
+      ${pctCell(pct(forest9,row.v9.t),'var(--forest)','rgba(26,92,138,.04)')}
+      ${pctCell(pct(row.v9.r,forest9),'var(--fire)','rgba(26,92,138,.04)')}
+      ${pctCell(pct(row.v9.p,forest9),'var(--prot)','rgba(26,92,138,.04)')}`;
+    pBody.appendChild(tr);
+  });
+
+  if(!matrix.length){
+    pBody.innerHTML=`<tr><td colspan="38" class="state-msg">ไม่พบข้อมูล</td></tr>`;
+    return;
+  }
+
+  // แถว Mean และ SD
+  const sep=document.createElement('tr');
+  sep.innerHTML=`<td colspan="${P9.length*3+7}" style="padding:1px;background:var(--border)"></td>`;
+  pBody.appendChild(sep);
+
+  ['เฉลี่ย (Mean)','SD'].forEach((label,idx)=>{
+    const tr=document.createElement('tr');
+    tr.style.cssText=`background:rgba(37,99,168,.0${idx?2:4});font-style:italic`;
+    let cells=`<td style="font-weight:${idx?400:600};font-size:12px;color:${idx?'var(--dim)':'var(--acc)'}">${label}</td>`;
+
+    // คำนวณ % ต่อ col: P9 × 3 + v8×3 + v9×3
+    P9.forEach((_,pi)=>{
+      // %ป่า/รวม
+      const pFArr=matrix.map(r=>{const f=r.provVals[pi].r+r.provVals[pi].p;return r.provVals[pi].t>0?f/r.provVals[pi].t*100:null;}).filter(v=>v!==null);
+      const pRArr=matrix.map(r=>{const f=r.provVals[pi].r+r.provVals[pi].p;return f>0?r.provVals[pi].r/f*100:null;}).filter(v=>v!==null);
+      const pPArr=matrix.map(r=>{const f=r.provVals[pi].r+r.provVals[pi].p;return f>0?r.provVals[pi].p/f*100:null;}).filter(v=>v!==null);
+      const statF=idx===0?(pFArr.reduce((a,b)=>a+b,0)/pFArr.length||0):(Math.sqrt(pFArr.reduce((s,v)=>s+(v-(pFArr.reduce((a,b)=>a+b,0)/pFArr.length))**2,0)/pFArr.length)||0);
+      const statR=idx===0?(pRArr.reduce((a,b)=>a+b,0)/pRArr.length||0):(Math.sqrt(pRArr.reduce((s,v)=>s+(v-(pRArr.reduce((a,b)=>a+b,0)/pRArr.length))**2,0)/pRArr.length)||0);
+      const statP=idx===0?(pPArr.reduce((a,b)=>a+b,0)/pPArr.length||0):(Math.sqrt(pPArr.reduce((s,v)=>s+(v-(pPArr.reduce((a,b)=>a+b,0)/pPArr.length))**2,0)/pPArr.length)||0);
+      cells+=pctCell(statF.toFixed(1)+'%','var(--forest)')+pctCell(statR.toFixed(1)+'%','var(--fire)')+pctCell(statP.toFixed(1)+'%','var(--prot)');
+    });
+    // v8 v9
+    [{key:'v8',bg:'rgba(123,63,160,.05)'},{key:'v9',bg:'rgba(26,92,138,.05)'}].forEach(({key,bg})=>{
+      const pFArr=matrix.map(r=>{const f=r[key].r+r[key].p;return r[key].t>0?f/r[key].t*100:null;}).filter(v=>v!==null);
+      const pRArr=matrix.map(r=>{const f=r[key].r+r[key].p;return f>0?r[key].r/f*100:null;}).filter(v=>v!==null);
+      const pPArr=matrix.map(r=>{const f=r[key].r+r[key].p;return f>0?r[key].p/f*100:null;}).filter(v=>v!==null);
+      const sf=idx===0?(pFArr.reduce((a,b)=>a+b,0)/pFArr.length||0):Math.sqrt(pFArr.reduce((s,v)=>s+(v-(pFArr.reduce((a,b)=>a+b,0)/pFArr.length))**2,0)/pFArr.length||0);
+      const sr=idx===0?(pRArr.reduce((a,b)=>a+b,0)/pRArr.length||0):Math.sqrt(pRArr.reduce((s,v)=>s+(v-(pRArr.reduce((a,b)=>a+b,0)/pRArr.length))**2,0)/pRArr.length||0);
+      const sp=idx===0?(pPArr.reduce((a,b)=>a+b,0)/pPArr.length||0):Math.sqrt(pPArr.reduce((s,v)=>s+(v-(pPArr.reduce((a,b)=>a+b,0)/pPArr.length))**2,0)/pPArr.length||0);
+      cells+=pctCell(sf.toFixed(1)+'%','var(--forest)',bg)+pctCell(sr.toFixed(1)+'%','var(--fire)',bg)+pctCell(sp.toFixed(1)+'%','var(--prot)',bg);
+    });
+    tr.innerHTML=cells;
+    pBody.appendChild(tr);
+  });
 }
 
 // ============================================================
