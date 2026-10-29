@@ -534,7 +534,7 @@ async function tryCSV(url){
     const L=t.trim().split('\n');
     if(L.length<2) return[];
     const H=L[0].split(',').map(h=>h.trim());
-    return L.slice(1).map(l=>{const v=l.split(',');const o={};H.forEach((h,i)=>{const x=(v[i]||'').trim();o[h]=isNaN(x)||x===''?x:+x;});return o;});
+    return L.slice(1).map(l=>{const v=l.split(',');const o={};H.forEach((h,i)=>{const x=(v[i]||'').trim();o[h]=isNaN(x)||x===''?x:+x;});return o;}).filter(o=>o.year&&!isNaN(+o.year)&&+o.year>2000);
   }catch(e){return[];}
 }
 async function loadEnso(){
@@ -553,7 +553,12 @@ async function loadAll(){
     tryCSV(`${BASE}/VIIRs/hotspot_forest_yearly.csv`),
     loadEnso(),
   ]);
-  DB.daily=[...mD,...vD];DB.monthly=[...mM,...vM];DB.yearly=[...mY,...vY];DB.enso=enso;DB.loaded=true;
+  // กรองเฉพาะ 9 จังหวัดและปีที่ valid ก่อนเข้า DB ทุก dataset
+  const cleanRow=d=>d.year&&!isNaN(+d.year)&&+d.year>2000&&P9_SET.has(String(d.province_en||'').trim().toUpperCase());
+  DB.daily  =[...mD,...vD].filter(cleanRow);
+  DB.monthly=[...mM,...vM].filter(cleanRow);
+  DB.yearly =[...mY,...vY].filter(cleanRow);
+  DB.enso=enso;DB.loaded=true;
   const hM=mD.length>0,hV=vD.length>0;
   const lbl=[hM?'MODIS':'',hV?'VIIRs':''].filter(Boolean).join('+');
   if(!hM&&!hV)setBadge('ไม่มีข้อมูล','#B83232','rgba(184,50,50,.1)');
