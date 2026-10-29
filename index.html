@@ -641,7 +641,7 @@ function getYearsForScale(scale,period='smoke'){
   if(scale==='all')return all;
   if(scale==='11yr')return all.filter(y=>y>=2015&&y<=2025);
   if(scale==='5yr')return all.filter(y=>y>=2021&&y<=2025);
-  if(scale==='neutral')return DB.enso.filter(e=>getEnso(+e.year,period).cat==='Neutral').map(e=>+e.year);
+  if(scale==='neutral')return DB.enso.filter(e=>getEnso(+e.year,period).cat==='Neutral').map(e=>parseInt(e.year,10)).filter(y=>Number.isInteger(y)&&y>2000);
   const isEN=scale.startsWith('en');
   const catMatch=isEN?'El Nino':'La Nina';
   const sub=scale.split('_')[1];
@@ -654,7 +654,7 @@ function getYearsForScale(scale,period='smoke'){
     if(sub==='mod')return t.startsWith('moderate');
     if(sub==='str')return t.startsWith('strong')||t.startsWith('very');
     return true;
-  }).map(e=>+e.year);
+  }).map(e=>parseInt(e.year,10)).filter(y=>Number.isInteger(y)&&y>2000);
 }
 function calcBL(years,months,prov,forest){
   const vals=years.map(yr=>{
@@ -1202,7 +1202,9 @@ function renderForest(){
 function buildYearToggle(years){
   const c=document.getElementById('bl-toggle');if(!c)return;
   c.innerHTML='';
-  years.forEach(yr=>{
+  // กรอง NaN และปีที่ไม่ valid ออกก่อนสร้างปุ่ม
+  const validYrs=years.filter(y=>Number.isInteger(y)&&y>2000&&y<2100);
+  validYrs.forEach(yr=>{
     const period=(document.getElementById('bl-period')||{}).value||'smoke';
     const{cat,type}=getEnso(yr,period);
     const ec=eClass(cat);const str=eStrength(type);
@@ -1217,21 +1219,27 @@ function buildYearToggle(years){
   });
   selectAllYears(true);
 }
-function toggleYear(yr,btn){
+function toggleYear(yr,btn){if(!Number.isInteger(yr)||yr<2000)return;
   if(BL_SEL.has(yr)){BL_SEL.delete(yr);btn.classList.remove('selected');}
   else{BL_SEL.add(yr);btn.classList.add('selected');}
   updateSelInfo();
 }
 function selectAllYears(all){
-  document.querySelectorAll('.yr-btn').forEach(btn=>{
-    const yr=+btn.dataset.year;
+  // ใช้เฉพาะปุ่มที่อยู่ใน bl-toggle เท่านั้น (ไม่รวม cp-yr)
+  const toggle=document.getElementById('bl-toggle');
+  if(!toggle)return;
+  toggle.querySelectorAll('.yr-btn').forEach(btn=>{
+    const yr=parseInt(btn.dataset.year,10);
+    if(!Number.isInteger(yr)||yr<2000||yr>2100)return;
     if(all){BL_SEL.add(yr);btn.classList.add('selected');}
     else{BL_SEL.delete(yr);btn.classList.remove('selected');}
   });
   updateSelInfo();
 }
 function updateSelInfo(){
-  const s=[...BL_SEL].sort();
+  // กรอง NaN ออกจาก BL_SEL
+  [...BL_SEL].forEach(y=>{if(!Number.isInteger(y)||y<2000)BL_SEL.delete(y);});
+  const s=[...BL_SEL].sort((a,b)=>a-b);
   document.getElementById('bl-count').textContent=s.length;
   document.getElementById('bl-list').textContent=s.join(', ');
 }
@@ -1272,7 +1280,7 @@ function renderBaseline(){
   const period=document.getElementById('bl-period').value;
   const forest=document.getElementById('bl-forest').value;
   const months=PM[period];
-  const validYears=[...BL_SEL].sort((a,b)=>a-b);
+  const validYears=[...BL_SEL].filter(y=>Number.isInteger(y)&&y>2000&&y<2100).sort((a,b)=>a-b);
   if(!validYears.length){
     document.getElementById('bl-raw-body').innerHTML='<tr><td class="state-msg">กรุณาเลือกปีอย่างน้อย 1 ปี</td></tr>';
     return;
@@ -1422,7 +1430,7 @@ function exportBL(){
   if(!Object.keys(BL_DATA).length){alert('กรุณาคำนวณ Baseline ก่อน');return;}
   const period=document.getElementById('bl-period').value;
   const forest=document.getElementById('bl-forest').value;
-  const validYears=[...BL_SEL].sort((a,b)=>a-b);
+  const validYears=[...BL_SEL].filter(y=>Number.isInteger(y)&&y>2000&&y<2100).sort((a,b)=>a-b);
   const scale=document.getElementById('bl-scale').value;
   let rows=`"Baseline Export"\n"Scale","${scale}"\n"Period","${period}"\n"Forest","${forest}"\n"Years","${validYears.join(', ')}"\n\n`;
   rows+='"Province","Mean","SD","Mean-SD","Mean+SD","Median"\n';
@@ -1482,7 +1490,8 @@ function toggleCPYear(yr,btn){
 function cpSelectAll(all){
   CP_SEL.clear();
   document.querySelectorAll('[id^="cp-yr-"]').forEach(btn=>{
-    const yr=+btn.dataset.year;
+    const yr=parseInt(btn.dataset.year,10);
+    if(!Number.isInteger(yr)||yr<2000)return;
     if(all){CP_SEL.add(yr);btn.classList.add('selected');btn.style.opacity='1';}
     else{btn.classList.remove('selected');btn.style.opacity='0.45';}
   });
