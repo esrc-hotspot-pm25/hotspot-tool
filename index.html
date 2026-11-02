@@ -107,7 +107,7 @@ td.prov{font-weight:600}
 <body>
 <nav>
   <div class="nav-top">
-    <div class="nb">🔥 <span>Hotspot</span> Baseline</div>
+    <div class="nb">🔥 <span>Hotspot</span> Dashboard</div>
     <div class="st active" id="st-all" onclick="setSensor('all',this)"><span class="st-dot"></span>MODIS + VIIRs</div>
     <div class="st" id="st-modis" onclick="setSensor('MODIS',this)"><span class="st-dot" style="color:var(--fire)"></span>MODIS</div>
     <div class="st" id="st-viirs" onclick="setSensor('VIIRS',this)"><span class="st-dot" style="color:var(--ln)"></span>VIIRs</div>
@@ -118,6 +118,7 @@ td.prov{font-weight:600}
         <span style="margin:0 4px;color:var(--border)">|</span>
         <span style="color:var(--ln);font-weight:600">VIIRs</span> Suomi-NPP
       </span>
+      <a href="admin.html" style="font-size:12px;color:var(--dim);border:1px solid var(--border);border-radius:4px;padding:4px 10px;text-decoration:none;display:flex;align-items:center;gap:4px;transition:all .12s" onmouseover="this.style.color='var(--acc)';this.style.borderColor='var(--acc)'" onmouseout="this.style.color='var(--dim)';this.style.borderColor='var(--border)'">⚙ Admin Panel</a>
       <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:1px solid var(--border);border-radius:4px;width:28px;height:28px;cursor:pointer;font-size:14px;color:var(--dim)">🌙</button>
     </div>
   </div>
