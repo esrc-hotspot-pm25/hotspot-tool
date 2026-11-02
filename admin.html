@@ -1,308 +1,304 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin Panel — Hotspot Baseline</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-@font-face {
-  font-family: 'CMU Serif';
-  src: url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmunrm.woff') format('woff');
-  font-weight: 400;
+@font-face{font-family:'CMU Serif';src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmunrm.woff') format('woff');font-weight:400}
+@font-face{font-family:'CMU Serif';src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmunbx.woff') format('woff');font-weight:600}
+@font-face{font-family:'CMU Typewriter';src:url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmuntt.woff') format('woff')}
+:root{
+  --bg:#F7F5F0;--surface:#FFF;--s2:#F0EDE8;--border:#D8D3CB;--bs:#B8B0A4;
+  --text:#1A1714;--dim:#6B6459;--acc:#2563A8;--fire:#C0440E;--forest:#1A6B3C;
+  --prot:#8A5C10;--en:#B83232;--ln:#1A4F8A;--shad:0 1px 3px rgba(0,0,0,.06);
+  --font:'CMU Serif','Sarabun',Georgia,serif;--mono:'CMU Typewriter','Courier New',monospace;
 }
-@font-face {
-  font-family: 'CMU Serif';
-  src: url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmunbx.woff') format('woff');
-  font-weight: 600;
+[data-theme="dark"]{
+  --bg:#0F1923;--surface:#162130;--s2:#1E2F42;--border:#253547;--bs:#3A5068;
+  --text:#E2EAF4;--dim:#7A95B0;--acc:#3B9EFF;--fire:#FF6B35;--forest:#2ECC71;
+  --prot:#F39C12;--en:#E74C3C;--ln:#2980B9;--shad:0 1px 6px rgba(0,0,0,.3);
 }
-@font-face {
-  font-family: 'CMU Typewriter';
-  src: url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/cmuntt.woff') format('woff');
-}
-:root {
-  --bg:      #F7F5F0; --surface: #FFFFFF; --surface2: #F0EDE8;
-  --border:  #D8D3CB; --border-strong: #B8B0A4;
-  --text:    #1A1714; --text-dim: #6B6459;
-  --accent:  #2563A8; --fire: #C0440E; --green: #1A6B3C; --red: #B83232;
-  --font:    'CMU Serif','Sarabun',Georgia,serif;
-  --mono:    'CMU Typewriter','Courier New',monospace;
-}
-[data-theme="dark"] {
-  --bg:      #0F1923; --surface: #162130; --surface2: #1E2F42;
-  --border:  #253547; --border-strong: #3A5068;
-  --text:    #E2EAF4; --text-dim: #7A95B0;
-  --accent:  #3B9EFF; --fire: #FF6B35; --green: #2ECC71; --red: #E74C3C;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
-nav {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 0 28px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  height: 54px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.06);
-}
-.nav-brand { font-size: 16px; font-weight: 600; }
-.nav-brand span { color: var(--fire); }
-.nav-sub { font-size: 12px; color: var(--text-dim); }
-.nav-link { margin-left: auto; font-size: 13px; color: var(--accent); text-decoration: none; }
-.nav-link:hover { text-decoration: underline; }
-main { max-width: 860px; margin: 0 auto; padding: 32px 24px; }
-h2 { font-size: 20px; font-weight: 600; margin-bottom: 24px; letter-spacing: .01em; }
-.section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 22px 24px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.05);
-}
-.section-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
-.section-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
-.section-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
-.section-info p  { font-size: 12px; color: var(--text-dim); line-height: 1.65; font-family: var(--mono); }
-.upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.upload-item {
-  background: var(--surface2);
-  border: 1px dashed var(--border-strong);
-  border-radius: 6px;
-  padding: 16px;
-  text-align: center;
-  cursor: pointer;
-  transition: all .12s;
-}
-.upload-item:hover { border-color: var(--accent); background: #EEF4FC; }
-.upload-item.done  { border-color: var(--green); border-style: solid; background: rgba(26,107,60,.04); }
-.upload-item.err   { border-color: var(--red); border-style: solid; background: rgba(184,50,50,.04); }
-.upload-label { font-size: 12px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
-.upload-sub   { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; font-family: var(--mono); }
-.upload-status { font-size: 11px; margin-top: 8px; min-height: 16px; font-family: var(--mono); }
-.upload-status.ok  { color: var(--green); }
-.upload-status.bad { color: var(--red); }
-input[type=file] { display: none; }
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 14px;
-  border-radius: 4px;
-  font-family: var(--font);
-  font-size: 13px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  cursor: pointer;
-  transition: all .12s;
-}
-.btn:hover { border-color: var(--accent); color: var(--accent); }
-.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn-primary:hover { background: #1A4F8A; }
-.btn-danger  { border-color: var(--red); color: var(--red); background: rgba(184,50,50,.05); }
-.btn-danger:hover { background: rgba(184,50,50,.15); }
-.actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
-.log-box {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 12px 14px;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text-dim);
-  max-height: 200px;
-  overflow-y: auto;
-  line-height: 1.9;
-  margin-top: 14px;
-}
-.log-ok   { color: var(--green); }
-.log-err  { color: var(--red); }
-.log-info { color: var(--accent); }
-.stat-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-.stat {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 10px 16px;
-}
-.stat-label { font-size: 10px; color: var(--text-dim); margin-bottom: 3px; letter-spacing: .03em; }
-.stat-val   { font-size: 18px; font-weight: 600; font-family: var(--mono); color: var(--accent); }
-.warning {
-  background: rgba(138,92,16,.07);
-  border: 1px solid rgba(138,92,16,.25);
-  border-radius: 4px;
-  padding: 10px 14px;
-  font-size: 12px;
-  color: #6B4A0A;
-  margin-top: 12px;
-  line-height: 1.6;
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh}
+
+/* NAV */
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shad)}
+.nav-top{display:flex;align-items:center;height:44px;padding:0 20px;gap:0}
+.nb{font-size:15px;font-weight:600;margin-right:20px;white-space:nowrap;flex-shrink:0}
+.nb span{color:var(--fire)}
+.nav-tag{font-size:11px;color:var(--dim);border:1px solid var(--border);border-radius:3px;padding:1px 7px;font-family:var(--mono)}
+.nr{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nr a,.nr-link{font-size:12px;color:var(--dim);border:1px solid var(--border);border-radius:4px;padding:4px 10px;text-decoration:none;display:flex;align-items:center;gap:4px;transition:all .12s;background:var(--surface);cursor:pointer;font-family:var(--font)}
+.nr a:hover,.nr-link:hover{color:var(--acc);border-color:var(--acc)}
+
+/* LAYOUT */
+main{padding:16px 20px;max-width:1100px;margin:0 auto}
+h2{font-size:15px;font-weight:600;margin-bottom:14px;letter-spacing:.01em}
+
+/* CARDS — same as index */
+.tw{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:var(--shad);margin-bottom:14px}
+.th2{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--s2);flex-wrap:wrap;gap:6px}
+.tt{font-size:13px;font-weight:600}
+.td{font-size:11px;color:var(--dim);font-family:var(--mono)}
+.tc{padding:12px 14px}
+
+/* CTRL BAR — same as index */
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center;background:var(--surface);padding:10px 14px;border-radius:6px;border:1px solid var(--border);box-shadow:var(--shad)}
+.lsm{font-size:12px;color:var(--dim);white-space:nowrap}
+
+/* BUTTONS — exact same as index */
+select,.btn{height:32px;border-radius:4px;font-family:var(--font);font-size:13px;cursor:pointer}
+select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0 8px}
+select:focus{outline:none;border-color:var(--acc)}
+.btn{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:0 12px;display:inline-flex;align-items:center;gap:5px;transition:all .12s}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.bp{background:var(--acc);border-color:var(--acc);color:#fff}.bp:hover{background:#1A4F8A;color:#fff}
+.bd{border-color:var(--en);color:var(--en);background:rgba(107,31,42,.04)}.bd:hover{background:rgba(107,31,42,.12)}
+.bsm{height:28px;font-size:12px;padding:0 10px}
+
+/* INPUT — same feel as index selects */
+input[type=text],input[type=password],input[type=file]{height:32px;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:4px;padding:0 9px;font-family:var(--mono);font-size:12px}
+input[type=text]:focus,input[type=password]:focus{outline:none;border-color:var(--acc)}
+input[type=file]{display:none}
+input[type=checkbox]{cursor:pointer;accent-color:var(--acc)}
+label.cb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dim);cursor:pointer;white-space:nowrap}
+
+/* UPLOAD GRID */
+.up-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 14px}
+.up-grid.col2{grid-template-columns:repeat(2,1fr)}
+.up-item{border:1px dashed var(--bs);border-radius:5px;padding:12px;text-align:center;cursor:pointer;transition:all .12s;background:var(--s2)}
+.up-item:hover{border-color:var(--acc);background:#EEF4FC}
+[data-theme="dark"] .up-item:hover{background:rgba(233,138,102,.08)}
+.up-item.done{border-color:var(--forest);border-style:solid;background:rgba(31,58,95,.04)}
+.up-item.err{border-color:var(--en);border-style:solid;background:rgba(107,31,42,.04)}
+.up-lbl{font-size:12px;font-weight:600;margin-bottom:2px}
+.up-sub{font-size:10px;color:var(--dim);margin-bottom:8px;font-family:var(--mono)}
+.up-st{font-size:10px;margin-top:6px;min-height:14px;font-family:var(--mono);color:var(--dim)}
+.up-st.ok{color:var(--forest)}.up-st.bad{color:var(--en)}
+
+/* STATS ROW — same as index */
+.stat-row{display:flex;gap:8px;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--border)}
+.card{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:8px 12px}
+.card-lbl{font-size:10px;color:var(--dim);margin-bottom:2px;letter-spacing:.03em}
+.card-val{font-size:18px;font-weight:600;font-family:var(--mono);color:var(--acc)}
+
+/* LOG BOX */
+.log-box{background:var(--bg);border-top:1px solid var(--border);padding:10px 14px;font-family:var(--mono);font-size:11px;color:var(--dim);max-height:200px;overflow-y:auto;line-height:1.9}
+.log-ok{color:var(--forest)}.log-err{color:var(--en)}.log-info{color:var(--acc)}
+
+/* WARNING — same orange style */
+.warn-bar{background:rgba(138,106,0,.07);border-top:1px solid rgba(138,106,0,.2);padding:8px 14px;font-size:11px;color:var(--prot);line-height:1.6;font-family:var(--mono)}
+
+/* GITHUB SECTION */
+.gh-row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;padding:10px 14px;border-bottom:1px solid var(--border)}
+.gh-row label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--dim)}
+.gh-info{background:rgba(31,58,95,.05);border-bottom:1px solid rgba(31,58,95,.15);padding:8px 14px;font-size:11px;color:#1A3A60;line-height:1.75;font-family:var(--mono)}
+[data-theme="dark"] .gh-info{color:#90BEF0;background:rgba(233,138,102,.05);border-color:rgba(233,138,102,.15)}
+
+/* FILE LIST */
+.fl-wrap{overflow:auto}
+table.fl{border-collapse:collapse;font-size:11px;width:100%;font-family:var(--mono)}
+.fl th{background:var(--s2);padding:5px 10px;text-align:left;font-size:10px;font-weight:600;color:var(--dim);border-bottom:1px solid var(--border);white-space:nowrap}
+.fl td{padding:5px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+.fl tr:last-child td{border-bottom:none}
+.fl tr:hover td{background:var(--s2)}
+.badge{padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600}
+.b-ok{background:rgba(31,58,95,.1);color:var(--forest)}
+.b-miss{background:rgba(107,31,42,.08);color:var(--en)}
+
+/* SCROLLBAR — same as index */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bs);border-radius:3px}
 </style>
+<link rel="stylesheet" href="cmu-theme.css">
 </head>
 <body>
 
 <nav>
-  <div class="nav-brand">🔥 <span>Hotspot</span> Admin Panel</div>
-  <div class="nav-sub">จัดการข้อมูลระบบ</div>
-  <a class="nav-link" href="index.html" style="display:flex;align-items:center;gap:5px">← Dashboard</a>
-  <button id="theme-btn" onclick="toggleTheme()" style="
-    background:none; border:1px solid var(--border); border-radius:4px;
-    color:var(--text-dim); cursor:pointer; font-size:15px;
-    width:32px; height:32px; display:flex; align-items:center;
-    justify-content:center; margin-left:8px;
-  " title="สลับธีม">🌙</button>
+  <div class="nav-top">
+    <div class="nb">🔥 <span>Hotspot</span> Admin</div>
+    <span class="nav-tag">จัดการข้อมูล</span>
+    <div class="nr">
+      <button class="btn bp" onclick="document.getElementById('sec-github').scrollIntoView({behavior:'smooth'})">⬆ บันทึกขึ้น GitHub</button>
+      <a href="index.html">← หน้าหลัก</a>
+      <button class="nr-link" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
 </nav>
 
 <main>
-  <h2>จัดการข้อมูล</h2>
+<h2>จัดการข้อมูล</h2>
 
-  <!-- MODIS -->
-  <div class="section">
-    <div class="section-head">
-      <div class="section-icon">📡</div>
-      <div class="section-info">
-        <h3>ข้อมูล Hotspot MODIS</h3>
-        <p>ไฟล์ CSV จาก R Script: hotspot_forest_daily.csv, hotspot_forest_monthly.csv, hotspot_forest_yearly.csv<br>columns: year, month, day, province_en, province_th, satellite, forest_type, count, frp_mean, frp_sum</p>
-      </div>
+<!-- MODIS -->
+<div class="tw">
+  <div class="th2">
+    <div>
+      <div class="tt">📡 ข้อมูล Hotspot MODIS</div>
+      <div class="td">hotspot_forest_daily/monthly/yearly.csv · columns: year, month, day, province_en, province_th, satellite, forest_type, count, frp_mean, frp_sum</div>
     </div>
-    <div class="upload-grid">
-      <div class="upload-item" id="ui-modis-daily" onclick="document.getElementById('fi-modis-daily').click()">
-        <div class="upload-label">Daily CSV</div>
-        <div class="upload-sub">hotspot_forest_daily.csv</div>
-        <button class="btn" style="font-size:12px" onclick="event.stopPropagation();document.getElementById('fi-modis-daily').click()">เลือกไฟล์</button>
-        <div class="upload-status" id="st-modis-daily"></div>
-        <input type="file" id="fi-modis-daily" accept=".csv" onchange="handleUpload(this,'modis-daily')">
-      </div>
-      <div class="upload-item" id="ui-modis-monthly" onclick="document.getElementById('fi-modis-monthly').click()">
-        <div class="upload-label">Monthly CSV</div>
-        <div class="upload-sub">hotspot_forest_monthly.csv</div>
-        <button class="btn" style="font-size:12px" onclick="event.stopPropagation()">เลือกไฟล์</button>
-        <div class="upload-status" id="st-modis-monthly"></div>
-        <input type="file" id="fi-modis-monthly" accept=".csv" onchange="handleUpload(this,'modis-monthly')">
-      </div>
-      <div class="upload-item" id="ui-modis-yearly" onclick="document.getElementById('fi-modis-yearly').click()">
-        <div class="upload-label">Yearly CSV</div>
-        <div class="upload-sub">hotspot_forest_yearly.csv</div>
-        <button class="btn" style="font-size:12px" onclick="event.stopPropagation()">เลือกไฟล์</button>
-        <div class="upload-status" id="st-modis-yearly"></div>
-        <input type="file" id="fi-modis-yearly" accept=".csv" onchange="handleUpload(this,'modis-yearly')">
-      </div>
-    </div>
-    <div class="stat-row" id="stats-modis"></div>
   </div>
-
-  <!-- VIIRS -->
-  <div class="section">
-    <div class="section-head">
-      <div class="section-icon">🛰️</div>
-      <div class="section-info">
-        <h3>ข้อมูล Hotspot VIIRs</h3>
-        <p>ไฟล์ CSV จาก R Script สำหรับ VIIRs sensor (รูปแบบเดียวกับ MODIS)</p>
-      </div>
+  <div class="up-grid">
+    <div class="up-item" id="ui-modis-daily" onclick="document.getElementById('fi-modis-daily').click()">
+      <div class="up-lbl">Daily</div>
+      <div class="up-sub">hotspot_forest_daily.csv</div>
+      <button class="btn bsm" onclick="event.stopPropagation();document.getElementById('fi-modis-daily').click()">เลือกไฟล์</button>
+      <div class="up-st" id="st-modis-daily"></div>
+      <input type="file" id="fi-modis-daily" accept=".csv" onchange="handleUpload(this,'modis-daily')">
     </div>
-    <div class="upload-grid">
-      <div class="upload-item" id="ui-viirs-daily" onclick="document.getElementById('fi-viirs-daily').click()">
-        <div class="upload-label">Daily CSV</div>
-        <div class="upload-sub">hotspot_forest_daily.csv (VIIRs)</div>
-        <button class="btn" style="font-size:12px" onclick="event.stopPropagation()">เลือกไฟล์</button>
-        <div class="upload-status" id="st-viirs-daily"></div>
-        <input type="file" id="fi-viirs-daily" accept=".csv" onchange="handleUpload(this,'viirs-daily')">
-      </div>
-      <div class="upload-item" id="ui-viirs-monthly" onclick="document.getElementById('fi-viirs-monthly').click()">
-        <div class="upload-label">Monthly CSV</div>
-        <div class="upload-sub">hotspot_forest_monthly.csv (VIIRs)</div>
-        <button class="btn" style="font-size:12px" onclick="event.stopPropagation()">เลือกไฟล์</button>
-        <div class="upload-status" id="st-viirs-monthly"></div>
-        <input type="file" id="fi-viirs-monthly" accept=".csv" onchange="handleUpload(this,'viirs-monthly')">
-      </div>
-      <div class="upload-item" id="ui-viirs-yearly" onclick="document.getElementById('fi-viirs-yearly').click()">
-        <div class="upload-label">Yearly CSV</div>
-        <div class="upload-sub">hotspot_forest_yearly.csv (VIIRs)</div>
-        <button class="btn" style="font-size:12px" onclick="event.stopPropagation()">เลือกไฟล์</button>
-        <div class="upload-status" id="st-viirs-yearly"></div>
-        <input type="file" id="fi-viirs-yearly" accept=".csv" onchange="handleUpload(this,'viirs-yearly')">
-      </div>
+    <div class="up-item" id="ui-modis-monthly" onclick="document.getElementById('fi-modis-monthly').click()">
+      <div class="up-lbl">Monthly</div>
+      <div class="up-sub">hotspot_forest_monthly.csv</div>
+      <button class="btn bsm" onclick="event.stopPropagation();document.getElementById('fi-modis-monthly').click()">เลือกไฟล์</button>
+      <div class="up-st" id="st-modis-monthly"></div>
+      <input type="file" id="fi-modis-monthly" accept=".csv" onchange="handleUpload(this,'modis-monthly')">
     </div>
-    <div class="stat-row" id="stats-viirs"></div>
+    <div class="up-item" id="ui-modis-yearly" onclick="document.getElementById('fi-modis-yearly').click()">
+      <div class="up-lbl">Yearly</div>
+      <div class="up-sub">hotspot_forest_yearly.csv</div>
+      <button class="btn bsm" onclick="event.stopPropagation();document.getElementById('fi-modis-yearly').click()">เลือกไฟล์</button>
+      <div class="up-st" id="st-modis-yearly"></div>
+      <input type="file" id="fi-modis-yearly" accept=".csv" onchange="handleUpload(this,'modis-yearly')">
+    </div>
   </div>
+  <div class="stat-row" id="stats-modis"></div>
+</div>
 
-  <!-- ENSO -->
-  <div class="section">
-    <div class="section-head">
-      <div class="section-icon">🌊</div>
-      <div class="section-info">
-        <h3>ENSO Configuration</h3>
-        <p>enso_config.csv — columns: year, smoke_avg, smoke_type, smoke_category, non_smoke_avg, non_smoke_type, non_smoke_category, annual_avg, annual_type, annual_category</p>
-      </div>
+<!-- VIIRS -->
+<div class="tw">
+  <div class="th2">
+    <div>
+      <div class="tt">🛰️ ข้อมูล Hotspot VIIRs</div>
+      <div class="td">รูปแบบเดียวกับ MODIS · satellite = Suomi-NPP</div>
     </div>
-    <div class="upload-item" id="ui-enso" onclick="document.getElementById('fi-enso').click()" style="text-align:left;display:flex;align-items:center;gap:16px">
+  </div>
+  <div class="up-grid">
+    <div class="up-item" id="ui-viirs-daily" onclick="document.getElementById('fi-viirs-daily').click()">
+      <div class="up-lbl">Daily</div>
+      <div class="up-sub">hotspot_forest_daily.csv (VIIRs)</div>
+      <button class="btn bsm" onclick="event.stopPropagation();document.getElementById('fi-viirs-daily').click()">เลือกไฟล์</button>
+      <div class="up-st" id="st-viirs-daily"></div>
+      <input type="file" id="fi-viirs-daily" accept=".csv" onchange="handleUpload(this,'viirs-daily')">
+    </div>
+    <div class="up-item" id="ui-viirs-monthly" onclick="document.getElementById('fi-viirs-monthly').click()">
+      <div class="up-lbl">Monthly</div>
+      <div class="up-sub">hotspot_forest_monthly.csv (VIIRs)</div>
+      <button class="btn bsm" onclick="event.stopPropagation();document.getElementById('fi-viirs-monthly').click()">เลือกไฟล์</button>
+      <div class="up-st" id="st-viirs-monthly"></div>
+      <input type="file" id="fi-viirs-monthly" accept=".csv" onchange="handleUpload(this,'viirs-monthly')">
+    </div>
+    <div class="up-item" id="ui-viirs-yearly" onclick="document.getElementById('fi-viirs-yearly').click()">
+      <div class="up-lbl">Yearly</div>
+      <div class="up-sub">hotspot_forest_yearly.csv (VIIRs)</div>
+      <button class="btn bsm" onclick="event.stopPropagation();document.getElementById('fi-viirs-yearly').click()">เลือกไฟล์</button>
+      <div class="up-st" id="st-viirs-yearly"></div>
+      <input type="file" id="fi-viirs-yearly" accept=".csv" onchange="handleUpload(this,'viirs-yearly')">
+    </div>
+  </div>
+  <div class="stat-row" id="stats-viirs"></div>
+</div>
+
+<!-- ENSO -->
+<div class="tw">
+  <div class="th2">
+    <div>
+      <div class="tt">🌊 ENSO Configuration</div>
+      <div class="td">enso_config.csv · year, smoke_avg, smoke_type, smoke_category, non_smoke_avg, non_smoke_type, non_smoke_category, annual_avg, annual_type, annual_category</div>
+    </div>
+  </div>
+  <div class="tc" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <div class="up-item" id="ui-enso" onclick="document.getElementById('fi-enso').click()" style="text-align:left;display:flex;align-items:center;gap:14px;flex:1;min-width:220px;padding:10px 14px">
       <div style="flex:1">
-        <div class="upload-label">enso_config.csv</div>
-        <div class="upload-sub">ข้อมูล ENSO 2012–2026 (3 periods)</div>
+        <div class="up-lbl">enso_config.csv</div>
+        <div class="up-sub">ข้อมูล ENSO 2012–2026 (3 periods)</div>
       </div>
-      <button class="btn" style="font-size:12px" onclick="event.stopPropagation();document.getElementById('fi-enso').click()">เลือกไฟล์</button>
+      <button class="btn bsm" onclick="event.stopPropagation();document.getElementById('fi-enso').click()">เลือกไฟล์</button>
       <input type="file" id="fi-enso" accept=".csv" onchange="handleUpload(this,'enso')">
     </div>
-    <div class="upload-status" id="st-enso" style="margin-top:8px"></div>
-    <div id="enso-preview" style="margin-top:10px"></div>
+    <div class="up-st" id="st-enso" style="font-size:11px;font-family:var(--mono)"></div>
   </div>
+  <div id="enso-preview" style="padding:0 14px 10px"></div>
+</div>
 
-  <!-- GeoJSON -->
-  <div class="section">
-    <div class="section-head">
-      <div class="section-icon">🗺️</div>
-      <div class="section-info">
-        <h3>ขอบเขตพื้นที่ (GeoJSON)</h3>
-        <p>ไฟล์ขอบเขตสำหรับอ้างอิงในระบบ — บันทึกชื่อไฟล์ไว้ใช้ในอนาคต</p>
-      </div>
+<!-- GeoJSON -->
+<div class="tw">
+  <div class="th2">
+    <div>
+      <div class="tt">🗺️ ขอบเขตพื้นที่ (GeoJSON)</div>
+      <div class="td">ไฟล์ขอบเขตสำหรับอ้างอิงในระบบ — บันทึกชื่อไฟล์ไว้ใช้ในอนาคต</div>
     </div>
-    <div class="upload-grid">
-      <div class="upload-item" id="ui-reserve" onclick="document.getElementById('fi-reserve').click()">
-        <div class="upload-label">ป่าสงวนแห่งชาติ</div>
-        <div class="upload-sub">Reserved Forest.geojson</div>
-        <button class="btn" style="font-size:12px" onclick="event.stopPropagation()">เลือกไฟล์</button>
-        <div class="upload-status" id="st-reserve"></div>
-        <input type="file" id="fi-reserve" accept=".geojson,.json" onchange="handleUpload(this,'reserve')">
-      </div>
-      <div class="upload-item" id="ui-conserve" onclick="document.getElementById('fi-conserve').click()">
-        <div class="upload-label">ป่าอนุรักษ์</div>
-        <div class="upload-sub">Protected Area.geojson</div>
-        <button class="btn" style="font-size:12px" onclick="event.stopPropagation()">เลือกไฟล์</button>
-        <div class="upload-status" id="st-conserve"></div>
-        <input type="file" id="fi-conserve" accept=".geojson,.json" onchange="handleUpload(this,'conserve')">
-      </div>
-      <div class="upload-item" id="ui-province" onclick="document.getElementById('fi-province').click()">
-        <div class="upload-label">ขอบเขต 9 จังหวัด</div>
-        <div class="upload-sub">9UNT_subprovince.geojson</div>
-        <button class="btn" style="font-size:12px" onclick="event.stopPropagation()">เลือกไฟล์</button>
-        <div class="upload-status" id="st-province"></div>
-        <input type="file" id="fi-province" accept=".geojson,.json" onchange="handleUpload(this,'province')">
-      </div>
-    </div>
-    <div class="warning">⚠ GeoJSON ใช้อ้างอิงใน Dashboard — การแยกพื้นที่ป่าทำด้วย R Script แล้ว ไม่ได้ประมวลผลซ้ำในเว็บ</div>
   </div>
+  <div class="up-grid col2">
+    <div class="up-item" id="ui-reserve" onclick="document.getElementById('fi-reserve').click()">
+      <div class="up-lbl">ป่าสงวนแห่งชาติ</div>
+      <div class="up-sub">Reserved Forest.geojson</div>
+      <button class="btn bsm" onclick="event.stopPropagation()">เลือกไฟล์</button>
+      <div class="up-st" id="st-reserve"></div>
+      <input type="file" id="fi-reserve" accept=".geojson,.json" onchange="handleUpload(this,'reserve')">
+    </div>
+    <div class="up-item" id="ui-conserve" onclick="document.getElementById('fi-conserve').click()">
+      <div class="up-lbl">ป่าอนุรักษ์</div>
+      <div class="up-sub">Protected Area.geojson</div>
+      <button class="btn bsm" onclick="event.stopPropagation()">เลือกไฟล์</button>
+      <div class="up-st" id="st-conserve"></div>
+      <input type="file" id="fi-conserve" accept=".geojson,.json" onchange="handleUpload(this,'conserve')">
+    </div>
+    <div class="up-item" id="ui-province" onclick="document.getElementById('fi-province').click()">
+      <div class="up-lbl">ขอบเขต 9 จังหวัด</div>
+      <div class="up-sub">9UNT_subprovince.geojson</div>
+      <button class="btn bsm" onclick="event.stopPropagation()">เลือกไฟล์</button>
+      <div class="up-st" id="st-province"></div>
+      <input type="file" id="fi-province" accept=".geojson,.json" onchange="handleUpload(this,'province')">
+    </div>
+  </div>
+  <div class="warn-bar">⚠ GeoJSON ใช้อ้างอิงใน Dashboard — การแยกพื้นที่ป่าทำด้วย R Script แล้ว ไม่ได้ประมวลผลซ้ำในเว็บ</div>
+</div>
 
-  <!-- ACTIONS -->
-  <div class="section">
-    <div class="section-head">
-      <div class="section-icon">⚙️</div>
-      <div class="section-info">
-        <h3>การจัดการระบบ</h3>
-        <p>ตรวจสอบสถานะข้อมูลที่โหลดอยู่ และล้างข้อมูลเมื่อต้องการ reset</p>
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn btn-primary" onclick="checkStatus()">ตรวจสอบสถานะ</button>
-      <button class="btn btn-danger" onclick="clearAll()">ล้างข้อมูลทั้งหมด</button>
-      <a class="btn" href="index.html">← กลับ Dashboard</a>
-    </div>
-    <div class="log-box" id="log-box">
-      <div class="log-info">รอคำสั่ง…</div>
+<!-- ACTIONS / SYSTEM -->
+<div class="tw">
+  <div class="th2">
+    <div class="tt">⚙️ การจัดการระบบ</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn bsm bp" onclick="checkStatus()">ตรวจสอบสถานะ</button>
+      <button class="btn bsm bd" onclick="clearAll()">ล้างข้อมูลทั้งหมด</button>
     </div>
   </div>
+  <div class="log-box" id="log-box"><div class="log-info">รอคำสั่ง…</div></div>
+</div>
+
+<!-- GITHUB -->
+<div class="tw" id="sec-github">
+  <div class="th2">
+    <div>
+      <div class="tt">🐙 บันทึกขึ้น GitHub</div>
+      <div class="td">push CSV ที่โหลดอยู่ในเบราว์เซอร์ขึ้นรีโปผ่าน GitHub API</div>
+    </div>
+  </div>
+  <div class="gh-info">
+    <b>วิธีใช้:</b> 1) ใส่ข้อมูลรีโปและ Token → 2) กด <b>ทดสอบ</b> → 3) กด <b>⬆ บันทึกขึ้น GitHub</b><br>
+    <b>Token:</b> GitHub → Settings → Developer settings → Personal access tokens → Fine-grained · เลือกรีโปนี้ · Contents = <b>Read and write</b><br>
+    <b>หมายเหตุ:</b> Token เก็บในเบราว์เซอร์เท่านั้น — ข้อมูลบนเว็บจริงเปลี่ยนได้ก็ต่อเมื่อมี token ที่มีสิทธิ์เขียนเท่านั้น
+  </div>
+  <div class="gh-row">
+    <label>owner<input id="g-owner" type="text" style="width:130px" autocomplete="off" placeholder="username"></label>
+    <label>repo<input id="g-repo" type="text" style="width:160px" autocomplete="off" placeholder="hotspot-webtool-3"></label>
+    <label>branch<input id="g-branch" type="text" style="width:75px" value="main"></label>
+    <label>โฟลเดอร์ราก (เว้นว่าง = root)<input id="g-root" type="text" style="width:100px" placeholder="เช่น docs"></label>
+  </div>
+  <div class="gh-row">
+    <label style="flex:1">Token<input id="g-token" type="password" style="width:100%;max-width:380px" autocomplete="off" placeholder="github_pat_…"></label>
+    <label class="cb"><input type="checkbox" id="g-remember"> จำ token ในเบราว์เซอร์นี้</label>
+  </div>
+  <div class="gh-row" style="border-bottom:0">
+    <label>ข้อความ commit<input id="g-commit-msg" type="text" style="width:340px" value="อัปเดตข้อมูล Hotspot"></label>
+    <button class="btn bsm" id="g-test-btn" onclick="ghTest()">ทดสอบการเชื่อมต่อ</button>
+    <button class="btn bsm bp" id="g-commit-btn" onclick="ghCommit()">⬆ บันทึกขึ้น GitHub</button>
+  </div>
+  <div id="g-file-list" class="fl-wrap" style="padding:0 14px 10px;padding-top:8px"></div>
+  <div class="log-box" id="g-log" style="max-height:220px"><div class="log-info">ยังไม่ได้เชื่อมต่อ…</div></div>
+</div>
 
 </main>
 
@@ -346,7 +342,7 @@ function handleUpload(input,key) {
       if (key==='reserve'||key==='conserve'||key==='province') {
         localStorage.setItem(sk,JSON.stringify({filename:file.name,size:file.size}));
         stEl.textContent=`✓ ${file.name} (${(file.size/1024).toFixed(0)} KB)`;
-        stEl.className='upload-status ok'; uiEl.classList.add('done');
+        stEl.className='up-st ok'; uiEl.classList.add('done');
         log(`GeoJSON: ${file.name}`, 'ok'); return;
       }
       const data=parseCSV(text);
@@ -354,14 +350,15 @@ function handleUpload(input,key) {
       localStorage.setItem(sk,JSON.stringify(data));
       const rows=data.length;
       const years=key!=='enso'?[...new Set(data.map(d=>d.year))].sort():[];
-      stEl.textContent=`✓ ${rows.toLocaleString('th-TH')} rows${years.length?` (${years[0]}–${years[years.length-1]})`:''}`; 
-      stEl.className='upload-status ok';
+      stEl.textContent=`✓ ${rows.toLocaleString('th-TH')} rows${years.length?` (${years[0]}–${years[years.length-1]})`:''}`;
+      stEl.className='up-st ok';
       uiEl.classList.add('done'); uiEl.classList.remove('err');
       log(`โหลด ${key}: ${rows.toLocaleString()} rows — ${file.name}`,'ok');
       if (key.startsWith('modis')||key.startsWith('viirs')) showStats(key.split('-')[0],data);
       if (key==='enso') showEnsoPreview(data);
+      renderFileList();
     } catch(err) {
-      stEl.textContent=`✗ ${err.message}`; stEl.className='upload-status bad';
+      stEl.textContent=`✗ ${err.message}`; stEl.className='up-st bad';
       uiEl.classList.add('err'); uiEl.classList.remove('done');
       log(`Error (${key}): ${err.message}`,'err');
     }
@@ -375,25 +372,25 @@ function showStats(sensor,data) {
   const total=data.reduce((s,d)=>s+(d.count||0),0);
   const provinces=[...new Set(data.map(d=>d.province_en).filter(Boolean))];
   el.innerHTML=`
-    <div class="stat"><div class="stat-label">จุดความร้อนรวม</div><div class="stat-val">${total.toLocaleString('th-TH')}</div></div>
-    <div class="stat"><div class="stat-label">ช่วงปี</div><div class="stat-val">${years[0]}–${years[years.length-1]}</div></div>
-    <div class="stat"><div class="stat-label">จังหวัด</div><div class="stat-val">${provinces.length}</div></div>`;
+    <div class="card"><div class="card-lbl">จุดความร้อนรวม</div><div class="card-val" style="color:var(--fire)">${total.toLocaleString('th-TH')}</div></div>
+    <div class="card"><div class="card-lbl">ช่วงปี</div><div class="card-val">${years[0]}–${years[years.length-1]}</div></div>
+    <div class="card"><div class="card-lbl">จังหวัด</div><div class="card-val">${provinces.length}</div></div>`;
 }
 
 function showEnsoPreview(data) {
   const el=document.getElementById('enso-preview');
   const ensoClass=cat=>{ const c=(cat||'').toLowerCase(); return c.includes('el nino')?'el-nino':c.includes('la nina')?'la-nina':'neutral'; };
-  el.innerHTML=`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px">` +
+  el.innerHTML=`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">` +
     data.map(r=>{
       const ec=ensoClass(r.annual_category);
-      const s=ec==='el-nino'?'background:rgba(184,50,50,.1);color:#B83232;border:1px solid rgba(184,50,50,.25)':ec==='la-nina'?'background:rgba(26,79,138,.1);color:#1A4F8A;border:1px solid rgba(26,79,138,.25)':'background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)';
+      const s=ec==='el-nino'?'background:rgba(107,31,42,.1);color:var(--en);border:1px solid rgba(107,31,42,.25)':ec==='la-nina'?'background:rgba(31,58,95,.1);color:var(--ln);border:1px solid rgba(31,58,95,.25)':'background:var(--s2);color:var(--dim);border:1px solid var(--border)';
       return `<div style="${s};padding:2px 8px;border-radius:3px;font-size:11px;font-family:var(--mono)">${r.year}</div>`;
     }).join('')+'</div>';
 }
 
 function checkStatus() {
   const box=document.getElementById('log-box'); box.innerHTML='';
-  log('=== ตรวจสอบสถานะข้อมูล ===','info');
+  log('=== ตรวจสอบสถานะข้อมูล ===');
   let total=0;
   Object.entries(STORE_KEYS).forEach(([key,sk])=>{
     const raw=localStorage.getItem(sk);
@@ -402,32 +399,33 @@ function checkStatus() {
       log(`✓ ${key}: ${Array.isArray(data)?data.length.toLocaleString()+' rows':data.filename||'มีข้อมูล'}`,'ok'); total++;
     } else { log(`✗ ${key}: ยังไม่มีข้อมูล`,'err'); }
   });
-  log(`=== พบข้อมูล ${total}/${Object.keys(STORE_KEYS).length} รายการ ===`,'info');
+  log(`=== พบข้อมูล ${total}/${Object.keys(STORE_KEYS).length} รายการ ===`);
 }
 
 function clearAll() {
   if (!confirm('ยืนยันล้างข้อมูลทั้งหมด?')) return;
   Object.values(STORE_KEYS).forEach(k=>localStorage.removeItem(k));
-  document.querySelectorAll('.upload-status').forEach(el=>{ el.textContent=''; el.className='upload-status'; });
-  document.querySelectorAll('.upload-item').forEach(el=>el.classList.remove('done','err'));
+  document.querySelectorAll('.up-st').forEach(el=>{ el.textContent=''; el.className='up-st'; });
+  document.querySelectorAll('.up-item').forEach(el=>el.classList.remove('done','err'));
   document.getElementById('enso-preview').innerHTML='';
   ['stats-modis','stats-viirs'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=''; });
   log('ล้างข้อมูลทั้งหมดแล้ว','ok');
+  renderFileList();
 }
 
 function toggleTheme() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const next = isDark ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  document.getElementById('theme-btn').textContent = next === 'dark' ? '☀️' : '🌙';
-  localStorage.setItem('theme', next);
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  const next=isDark?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  document.getElementById('theme-btn').textContent=next==='dark'?'☀️':'🌙';
+  localStorage.setItem('theme',next);
 }
-(function() {
-  const saved = localStorage.getItem('theme') || 'light';
-  document.documentElement.setAttribute('data-theme', saved);
-  document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('theme-btn');
-    if (btn) btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+(function(){
+  const saved=localStorage.getItem('theme')||'light';
+  document.documentElement.setAttribute('data-theme',saved);
+  document.addEventListener('DOMContentLoaded',()=>{
+    const btn=document.getElementById('theme-btn');
+    if(btn) btn.textContent=saved==='dark'?'☀️':'🌙';
   });
 })();
 
@@ -440,15 +438,195 @@ window.onload=()=>{
     if (!stEl||!uiEl) return;
     if (Array.isArray(data)) {
       const years=data[0]?.year?[...new Set(data.map(d=>d.year))].sort():[];
-      stEl.textContent=`✓ ${data.length.toLocaleString()} rows${years.length?` (${years[0]}–${years[years.length-1]})`:''}`; 
-      stEl.className='upload-status ok'; uiEl.classList.add('done');
+      stEl.textContent=`✓ ${data.length.toLocaleString()} rows${years.length?` (${years[0]}–${years[years.length-1]})`:''}`;
+      stEl.className='up-st ok'; uiEl.classList.add('done');
       if (key.startsWith('modis')||key.startsWith('viirs')) showStats(key.split('-')[0],data);
       if (key==='enso') showEnsoPreview(data);
     } else if (data.filename) {
-      stEl.textContent=`✓ ${data.filename}`; stEl.className='upload-status ok'; uiEl.classList.add('done');
+      stEl.textContent=`✓ ${data.filename}`; stEl.className='up-st ok'; uiEl.classList.add('done');
     }
   });
+  ghLoadFields();
+  renderFileList();
 };
+
+/* ═══════════════════════════════════════════════
+   GitHub integration
+   ═══════════════════════════════════════════════ */
+const GH_API='https://api.github.com';
+const GH_CFG_KEY='hotspot_gh_cfg';
+const GH_TOKEN_KEY='hotspot_gh_token';
+
+const FILE_MAP = {
+  'modis-daily':   'data/MODIS/hotspot_forest_daily.csv',
+  'modis-monthly': 'data/MODIS/hotspot_forest_monthly.csv',
+  'modis-yearly':  'data/MODIS/hotspot_forest_yearly.csv',
+  'viirs-daily':   'data/VIIRs/hotspot_forest_daily.csv',
+  'viirs-monthly': 'data/VIIRs/hotspot_forest_monthly.csv',
+  'viirs-yearly':  'data/VIIRs/hotspot_forest_yearly.csv',
+  'enso':          'data/enso_config.csv',
+};
+
+function ghLog(msg,type='info') {
+  const box=document.getElementById('g-log');
+  const div=document.createElement('div');
+  div.className=type==='ok'?'log-ok':type==='err'?'log-err':'log-info';
+  div.textContent=`[${new Date().toLocaleTimeString('th-TH')}] ${msg}`;
+  box.appendChild(div); box.scrollTop=box.scrollHeight;
+}
+
+function ghGetCfg() {
+  return {
+    owner: document.getElementById('g-owner').value.trim(),
+    repo:  document.getElementById('g-repo').value.trim(),
+    branch:document.getElementById('g-branch').value.trim()||'main',
+    root:  document.getElementById('g-root').value.trim().replace(/^\/+|\/+$/g,''),
+    token: document.getElementById('g-token').value.trim(),
+  };
+}
+
+function rp(cfg,rel){return cfg.root?cfg.root+'/'+rel:rel;}
+
+function ghSaveFields() {
+  const c=ghGetCfg();
+  try {
+    localStorage.setItem(GH_CFG_KEY,JSON.stringify({owner:c.owner,repo:c.repo,branch:c.branch,root:c.root}));
+    if (document.getElementById('g-remember').checked) localStorage.setItem(GH_TOKEN_KEY,c.token);
+    else localStorage.removeItem(GH_TOKEN_KEY);
+  } catch(e){}
+}
+
+function ghLoadFields() {
+  try {
+    const cfg=JSON.parse(localStorage.getItem(GH_CFG_KEY)||'{}');
+    if (cfg.owner) document.getElementById('g-owner').value=cfg.owner;
+    if (cfg.repo)  document.getElementById('g-repo').value=cfg.repo;
+    if (cfg.branch)document.getElementById('g-branch').value=cfg.branch;
+    if (cfg.root!==undefined) document.getElementById('g-root').value=cfg.root;
+    if (!cfg.owner) {
+      const h=location.hostname;
+      if (/\.github\.io$/.test(h)) {
+        document.getElementById('g-owner').value=h.split('.')[0];
+        const seg=location.pathname.split('/').filter(Boolean);
+        document.getElementById('g-repo').value=(seg.length&&!/\.html?$/.test(seg[0]))?seg[0]:'';
+      }
+    }
+    const tok=sessionStorage.getItem(GH_TOKEN_KEY)||localStorage.getItem(GH_TOKEN_KEY)||'';
+    if (tok) {document.getElementById('g-token').value=tok; document.getElementById('g-remember').checked=!!localStorage.getItem(GH_TOKEN_KEY);}
+  } catch(e){}
+  ['g-owner','g-repo','g-branch','g-root','g-token','g-remember'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.addEventListener('change',ghSaveFields);
+  });
+}
+
+async function ghReq(cfg,path,opt={}) {
+  if (!cfg.token) throw new Error('ต้องใส่ Token ก่อน');
+  const r=await fetch(GH_API+path,{
+    method:opt.method||'GET',
+    headers:Object.assign(
+      {'Accept':'application/vnd.github+json'},
+      {'Authorization':'Bearer '+cfg.token},
+      opt.body?{'Content-Type':'application/json'}:{}
+    ),
+    body:opt.body,
+  });
+  if (!r.ok) {
+    let t=''; try{const j=await r.json();t=j.message||'';}catch(e){}
+    const hint=r.status===401?' (Token ไม่ถูกต้องหรือหมดอายุ)':r.status===403?' (ไม่มีสิทธิ์)':r.status===404?' (ไม่พบรีโป/ไฟล์)':'';
+    const e=new Error('GitHub '+r.status+hint+(t?' — '+t.slice(0,120):''));e.status=r.status;throw e;
+  }
+  return r;
+}
+
+async function ghTest() {
+  const c=ghGetCfg();
+  if (!c.owner||!c.repo){ghLog('กรุณาใส่ owner และ repo ก่อน','err');return;}
+  const box=document.getElementById('g-log'); box.innerHTML='';
+  ghLog('กำลังเชื่อมต่อ…');
+  try {
+    const repo=await(await ghReq(c,`/repos/${c.owner}/${c.repo}`)).json();
+    const ref=await(await ghReq(c,`/repos/${c.owner}/${c.repo}/git/ref/heads/${c.branch}`)).json();
+    const push=repo.permissions?(repo.permissions.push?'✓ เขียนได้':'✗ อ่านอย่างเดียว'):'ไม่ทราบ';
+    ghLog(`✓ เชื่อมต่อสำเร็จ`,'ok');
+    ghLog(`${repo.full_name} (${repo.private?'Private':'Public'})  branch: ${c.branch} @ ${ref.object.sha.slice(0,7)}  สิทธิ์: ${push}`,'ok');
+    ghSaveFields();
+  } catch(err){ghLog('ผิดพลาด: '+err.message,'err');}
+}
+
+function buildCSV(rows) {
+  if (!rows||!rows.length) return '';
+  const headers=Object.keys(rows[0]);
+  const escape=v=>{const s=String(v??'');return /[,"\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+  return [headers.join(','),...rows.map(r=>headers.map(h=>escape(r[h])).join(','))].join('\n');
+}
+
+function renderFileList() {
+  const el=document.getElementById('g-file-list'); if(!el) return;
+  const rows=Object.entries(FILE_MAP).map(([key,path])=>{
+    const sk=STORE_KEYS[key];
+    const raw=localStorage.getItem(sk);
+    const has=!!raw;
+    let size='';
+    if (has) try{const d=JSON.parse(raw);if(Array.isArray(d))size=d.length.toLocaleString()+' rows';}catch(e){}
+    return `<tr>
+      <td class="fl-path">${path}</td>
+      <td style="color:var(--dim)">${size}</td>
+      <td><span class="badge ${has?'b-ok':'b-miss'}">${has?'โหลดแล้ว':'ยังไม่มี'}</span></td>
+    </tr>`;
+  });
+  el.innerHTML=`<table class="fl"><thead><tr><th>ไฟล์ในรีโป</th><th>ข้อมูล</th><th>สถานะ</th></tr></thead><tbody>${rows.join('')}</tbody></table>`;
+}
+
+async function ghCommit() {
+  const c=ghGetCfg();
+  if (!c.owner||!c.repo){ghLog('กรุณาใส่ owner และ repo ก่อน','err');return;}
+  if (!c.token){ghLog('กรุณาใส่ Token ก่อน','err');return;}
+
+  const files=[];
+  Object.entries(FILE_MAP).forEach(([key,relPath])=>{
+    const sk=STORE_KEYS[key];
+    const raw=localStorage.getItem(sk);
+    if (!raw) return;
+    try {
+      const data=JSON.parse(raw);
+      if (!Array.isArray(data)||!data.length) return;
+      const csv=buildCSV(data);
+      files.push({path:rp(c,relPath),content:csv,label:relPath});
+    } catch(e){ghLog(`ข้าม ${relPath}: ${e.message}`,'err');}
+  });
+
+  if (!files.length){ghLog('ไม่มีไฟล์ที่โหลดอยู่ — กรุณาอัปโหลด CSV ก่อน','err');return;}
+  if (!confirm(`จะ commit ${files.length} ไฟล์ไปที่ ${c.owner}/${c.repo} (branch: ${c.branch})\n\n${files.map(f=>'• '+f.label).join('\n')}\n\nดำเนินการต่อหรือไม่?`)) return;
+
+  const box=document.getElementById('g-log'); box.innerHTML='';
+  ghLog(`เริ่ม commit ${files.length} ไฟล์…`);
+  const btn=document.getElementById('g-commit-btn');
+  btn.disabled=true; btn.textContent='กำลัง commit…';
+
+  try {
+    const base=`/repos/${c.owner}/${c.repo}`;
+    const ref=await(await ghReq(c,`${base}/git/ref/heads/${c.branch}`)).json();
+    const head=ref.object.sha;
+    ghLog(`HEAD: ${head.slice(0,7)}`);
+
+    const tree=await(await ghReq(c,`${base}/git/trees`,{method:'POST',body:JSON.stringify({base_tree:head,tree:files.map(f=>({path:f.path,mode:'100644',type:'blob',content:f.content}))})})).json();
+    ghLog(`tree: ${tree.sha.slice(0,7)}`);
+
+    const msgEl=document.getElementById('g-commit-msg');
+    const msg=(msgEl?.value.trim())||`อัปเดตข้อมูล Hotspot (${new Date().toLocaleDateString('th-TH')})`;
+    const nc=await(await ghReq(c,`${base}/git/commits`,{method:'POST',body:JSON.stringify({message:msg,tree:tree.sha,parents:[head]})})).json();
+    ghLog(`commit: ${nc.sha.slice(0,7)}`);
+
+    await ghReq(c,`${base}/git/refs/heads/${c.branch}`,{method:'PATCH',body:JSON.stringify({sha:nc.sha})});
+    ghLog(`✓ สำเร็จ! ${nc.sha.slice(0,7)}${nc.html_url?'\n'+nc.html_url:''}`, 'ok');
+    ghLog('GitHub Pages จะอัปเดตใน 1–2 นาที (Ctrl+F5 ถ้ายังเห็นข้อมูลเดิม)','ok');
+    renderFileList();
+  } catch(err){
+    ghLog('ผิดพลาด: '+err.message,'err');
+  } finally {
+    btn.disabled=false; btn.textContent='⬆ บันทึกขึ้น GitHub';
+  }
+}
 </script>
 </body>
 </html>

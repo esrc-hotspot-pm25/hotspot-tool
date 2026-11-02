@@ -70,8 +70,8 @@ tbody tr:last-child{border-bottom:none}
 td{padding:7px 10px;white-space:nowrap}
 td.num{font-family:var(--mono);text-align:right;font-size:12px}
 td.prov{font-weight:600}
-.fb-r{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:rgba(192,68,14,.1);color:var(--fire);border:1px solid rgba(192,68,14,.2)}
-.fb-p{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:rgba(138,92,16,.1);color:var(--prot);border:1px solid rgba(138,92,16,.2)}
+.fb-r{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:rgba(163,62,29,.1);color:var(--fire);border:1px solid rgba(163,62,29,.2)}
+.fb-p{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:rgba(138,106,0,.1);color:var(--prot);border:1px solid rgba(138,106,0,.2)}
 .fb-n{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:var(--s2);color:var(--dim);border:1px solid var(--border)}
 /* ===ENSO STRIP=== */
 .estrip{display:flex;gap:6px;padding:4px 0 8px;flex-wrap:wrap}
@@ -103,6 +103,7 @@ td.prov{font-weight:600}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--bs);border-radius:3px}
 </style>
+<link rel="stylesheet" href="cmu-theme.css">
 </head>
 <body>
 <nav>
@@ -158,12 +159,12 @@ td.prov{font-weight:600}
       <button class="btn bsm" onclick="checkAllProv(false)">ล้าง</button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px">
-      <div class="card" style="border-left:4px solid #7B3FA0">
-        <div class="card-lbl">รวมที่เลือก (ในป่า)</div><div class="card-val" id="ov-sel-f" style="color:#7B3FA0">—</div></div>
-      <div class="card" style="border-left:4px solid #7B3FA0">
-        <div class="card-lbl">รวมที่เลือก (นอกป่า)</div><div class="card-val" id="ov-sel-n" style="color:#7B3FA0">—</div></div>
-      <div class="card" style="border-left:4px solid #7B3FA0">
-        <div class="card-lbl">รวมทั้งหมดที่เลือก</div><div class="card-val" id="ov-sel-t" style="color:#7B3FA0">—</div></div>
+      <div class="card" style="border-left:4px solid #6A4A91">
+        <div class="card-lbl">รวมที่เลือก (ในป่า)</div><div class="card-val" id="ov-sel-f" style="color:#6A4A91">—</div></div>
+      <div class="card" style="border-left:4px solid #6A4A91">
+        <div class="card-lbl">รวมที่เลือก (นอกป่า)</div><div class="card-val" id="ov-sel-n" style="color:#6A4A91">—</div></div>
+      <div class="card" style="border-left:4px solid #6A4A91">
+        <div class="card-lbl">รวมทั้งหมดที่เลือก</div><div class="card-val" id="ov-sel-t" style="color:#6A4A91">—</div></div>
     </div>
   </div>
 
@@ -178,12 +179,12 @@ td.prov{font-weight:600}
         <option value="annual">Annual (JJA–MJJ)</option>
       </select>
       <div style="display:flex;gap:6px;font-size:11px;margin-left:auto;flex-wrap:wrap">
-        <span style="background:rgba(184,50,50,.3);color:var(--en);padding:2px 7px;border-radius:3px;font-weight:700;font-size:11px">Strong El Niño</span>
-        <span style="background:rgba(184,50,50,.15);color:var(--en);padding:2px 7px;border-radius:3px;font-size:11px">Moderate El Niño</span>
-        <span style="background:rgba(184,50,50,.07);color:var(--en);padding:2px 7px;border-radius:3px;font-size:11px">Weak El Niño</span>
-        <span style="background:rgba(26,79,138,.07);color:var(--ln);padding:2px 7px;border-radius:3px;font-size:11px">Weak La Niña</span>
-        <span style="background:rgba(26,79,138,.15);color:var(--ln);padding:2px 7px;border-radius:3px;font-size:11px">Moderate La Niña</span>
-        <span style="background:rgba(26,79,138,.3);color:var(--ln);padding:2px 7px;border-radius:3px;font-weight:700;font-size:11px">Strong La Niña</span>
+        <span style="background:rgba(107,31,42,.3);color:var(--en);padding:2px 7px;border-radius:3px;font-weight:700;font-size:11px">Strong El Niño</span>
+        <span style="background:rgba(107,31,42,.15);color:var(--en);padding:2px 7px;border-radius:3px;font-size:11px">Moderate El Niño</span>
+        <span style="background:rgba(107,31,42,.07);color:var(--en);padding:2px 7px;border-radius:3px;font-size:11px">Weak El Niño</span>
+        <span style="background:rgba(31,58,95,.07);color:var(--ln);padding:2px 7px;border-radius:3px;font-size:11px">Weak La Niña</span>
+        <span style="background:rgba(31,58,95,.15);color:var(--ln);padding:2px 7px;border-radius:3px;font-size:11px">Moderate La Niña</span>
+        <span style="background:rgba(31,58,95,.3);color:var(--ln);padding:2px 7px;border-radius:3px;font-weight:700;font-size:11px">Strong La Niña</span>
       </div>
     </div>
     <div class="estrip" id="enso-strip"></div>
@@ -291,9 +292,9 @@ td.prov{font-weight:600}
         <div style="font-size:11px;color:var(--dim);margin-top:2px">คำนวณจากจุดความร้อนในแต่ละช่วงเวลา</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;font-size:11px;flex-wrap:wrap">
-        <span style="background:rgba(26,107,60,.1);color:var(--forest);padding:2px 8px;border-radius:3px;border:1px solid rgba(26,107,60,.3)">% ป่ารวม/ทั้งหมด</span>
-        <span style="background:rgba(192,68,14,.1);color:var(--fire);padding:2px 8px;border-radius:3px;border:1px solid rgba(192,68,14,.3)">% สงวนฯ/ป่ารวม</span>
-        <span style="background:rgba(138,92,16,.1);color:var(--prot);padding:2px 8px;border-radius:3px;border:1px solid rgba(138,92,16,.3)">% อนุรักษ์/ป่ารวม</span>
+        <span style="background:rgba(31,58,95,.1);color:var(--forest);padding:2px 8px;border-radius:3px;border:1px solid rgba(31,58,95,.3)">% ป่ารวม/ทั้งหมด</span>
+        <span style="background:rgba(163,62,29,.1);color:var(--fire);padding:2px 8px;border-radius:3px;border:1px solid rgba(163,62,29,.3)">% สงวนฯ/ป่ารวม</span>
+        <span style="background:rgba(138,106,0,.1);color:var(--prot);padding:2px 8px;border-radius:3px;border:1px solid rgba(138,106,0,.3)">% อนุรักษ์/ป่ารวม</span>
         <button class="btn bsm" onclick="exportTable('fr-pct-table','forest_percent')">⬇ Export</button>
       </div>
     </div>
@@ -387,12 +388,12 @@ td.prov{font-weight:600}
     </div>
     <!-- Legend แถวสี -->
     <div style="padding:8px 14px;background:var(--s2);border-bottom:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap;font-size:11px;align-items:center">
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(37,99,168,.08);border:1px solid rgba(37,99,168,.3);border-radius:2px;display:inline-block"></span>ข้อมูลแต่ละปี</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(37,99,168,.18);border:1px solid var(--acc);border-radius:2px;display:inline-block"></span>Mean</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(138,92,16,.1);border:1px solid rgba(138,92,16,.3);border-radius:2px;display:inline-block"></span>Median</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(31,58,95,.08);border:1px solid rgba(31,58,95,.3);border-radius:2px;display:inline-block"></span>ข้อมูลแต่ละปี</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(31,58,95,.18);border:1px solid var(--acc);border-radius:2px;display:inline-block"></span>Mean</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(138,106,0,.1);border:1px solid rgba(138,106,0,.3);border-radius:2px;display:inline-block"></span>Median</span>
       <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(100,100,100,.06);border:1px solid var(--bs);border-radius:2px;display:inline-block"></span>SD</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(26,107,60,.12);border:1px solid rgba(26,107,60,.4);border-radius:2px;display:inline-block"></span>Mean−SD</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(184,50,50,.12);border:1px solid rgba(184,50,50,.4);border-radius:2px;display:inline-block"></span>Mean+SD</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(31,58,95,.12);border:1px solid rgba(31,58,95,.4);border-radius:2px;display:inline-block"></span>Mean−SD</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:14px;background:rgba(107,31,42,.12);border:1px solid rgba(107,31,42,.4);border-radius:2px;display:inline-block"></span>Mean+SD</span>
       <button class="info-btn" data-tip="<b>สูตรคำนวณ Baseline</b><br><br>Mean = ผลรวมทุกปี ÷ จำนวนปี<br>Median = ค่ากลาง (เรียงจากน้อยไปมาก)<br>SD = ส่วนเบี่ยงเบนมาตรฐาน<br>Mean−SD = ขีดล่าง (ค่าต่ำผิดปกติถ้าต่ำกว่านี้)<br>Mean+SD = ขีดบน (ค่าสูงผิดปกติถ้าสูงกว่านี้)" onclick="showTip(this)"" style="margin-left:auto">i</button>
     </div>
     <div class="ts2">
@@ -448,12 +449,12 @@ td.prov{font-weight:600}
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
         <span style="font-size:12px;font-weight:600;color:var(--dim)">ENSO รายปี — กดเลือก/ยกเลิกปีได้</span>
         <div style="display:flex;gap:6px;font-size:10px;flex-wrap:wrap">
-          <span style="background:rgba(184,50,50,.28);color:var(--en);padding:1px 6px;border-radius:3px">Strong EN</span>
-          <span style="background:rgba(184,50,50,.15);color:var(--en);padding:1px 6px;border-radius:3px">Mod EN</span>
-          <span style="background:rgba(184,50,50,.07);color:var(--en);padding:1px 6px;border-radius:3px">Weak EN</span>
-          <span style="background:rgba(26,79,138,.07);color:var(--ln);padding:1px 6px;border-radius:3px">Weak LN</span>
-          <span style="background:rgba(26,79,138,.15);color:var(--ln);padding:1px 6px;border-radius:3px">Mod LN</span>
-          <span style="background:rgba(26,79,138,.28);color:var(--ln);padding:1px 6px;border-radius:3px">Strong LN</span>
+          <span style="background:rgba(107,31,42,.28);color:var(--en);padding:1px 6px;border-radius:3px">Strong EN</span>
+          <span style="background:rgba(107,31,42,.15);color:var(--en);padding:1px 6px;border-radius:3px">Mod EN</span>
+          <span style="background:rgba(107,31,42,.07);color:var(--en);padding:1px 6px;border-radius:3px">Weak EN</span>
+          <span style="background:rgba(31,58,95,.07);color:var(--ln);padding:1px 6px;border-radius:3px">Weak LN</span>
+          <span style="background:rgba(31,58,95,.15);color:var(--ln);padding:1px 6px;border-radius:3px">Mod LN</span>
+          <span style="background:rgba(31,58,95,.28);color:var(--ln);padding:1px 6px;border-radius:3px">Strong LN</span>
         </div>
         <button class="btn bsm" onclick="cpSelectAll(true)" style="margin-left:auto">เลือกทั้งหมด</button>
         <button class="btn bsm" onclick="cpSelectAll(false)">ล้าง</button>
@@ -467,14 +468,14 @@ td.prov{font-weight:600}
 
     <!-- Summary cards -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 14px">
-      <div class="card" style="border-left:4px solid #7B3FA0"><div class="card-lbl">8 จังหวัด Mean</div><div class="card-val" id="cp-bl8" style="color:#7B3FA0">—</div></div>
-      <div class="card" style="border-left:4px solid #1A5C8A"><div class="card-lbl">9 จังหวัด Mean</div><div class="card-val" id="cp-bl9" style="color:#1A5C8A">—</div></div>
+      <div class="card" style="border-left:4px solid #6A4A91"><div class="card-lbl">8 จังหวัด Mean</div><div class="card-val" id="cp-bl8" style="color:#6A4A91">—</div></div>
+      <div class="card" style="border-left:4px solid #1F3A5F"><div class="card-lbl">9 จังหวัด Mean</div><div class="card-val" id="cp-bl9" style="color:#1F3A5F">—</div></div>
       <div class="card" style="border-left:4px solid var(--fire)"><div class="card-lbl">ในป่า Mean</div><div class="card-val" id="cp-blf" style="color:var(--fire)">—</div></div>
       <div class="card" style="border-left:4px solid var(--forest)"><div class="card-lbl">นอกป่า Mean</div><div class="card-val" id="cp-bln" style="color:var(--forest)">—</div></div>
     </div>
   </div>
   <div class="ctrl">
-    <div style="background:rgba(37,99,168,.1);border:1px solid rgba(37,99,168,.3);border-radius:4px;padding:3px 10px;font-size:12px;color:var(--acc)">ขั้นที่ 2</div>
+    <div style="background:rgba(31,58,95,.1);border:1px solid rgba(31,58,95,.3);border-radius:4px;padding:3px 10px;font-size:12px;color:var(--acc)">ขั้นที่ 2</div>
     <span class="lsm">ปีที่เทียบ</span><select id="cp-year"></select>
     <span class="lsm">พื้นที่</span>
     <select id="cp-forest">
@@ -491,10 +492,10 @@ td.prov{font-weight:600}
     <div class="th2">
       <div class="tt" id="cp-title">เปรียบเทียบกับ Baseline</div>
       <div style="display:flex;gap:6px;font-size:11px;flex-wrap:wrap;align-items:center">
-        <span style="background:rgba(184,50,50,.12);color:var(--en);padding:2px 7px;border-radius:3px;border:1px solid rgba(184,50,50,.3)">🔴 &gt; Mean+SD</span>
-        <span style="background:rgba(243,156,18,.12);color:#7A5A00;padding:2px 7px;border-radius:3px;border:1px solid rgba(243,156,18,.3)">🟡 ±SD</span>
-        <span style="background:rgba(26,107,60,.12);color:var(--forest);padding:2px 7px;border-radius:3px;border:1px solid rgba(26,107,60,.3)">🟢 &lt; Mean−SD</span>
-        <button class="info-btn" data-tip="<b>สูตรคำนวณ</b><br><br>% Difference<br>= (ค่าปีที่เลือก − Baseline Mean) ÷ Baseline Mean × 100<br><br>ความแตกต่าง<br>= ค่าปีที่เลือก − Baseline Mean<br><br><b>เทียบ ±SD</b><br>🔴 = ค่า &gt; Mean + SD (สูงผิดปกติ)<br>🟡 = อยู่ในช่วง Mean ± SD (ปกติ)<br>🟢 = ค่า &lt; Mean − SD (ต่ำผิดปกติ)" onclick="showTip(this)"">i</button>
+        <span style="background:rgba(107,31,42,.12);color:var(--en);padding:2px 7px;border-radius:3px;border:1px solid rgba(107,31,42,.3)">▲ &gt; Mean+SD</span>
+        <span style="background:rgba(243,156,18,.12);color:#7A5A00;padding:2px 7px;border-radius:3px;border:1px solid rgba(243,156,18,.3)">● ±SD</span>
+        <span style="background:rgba(31,58,95,.12);color:var(--forest);padding:2px 7px;border-radius:3px;border:1px solid rgba(31,58,95,.3)">▼ &lt; Mean−SD</span>
+        <button class="info-btn" data-tip="<b>สูตรคำนวณ</b><br><br>% Difference<br>= (ค่าปีที่เลือก − Baseline Mean) ÷ Baseline Mean × 100<br><br>ความแตกต่าง<br>= ค่าปีที่เลือก − Baseline Mean<br><br><b>เทียบ ±SD</b><br>▲ = ค่า &gt; Mean + SD (สูงผิดปกติ)<br>● = อยู่ในช่วง Mean ± SD (ปกติ)<br>▼ = ค่า &lt; Mean − SD (ต่ำผิดปกติ)" onclick="showTip(this)"">i</button>
       </div>
     </div>
     <div class="ts2"><table id="cp-table">
@@ -589,8 +590,8 @@ async function loadAll(){
   DB.enso=enso;DB.loaded=true;
   const hM=mD.length>0,hV=vD.length>0;
   const lbl=[hM?'MODIS':'',hV?'VIIRs':''].filter(Boolean).join('+');
-  if(!hM&&!hV)setBadge('ไม่มีข้อมูล','#B83232','rgba(184,50,50,.1)');
-  else setBadge(`โหลดแล้ว: ${lbl} ✓`,'#1A6B3C','rgba(26,107,60,.1)');
+  if(!hM&&!hV)setBadge('ไม่มีข้อมูล','#6B1F2A','rgba(107,31,42,.1)');
+  else setBadge(`โหลดแล้ว: ${lbl} ✓`,'#1F3A5F','rgba(31,58,95,.1)');
   init();
 }
 
@@ -653,8 +654,8 @@ function eStrength(type){
 }
 function eStyle(cat){
   const ec=eClass(cat);
-  return ec==='el-nino'?`background:rgba(184,50,50,.1);color:var(--en);border:1px solid rgba(184,50,50,.25)`
-        :ec==='la-nina'?`background:rgba(26,79,138,.1);color:var(--ln);border:1px solid rgba(26,79,138,.25)`
+  return ec==='el-nino'?`background:rgba(107,31,42,.1);color:var(--en);border:1px solid rgba(107,31,42,.25)`
+        :ec==='la-nina'?`background:rgba(31,58,95,.1);color:var(--ln);border:1px solid rgba(31,58,95,.25)`
         :`background:var(--s2);color:var(--dim);border:1px solid var(--border)`;
 }
 function getYearsForScale(scale,period='smoke'){
@@ -927,7 +928,7 @@ function renderOvMainTable(){
   }
   function makeRow(labelHtml, {counts,t8,t9}, highlight=false){
     const tr=document.createElement('tr');
-    if(highlight)tr.style.background='rgba(37,99,168,.06)';
+    if(highlight)tr.style.background='rgba(31,58,95,.06)';
     tr.innerHTML=`${labelHtml}${counts.map(c=>`<td class="num">${fmt(c)}</td>`).join('')}
       <td class="num" style="font-weight:700;background:rgba(123,63,160,.05)">${fmt(t8)}</td>
       <td class="num" style="font-weight:700;background:rgba(26,92,138,.05)">${fmt(t9)}</td>`;
@@ -943,17 +944,17 @@ function renderOvMainTable(){
     const meanT9=calcStats(matrix.map(r=>r.t9)).mean;
     const sdT9=calcStats(matrix.map(r=>r.t9)).sd;
     const rowMean=document.createElement('tr');
-    rowMean.style.cssText='background:rgba(37,99,168,.04);font-style:italic';
+    rowMean.style.cssText='background:rgba(31,58,95,.04);font-style:italic';
     rowMean.innerHTML=`<td colspan="2" style="color:var(--acc);font-weight:600;font-size:12px">เฉลี่ย (Mean)</td>
       ${meanCounts.map(v=>`<td class="num" style="color:var(--acc)">${fmt(v)}</td>`).join('')}
-      <td class="num" style="color:#7B3FA0;font-weight:700;background:rgba(123,63,160,.05)">${fmt(meanT8)}</td>
-      <td class="num" style="color:#1A5C8A;font-weight:700;background:rgba(26,92,138,.05)">${fmt(meanT9)}</td>`;
+      <td class="num" style="color:#6A4A91;font-weight:700;background:rgba(123,63,160,.05)">${fmt(meanT8)}</td>
+      <td class="num" style="color:#1F3A5F;font-weight:700;background:rgba(26,92,138,.05)">${fmt(meanT9)}</td>`;
     const rowSD=document.createElement('tr');
-    rowSD.style.cssText='background:rgba(37,99,168,.02);font-style:italic';
+    rowSD.style.cssText='background:rgba(31,58,95,.02);font-style:italic';
     rowSD.innerHTML=`<td colspan="2" style="color:var(--dim);font-size:12px">ส่วนเบี่ยงเบนมาตรฐาน (SD)</td>
       ${sdCounts.map(v=>`<td class="num" style="color:var(--dim)">${fmt(v)}</td>`).join('')}
-      <td class="num" style="color:#7B3FA0;background:rgba(123,63,160,.05)">${fmt(sdT8)}</td>
-      <td class="num" style="color:#1A5C8A;background:rgba(26,92,138,.05)">${fmt(sdT9)}</td>`;
+      <td class="num" style="color:#6A4A91;background:rgba(123,63,160,.05)">${fmt(sdT8)}</td>
+      <td class="num" style="color:#1F3A5F;background:rgba(26,92,138,.05)">${fmt(sdT9)}</td>`;
     body.appendChild(rowMean);
     body.appendChild(rowSD);
   }
@@ -1138,7 +1139,7 @@ function renderForest(){
     const keys=['t','r','p','n'];
     ['เฉลี่ย (Mean)','ส่วนเบี่ยงเบนมาตรฐาน (SD)'].forEach((label,idx)=>{
       const tr=document.createElement('tr');
-      tr.style.cssText=`background:rgba(37,99,168,.0${idx?2:4});font-style:italic`;
+      tr.style.cssText=`background:rgba(31,58,95,.0${idx?2:4});font-style:italic`;
       let cells=`<td style="color:${idx?'var(--dim)':'var(--acc)'};font-size:12px;font-weight:${idx?400:600}">${label}</td>`;
       P9.forEach((_,pi)=>{
         keys.forEach(k=>{
@@ -1148,11 +1149,11 @@ function renderForest(){
       });
       keys.forEach(k=>{
         const vals=matrix.map(row=>row.v8[k]||0);
-        cells+=`<td class="num" style="color:${idx?'var(--dim)':'#7B3FA0'};background:rgba(123,63,160,.05)">${fmt(_stat(vals,idx))}</td>`;
+        cells+=`<td class="num" style="color:${idx?'var(--dim)':'#6A4A91'};background:rgba(123,63,160,.05)">${fmt(_stat(vals,idx))}</td>`;
       });
       keys.forEach(k=>{
         const vals=matrix.map(row=>row.v9[k]||0);
-        cells+=`<td class="num" style="color:${idx?'var(--dim)':'#1A5C8A'};background:rgba(26,92,138,.05)">${fmt(_stat(vals,idx))}</td>`;
+        cells+=`<td class="num" style="color:${idx?'var(--dim)':'#1F3A5F'};background:rgba(26,92,138,.05)">${fmt(_stat(vals,idx))}</td>`;
       });
       tr.innerHTML=cells;
       body.appendChild(tr);
@@ -1272,7 +1273,7 @@ function renderForestPct(matrix){
     const forest8=row.v8.r+row.v8.p;
     const forest9=row.v9.r+row.v9.p;
     const tr=document.createElement('tr');
-    tr.style.background='rgba(37,99,168,.04)';
+    tr.style.background='rgba(31,58,95,.04)';
     tr.innerHTML=`<td>${periodLbl}</td>
       ${row.provVals.map(v=>{
         const f=v.r+v.p;
@@ -1301,7 +1302,7 @@ function renderForestPct(matrix){
 
   ['เฉลี่ย (Mean)','SD'].forEach((label,idx)=>{
     const tr=document.createElement('tr');
-    tr.style.cssText=`background:rgba(37,99,168,.0${idx?2:4});font-style:italic`;
+    tr.style.cssText=`background:rgba(31,58,95,.0${idx?2:4});font-style:italic`;
     let cells=`<td style="font-weight:${idx?400:600};font-size:12px;color:${idx?'var(--dim)':'var(--acc)'}">${label}</td>`;
 
     // คำนวณ % ต่อ col: P9 × 3 + v8×3 + v9×3
@@ -1462,7 +1463,7 @@ function renderBaseline(){
     raw8.push(t8); raw9.push(t9);
 
     const tr=document.createElement('tr');
-    tr.style.background='rgba(37,99,168,.04)';
+    tr.style.background='rgba(31,58,95,.04)';
     tr.innerHTML=`<td><b>${yr}</b></td>
       <td><span style="font-size:10px;padding:1px 6px;border-radius:3px;${eStyle(enso.cat)}">${enso.type}</span></td>
       ${vals.map(v=>`<td class="num">${fmt(v)}</td>`).join('')}
@@ -1476,11 +1477,11 @@ function renderBaseline(){
   function safeSd(arr){const m=safeMean(arr);return m===null?null:Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length);}
   function safeMedian(arr){if(!arr.length)return null;const s=[...arr].sort((a,b)=>a-b);return s.length%2===0?(s[s.length/2-1]+s[s.length/2])/2:s[Math.floor(s.length/2)];}
   const statsConfig=[
-    {label:'Mean',      color:'rgba(37,99,168,.18)', border:'var(--acc)',            fn:(arr)=>safeMean(arr)},
-    {label:'Median',    color:'rgba(138,92,16,.1)',   border:'rgba(138,92,16,.4)',   fn:(arr)=>safeMedian(arr)},
+    {label:'Mean',      color:'rgba(31,58,95,.18)', border:'var(--acc)',            fn:(arr)=>safeMean(arr)},
+    {label:'Median',    color:'rgba(138,106,0,.1)',   border:'rgba(138,106,0,.4)',   fn:(arr)=>safeMedian(arr)},
     {label:'SD',        color:'rgba(100,100,100,.06)',border:'var(--bs)',             fn:(arr)=>safeSd(arr)},
-    {label:'Mean − SD', color:'rgba(26,107,60,.12)', border:'rgba(26,107,60,.4)',   fn:(arr)=>{const m=safeMean(arr),sd=safeSd(arr);return m===null?null:m-sd;}},
-    {label:'Mean + SD', color:'rgba(184,50,50,.12)', border:'rgba(184,50,50,.4)',   fn:(arr)=>{const m=safeMean(arr),sd=safeSd(arr);return m===null?null:m+sd;}},
+    {label:'Mean − SD', color:'rgba(31,58,95,.12)', border:'rgba(31,58,95,.4)',   fn:(arr)=>{const m=safeMean(arr),sd=safeSd(arr);return m===null?null:m-sd;}},
+    {label:'Mean + SD', color:'rgba(107,31,42,.12)', border:'rgba(107,31,42,.4)',   fn:(arr)=>{const m=safeMean(arr),sd=safeSd(arr);return m===null?null:m+sd;}},
   ];
 
   // separator
@@ -1531,7 +1532,7 @@ function renderBaseline(){
     });
     provs.forEach((p,i)=>fMatrix[p].push(pVals[i]));
     const tr=document.createElement('tr');
-    tr.style.background='rgba(37,99,168,.04)';
+    tr.style.background='rgba(31,58,95,.04)';
     const cells=pVals.map(v=>`<td class="num">${fmt(v.t)}</td><td class="num"><span class="fb-r">${fmt(v.r)}</span></td><td class="num"><span class="fb-p">${fmt(v.p)}</span></td><td class="num"><span class="fb-n">${fmt(v.n)}</span></td>`).join('');
     tr.innerHTML=`<td><b>${yr}</b></td><td><span style="font-size:10px;padding:1px 6px;border-radius:3px;${eStyle(enso.cat)}">${enso.type}</span></td>${cells}`;
     fBody.appendChild(tr);
@@ -1697,7 +1698,7 @@ function renderCompare(){
     const cur=data.reduce((s,d)=>s+(d.count||0),0);
     const diff=cur-bl.mean;
     const diffP=bl.mean>0?((cur-bl.mean)/bl.mean*100):null;
-    const sdS=cur>bl.mean+bl.sd?'🔴 > Mean+SD':cur<bl.mean-bl.sd?'🟢 < Mean−SD':'🟡 ±SD';
+    const sdS=cur>bl.mean+bl.sd?'▲ > Mean+SD':cur<bl.mean-bl.sd?'▼ < Mean−SD':'● ±SD';
     const dc=d=>d===null?'dz':d>10?'dp':d<-10?'dn':'dz';
     const tr=document.createElement('tr');
     tr.innerHTML=`<td class="prov">${P9_TH[prov]||prov}</td>
@@ -1745,8 +1746,8 @@ function renderRanking(){
       </div>`;
     });
   }
-  buildList('rk-total','total',maxT,'rgba(192,68,14,.2)');
-  buildList('rk-forest','f2val',maxF,'rgba(26,107,60,.15)');
+  buildList('rk-total','total',maxT,'rgba(163,62,29,.2)');
+  buildList('rk-forest','f2val',maxF,'rgba(31,58,95,.15)');
 }
 
 // ============================================================

@@ -1,0 +1,75 @@
+/* ==========================================================
+   Hotspot Dashboard — ธีมหน้าตา (CMU Air Analysis)
+   ไฟล์นี้ซ้อนทับสไตล์เดิมของเว็บ — ลบบรรทัด <link href="cmu-theme.css"> ออกก็กลับเป็นหน้าตาเดิม
+   ฟอนต์: CMU Font © มหาวิทยาลัยเชียงใหม่ (ไฟล์ต้นฉบับ ไม่ดัดแปลง — ดู fonts/LICENSE.txt)
+   สี: ส้มอิฐ (Hotspot) · กรมท่า · ไวน์ · พื้นเบจเทาน้ำตาล — ไม่ใช้แดง–เขียวคู่กัน
+   ========================================================== */
+@font-face{font-family:'CMU';src:url('fonts/CMU-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'CMU';src:url('fonts/CMU-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'CMU';src:url('fonts/CMU-Bold.woff2') format('woff2');font-weight:600 700;font-style:normal;font-display:swap}
+@font-face{font-family:'CMU';src:url('fonts/CMU-Italic.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap}
+
+:root{
+  --bg:#E3DCD6; --surface:#F8F5F2; --s2:#ECE5DE; --border:#D0C5BC; --bs:#A89A8E;
+  --text:#1C1917; --dim:#5A4F47;
+  --acc:#A33E1D;            /* ส้มอิฐ — ปุ่มหลัก/ตัวเน้น */
+  --fire:#A33E1D;           /* ป่าสงวนฯ / MODIS */
+  --forest:#1F3A5F;         /* นอกป่า / ลดลง (เดิมเขียว) */
+  --prot:#8A6A00;           /* ป่าอนุรักษ์ */
+  --en:#6B1F2A;             /* El Niño (เดิมแดง) */
+  --ln:#1F3A5F;             /* La Niña / VIIRs */
+  --shad:0 1px 2px rgba(40,30,25,.08);
+  --font:'CMU','Sarabun','Noto Sans Thai',Tahoma,sans-serif;
+  --r:10px; --r-sm:7px; --h:32px;
+}
+[data-theme="dark"]{
+  --bg:#171412; --surface:#221D1A; --s2:#2B2420; --border:#3B322C; --bs:#5A4C42;
+  --text:#EEE8E2; --dim:#AFA195;
+  --acc:#E98A66; --fire:#F2A184; --forest:#8FB0DC; --prot:#E0B93D; --en:#E08A92; --ln:#8FB0DC;
+  --shad:0 1px 2px rgba(0,0,0,.4);
+}
+body{font-size:14px}
+
+/* แถบไล่สีบางๆ เหนือหัวเว็บ — ลายเซ็น */
+nav{border-top:4px solid;border-image:linear-gradient(90deg,#6B1F2A,#A33E1D,#B08900,#6A4A91,#1F3A5F) 1}
+
+/* ปุ่ม / ช่องเลือก: สูงเท่ากัน + ขอบล่างหนา (กดได้จริง) */
+select,.btn{height:var(--h);border-radius:var(--r-sm);font-size:13.5px}
+.btn{box-shadow:0 2px 0 var(--border)}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(1px);box-shadow:none}
+.bp{box-shadow:0 2px 0 rgba(0,0,0,.25);font-weight:600;color:#fff}
+.bp:hover{background:var(--acc);color:#fff;filter:brightness(1.12)}
+[data-theme="dark"] .bp,[data-theme="dark"] .bp:hover{color:#1E1310}
+.bsm{height:26px;font-size:12.5px}
+select:focus{outline:2px solid color-mix(in srgb,var(--acc) 30%,transparent)}
+
+/* การ์ด: แถบสีด้านซ้ายเป็นลายเซ็น */
+.card{position:relative;border-radius:var(--r);padding:10px 14px 10px 18px;overflow:hidden}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--ln)}
+.card[style*="border-left"]{border-left-width:1px !important}
+.card[style*="--fire"]::before{background:var(--fire)}
+.card[style*="--forest"]::before{background:var(--forest)}
+.card[style*="#6A4A91"]::before{background:#6A4A91}
+.card[style*="#1F3A5F"]::before{background:var(--ln)}
+.card-lbl{font-size:12.5px}
+.card-val{font-size:26px;font-weight:700}
+
+/* แท็บ */
+.nt.active{border-bottom-color:var(--fire);color:var(--text);font-weight:700}
+.st.active{font-weight:700}
+.tw,.ctrl{border-radius:var(--r)}
+thead th{font-size:12.5px;border-bottom:2px solid var(--bs)}
+tbody tr:hover{background:color-mix(in srgb,var(--ln) 8%,var(--surface))}
+.yr-btn{border-radius:var(--r-sm)}
+
+/* ตัวเลขเพิ่ม-ลด: ไม่พึ่งสีอย่างเดียว */
+.dp::before{content:"▲ "}.dn::before{content:"▼ "}
+.fb-r{background:rgba(163,62,29,.1);border-color:rgba(163,62,29,.3)}
+.fb-p{background:rgba(138,106,0,.1);border-color:rgba(138,106,0,.3)}
+.badge{border-radius:999px}
+::-webkit-scrollbar-thumb{background:var(--bs)}
+@media(pointer:coarse){:root{--h:40px}}
+/* สีฝังในหน้า: โหมดมืดใช้เฉดสว่าง ให้อ่านออก */
+[data-theme="dark"] [style*="color:#6A4A91"]{color:#B6A0DA !important}
+[data-theme="dark"] [style*="color:#1F3A5F"]{color:#8FB0DC !important}
